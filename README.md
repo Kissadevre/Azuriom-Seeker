@@ -1,0 +1,47 @@
+# Seeker
+
+Seeker is an Azuriom talent portal where community members can offer freelance commissions or look for collaborators for their projects.
+
+## Requirements
+
+- Azuriom 1.2.x (extension API 1.2.0)
+- PHP 8.2 or newer
+
+## Current features
+
+- Public catalog with text search and publication-type filters.
+- Authenticated creation and management of commission offers and talent searches.
+- External portfolio links restricted to HTTP and HTTPS URLs.
+- Up to six privately stored reference images per publication (JPG, PNG, or WebP, 5 MB each).
+- Owner-controlled active and closed states.
+- Permission-based moderation with a protected hidden state.
+- English and Spanish (`es_ES`) translations.
+- Initial review data model, intentionally not exposed until a verified collaboration workflow exists.
+
+## Installation
+
+Place this repository at `plugins/seeker`, then enable **Seeker** from the Azuriom administration panel. Azuriom runs the plugin migrations and publishes the plugin assets as part of its normal enable flow.
+
+Grant `Moderate Seeker publications` only to roles that should be able to hide or restore publications.
+
+## Data and files
+
+All plugin tables use the `seeker_` prefix. Uploaded references are stored on Laravel's private `local` disk below `seeker/publications` and are served through a controlled plugin route.
+
+The plugin does not modify Azuriom core files, root routes, root build configuration, or generated public assets.
+
+## Roadmap
+
+The next domain milestone is a collaboration/application workflow. Reviews and reputation should only become writable after both parties are connected to a completed collaboration; this prevents arbitrary or self-issued ratings. Additional planned work includes talent categories, richer profiles, notifications, reporting, and configurable moderation settings.
+
+## Development checks
+
+Before releasing a new version:
+
+1. Validate `plugin.json` and `composer.json`.
+2. Run PHP syntax checks and compile every Blade view.
+3. Run fresh migration and rollback smoke tests on SQLite and the production database engine.
+4. Verify guest, verified-user, owner, moderator, and unauthorized-user flows.
+5. Test image upload, rendering, removal, publication deletion, plugin enable/disable, and route caching.
+6. Test with both the default Azuriom theme and the target custom theme.
+
