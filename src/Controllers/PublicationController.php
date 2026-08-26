@@ -70,13 +70,14 @@ class PublicationController extends Controller
             $publication = DB::transaction(function () use ($request, &$storedPaths) {
                 $publication = new Publication($request->safe()->only([
                     'type', 'title', 'description', 'portfolio_type', 'portfolio_url',
-                    'is_guest_visible', 'pricing_type', 'price',
+                    'is_guest_visible', 'pricing_type', 'price', 'price_basis',
                 ]));
                 if ($publication->portfolio_type === Publication::PORTFOLIO_IMAGES) {
                     $publication->portfolio_url = null;
                 }
                 if ($publication->pricing_type !== Publication::PRICING_POINTS) {
                     $publication->price = null;
+                    $publication->price_basis = null;
                 }
                 $publication->user_id = $request->user()->id;
                 $publication->status = Publication::STATUS_ACTIVE;
@@ -113,7 +114,7 @@ class PublicationController extends Controller
             DB::transaction(function () use ($request, $publication, &$storedPaths, &$removedPaths) {
                 $publication->update($request->safe()->only([
                     'type', 'title', 'description', 'portfolio_type', 'portfolio_url',
-                    'is_guest_visible', 'pricing_type', 'price',
+                    'is_guest_visible', 'pricing_type', 'price', 'price_basis',
                 ]));
 
                 if ($publication->portfolio_type === Publication::PORTFOLIO_IMAGES) {
@@ -121,6 +122,7 @@ class PublicationController extends Controller
                 }
                 if ($publication->pricing_type !== Publication::PRICING_POINTS) {
                     $publication->price = null;
+                    $publication->price_basis = null;
                 }
                 $publication->save();
 

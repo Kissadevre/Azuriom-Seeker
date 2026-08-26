@@ -25,6 +25,10 @@ class Publication extends Model
 
     public const PRICING_NEGOTIABLE = 'negotiable';
 
+    public const PRICE_BASIS_FIXED = 'fixed';
+
+    public const PRICE_BASIS_HOURLY = 'hourly';
+
     public const STATUS_ACTIVE = 'active';
 
     public const STATUS_CLOSED = 'closed';
@@ -42,6 +46,7 @@ class Publication extends Model
         'is_guest_visible',
         'pricing_type',
         'price',
+        'price_basis',
         'status',
         'published_at',
     ];
@@ -99,5 +104,10 @@ class Publication extends Model
     public static function pricingTypes(): array
     {
         return [self::PRICING_POINTS, self::PRICING_FREE, self::PRICING_NEGOTIABLE];
+    }
+
+    public static function priceBases(): array
+    {
+        return [self::PRICE_BASIS_FIXED, self::PRICE_BASIS_HOURLY];
     }
 }

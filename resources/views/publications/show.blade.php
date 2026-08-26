@@ -71,7 +71,7 @@
                     <div class="seeker-price-box rounded p-3 mb-3">
                         <small class="d-block text-muted mb-1">@lang('seeker::messages.fields.pricing_type')</small>
                         <strong class="fs-5">
-                            {{ $publication->pricing_type === 'points' ? format_money((float) $publication->price) : trans('seeker::messages.pricing_types.'.$publication->pricing_type) }}
+                            @include('seeker::publications._price', ['publication' => $publication])
                         </strong>
                     </div>
 

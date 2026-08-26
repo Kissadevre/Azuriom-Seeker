@@ -42,6 +42,14 @@ return [
         'free' => 'Gratuito',
         'negotiable' => 'A convenir',
     ],
+    'price_bases' => [
+        'fixed' => 'Precio fijo',
+        'hourly' => 'Por hora',
+    ],
+    'price_display' => [
+        'fixed' => ':price — precio fijo',
+        'hourly' => ':price / hora',
+    ],
     'visibility' => [
         'public' => 'Visible para todos',
         'members' => 'Requiere una cuenta de Zibuu',
@@ -63,6 +71,7 @@ return [
         'guest_visibility' => 'Permitir que invitados vean esta publicación',
         'pricing_type' => 'Pago o precio del servicio',
         'price' => 'Precio en puntos de Zibuu',
+        'price_basis' => '¿Cómo se cobra este precio?',
         'status' => 'Estado',
     ],
     'help' => [
@@ -77,10 +86,12 @@ return [
         'remove_images' => 'Si eliminas todas las imágenes, debes subir al menos un reemplazo.',
         'guest_visibility' => 'Al desactivarlo, solamente los miembros autenticados de Zibuu podrán encontrar y ver la publicación.',
         'pricing_type' => 'Indica si el servicio tiene un precio fijo en puntos, es gratuito o se acordará con los interesados.',
-        'pricing_points' => 'Establece un precio fijo usando los puntos del sitio.',
+        'pricing_points' => 'Establece una cantidad usando los puntos del sitio.',
         'pricing_free' => 'Este servicio no requiere ningún pago.',
         'pricing_negotiable' => 'El pago se discutirá y acordará posteriormente.',
         'price' => 'El precio mostrado es informativo; Seeker todavía no transfiere puntos.',
+        'price_basis_fixed' => 'La cantidad cubre el servicio completo.',
+        'price_basis_hourly' => 'La cantidad se cobra por cada hora de trabajo.',
     ],
     'actions' => [
         'filter' => 'Aplicar filtros',

@@ -68,7 +68,7 @@
                             <div class="d-flex flex-wrap gap-2 mb-2">
                                 <span class="badge {{ $publication->type === 'commission' ? 'text-bg-primary' : 'text-bg-info' }}">@lang('seeker::messages.types.'.$publication->type)</span>
                                 <span class="badge text-bg-light">
-                                    {{ $publication->pricing_type === 'points' ? format_money((float) $publication->price) : trans('seeker::messages.pricing_types.'.$publication->pricing_type) }}
+                                    @include('seeker::publications._price', ['publication' => $publication])
                                 </span>
                                 @if(! $publication->is_guest_visible)
                                     <span class="badge text-bg-secondary"><i class="bi bi-lock-fill me-1" aria-hidden="true"></i>@lang('seeker::messages.visibility.members')</span>

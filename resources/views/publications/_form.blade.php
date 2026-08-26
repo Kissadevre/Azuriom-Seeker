@@ -134,6 +134,12 @@
 </fieldset>
 
 <div class="mb-4" data-pricing-panel="points">
+    @php
+        $selectedPriceBasis = old(
+            'price_basis',
+            $publication->price_basis ?? \Azuriom\Plugin\Seeker\Models\Publication::PRICE_BASIS_FIXED
+        );
+    @endphp
     <label class="form-label fw-semibold" for="publicationPrice">@lang('seeker::messages.fields.price')</label>
     <div class="input-group">
         <input id="publicationPrice" type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', $publication->price ?? '') }}" min="0.01" max="999999999999.99" step="0.01" inputmode="decimal">
@@ -141,6 +147,23 @@
         @error('price')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
     <div class="form-text">@lang('seeker::messages.help.price')</div>
+
+    <fieldset class="mt-3">
+        <legend class="form-label fw-semibold">@lang('seeker::messages.fields.price_basis')</legend>
+        <div class="row g-2">
+            @foreach(\Azuriom\Plugin\Seeker\Models\Publication::priceBases() as $priceBasis)
+                <div class="col-sm-6">
+                    <label class="seeker-choice-card card h-100 p-3">
+                        <span class="d-flex gap-3">
+                            <input class="form-check-input mt-1" type="radio" name="price_basis" value="{{ $priceBasis }}" @checked($selectedPriceBasis === $priceBasis)>
+                            <span><strong class="d-block">@lang('seeker::messages.price_bases.'.$priceBasis)</strong><small class="text-muted">@lang('seeker::messages.help.price_basis_'.$priceBasis)</small></span>
+                        </span>
+                    </label>
+                </div>
+            @endforeach
+        </div>
+        @error('price_basis')<div class="text-danger small mt-2">{{ $message }}</div>@enderror
+    </fieldset>
 </div>
 
 <div class="d-flex justify-content-end gap-2">

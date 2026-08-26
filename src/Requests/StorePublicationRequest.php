@@ -26,6 +26,7 @@ class StorePublicationRequest extends FormRequest
             'is_guest_visible' => ['required', 'boolean'],
             'pricing_type' => ['required', Rule::in(Publication::pricingTypes())],
             'price' => ['required_if:pricing_type,'.Publication::PRICING_POINTS, 'prohibited_unless:pricing_type,'.Publication::PRICING_POINTS, 'nullable', 'numeric', 'decimal:0,2', 'min:0.01', 'max:999999999999.99'],
+            'price_basis' => ['required_if:pricing_type,'.Publication::PRICING_POINTS, 'prohibited_unless:pricing_type,'.Publication::PRICING_POINTS, 'nullable', Rule::in(Publication::priceBases())],
         ];
     }
 }

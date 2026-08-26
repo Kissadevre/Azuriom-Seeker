@@ -42,6 +42,14 @@ return [
         'free' => 'Free',
         'negotiable' => 'To be agreed',
     ],
+    'price_bases' => [
+        'fixed' => 'Fixed price',
+        'hourly' => 'Per hour',
+    ],
+    'price_display' => [
+        'fixed' => ':price — fixed price',
+        'hourly' => ':price / hour',
+    ],
     'visibility' => [
         'public' => 'Visible to everyone',
         'members' => 'Zibuu account required',
@@ -63,6 +71,7 @@ return [
         'guest_visibility' => 'Allow guests to view this publication',
         'pricing_type' => 'Payment or service price',
         'price' => 'Price in Zibuu points',
+        'price_basis' => 'How is this price charged?',
         'status' => 'Status',
     ],
     'help' => [
@@ -77,10 +86,12 @@ return [
         'remove_images' => 'If you remove every image, you must upload at least one replacement.',
         'guest_visibility' => 'When disabled, only authenticated Zibuu members can find and view the publication.',
         'pricing_type' => 'Indicate whether the service has a fixed point price, is free, or will be agreed with interested users.',
-        'pricing_points' => 'Set a fixed price using the site points.',
+        'pricing_points' => 'Set an amount using the site points.',
         'pricing_free' => 'No payment is required for this service.',
         'pricing_negotiable' => 'Discuss and agree on payment later.',
         'price' => 'The displayed price is informational; Seeker does not transfer points yet.',
+        'price_basis_fixed' => 'The amount covers the complete service.',
+        'price_basis_hourly' => 'The amount is charged for each hour of work.',
     ],
     'actions' => [
         'filter' => 'Apply filters',
