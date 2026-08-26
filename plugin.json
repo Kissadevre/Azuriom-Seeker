@@ -1,0 +1,16 @@
+{
+    "id": "seeker",
+    "name": "Seeker",
+    "description": "A talent portal for freelance commissions and project opportunities.",
+    "version": "0.1.0",
+    "url": "https://zibuu.net",
+    "authors": [
+        "Kissadere",
+        "Zibuu"
+    ],
+    "azuriom_api": "1.2.0",
+    "providers": [
+        "\\Azuriom\\Plugin\\Seeker\\Providers\\SeekerServiceProvider",
+        "\\Azuriom\\Plugin\\Seeker\\Providers\\RouteServiceProvider"
+    ]
+}
