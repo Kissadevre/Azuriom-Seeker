@@ -33,6 +33,10 @@ return [
         'commission' => 'Oferta de comisión',
         'talent' => 'Búsqueda de talento',
     ],
+    'portfolio_types' => [
+        'external' => 'Portafolio externo',
+        'images' => 'Subir imágenes',
+    ],
     'statuses' => [
         'active' => 'Activa',
         'closed' => 'Cerrada',
@@ -42,8 +46,10 @@ return [
         'type' => 'Tipo de publicación',
         'title' => 'Título',
         'description' => 'Descripción',
+        'portfolio_type' => '¿Cómo quieres mostrar tu portafolio?',
         'portfolio_url' => 'URL del portafolio externo',
         'images' => 'Imágenes de referencia',
+        'current_images' => 'Imágenes de referencia actuales',
         'remove_images' => 'Eliminar imágenes seleccionadas',
         'status' => 'Estado',
     ],
@@ -51,8 +57,12 @@ return [
         'commission' => 'Usa esta opción cuando ofrezcas un servicio o aceptes comisiones.',
         'talent' => 'Usa esta opción cuando tu proyecto busque un talento específico.',
         'description' => 'Explica el alcance, habilidades, entregables, disponibilidad y cómo deben proceder los interesados.',
-        'portfolio_url' => 'Opcional. Solo se aceptan enlaces HTTP y HTTPS.',
-        'images' => 'Opcional. Hasta 6 imágenes JPG, PNG o WebP de 5 MB cada una.',
+        'portfolio_type' => 'Elige una opción. No se puede utilizar un enlace externo y subir imágenes al mismo tiempo.',
+        'external' => 'Envía a los visitantes a un portafolio alojado en otro sitio web.',
+        'uploaded_images' => 'Muestra trabajos de referencia directamente en tu publicación.',
+        'portfolio_url' => 'Solo se aceptan enlaces HTTP y HTTPS.',
+        'images' => 'Sube entre 1 y 6 imágenes JPG, PNG o WebP de 5 MB cada una.',
+        'remove_images' => 'Si eliminas todas las imágenes, debes subir al menos un reemplazo.',
     ],
     'actions' => [
         'filter' => 'Aplicar filtros',
@@ -66,6 +76,7 @@ return [
         'deleted' => 'La publicación fue eliminada.',
     ],
     'validation' => [
+        'images_required' => 'Sube al menos una imagen de referencia o elige un portafolio externo.',
         'max_images' => 'Una publicación puede tener hasta 6 imágenes de referencia.',
     ],
 ];

@@ -67,8 +67,11 @@ class PublicationController extends Controller
         try {
             $publication = DB::transaction(function () use ($request, &$storedPaths) {
                 $publication = new Publication($request->safe()->only([
-                    'type', 'title', 'description', 'portfolio_url',
+                    'type', 'title', 'description', 'portfolio_type', 'portfolio_url',
                 ]));
+                if ($publication->portfolio_type === Publication::PORTFOLIO_IMAGES) {
+                    $publication->portfolio_url = null;
+                }
                 $publication->user_id = $request->user()->id;
                 $publication->status = Publication::STATUS_ACTIVE;
                 $publication->published_at = now();
@@ -103,11 +106,17 @@ class PublicationController extends Controller
         try {
             DB::transaction(function () use ($request, $publication, &$storedPaths, &$removedPaths) {
                 $publication->update($request->safe()->only([
-                    'type', 'title', 'description', 'portfolio_url',
+                    'type', 'title', 'description', 'portfolio_type', 'portfolio_url',
                 ]));
 
-                $imagesToRemove = $publication->images()
-                    ->whereIn('id', array_unique($request->input('remove_images', [])));
+                if ($publication->portfolio_type === Publication::PORTFOLIO_IMAGES) {
+                    $publication->portfolio_url = null;
+                    $publication->save();
+                }
+
+                $imagesToRemove = $publication->portfolio_type === Publication::PORTFOLIO_EXTERNAL
+                    ? $publication->images()
+                    : $publication->images()->whereIn('id', array_unique($request->input('remove_images', [])));
                 $removedPaths = $imagesToRemove->pluck('path')->all();
                 $imagesToRemove->delete();
 

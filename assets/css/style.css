@@ -56,6 +56,16 @@
     height: 8rem;
 }
 
+.seeker-choice-card {
+    cursor: pointer;
+    transition: border-color .15s ease, background-color .15s ease;
+}
+
+.seeker-choice-card:has(input:checked) {
+    border-color: var(--bs-primary);
+    background: rgba(var(--bs-primary-rgb), .06);
+}
+
 .seeker-sidebar {
     top: 1.5rem;
 }

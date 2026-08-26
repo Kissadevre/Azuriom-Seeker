@@ -31,7 +31,7 @@
                     </div>
                     <div class="seeker-description">{!! nl2br(e($publication->description)) !!}</div>
 
-                    @if($publication->portfolio_url)
+                    @if($publication->portfolio_type === 'external' && $publication->portfolio_url)
                         <button class="btn btn-primary mt-4" type="button" data-bs-toggle="modal" data-bs-target="#externalPortfolioWarning">
                             <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i> @lang('seeker::messages.portfolio')
                         </button>
@@ -39,12 +39,10 @@
                 </div>
             </article>
 
-            <section class="card">
-                <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::messages.references')</h2></div>
-                <div class="card-body">
-                    @if($publication->images->isEmpty())
-                        <p class="text-muted mb-0">@lang('seeker::messages.no_references')</p>
-                    @else
+            @if($publication->portfolio_type === 'images' && $publication->images->isNotEmpty())
+                <section class="card">
+                    <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::messages.references')</h2></div>
+                    <div class="card-body">
                         <div class="row g-3">
                             @foreach($publication->images as $image)
                                 <div class="col-md-6">
@@ -54,9 +52,9 @@
                                 </div>
                             @endforeach
                         </div>
-                    @endif
-                </div>
-            </section>
+                    </div>
+                </section>
+            @endif
         </div>
 
         <aside class="col-lg-4">
@@ -90,7 +88,7 @@
         </aside>
     </div>
 
-    @if($publication->portfolio_url)
+    @if($publication->portfolio_type === 'external' && $publication->portfolio_url)
         <div class="modal fade" id="externalPortfolioWarning" tabindex="-1" aria-labelledby="externalPortfolioWarningTitle" aria-describedby="externalPortfolioWarningDescription" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">

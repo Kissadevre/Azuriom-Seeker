@@ -19,8 +19,9 @@ class StorePublicationRequest extends FormRequest
             'type' => ['required', Rule::in(Publication::types())],
             'title' => ['required', 'string', 'min:5', 'max:120'],
             'description' => ['required', 'string', 'min:20', 'max:10000'],
-            'portfolio_url' => ['nullable', 'url:http,https', 'max:2048'],
-            'images' => ['nullable', 'array', 'max:6'],
+            'portfolio_type' => ['required', Rule::in(Publication::portfolioTypes())],
+            'portfolio_url' => ['required_if:portfolio_type,'.Publication::PORTFOLIO_EXTERNAL, 'prohibited_unless:portfolio_type,'.Publication::PORTFOLIO_EXTERNAL, 'nullable', 'url:http,https', 'max:2048'],
+            'images' => ['required_if:portfolio_type,'.Publication::PORTFOLIO_IMAGES, 'prohibited_unless:portfolio_type,'.Publication::PORTFOLIO_IMAGES, 'array', 'min:1', 'max:6'],
             'images.*' => ['file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120', 'dimensions:max_width=4096,max_height=4096'],
         ];
     }

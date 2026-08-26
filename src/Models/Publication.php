@@ -15,6 +15,10 @@ class Publication extends Model
 
     public const TYPE_TALENT = 'talent';
 
+    public const PORTFOLIO_EXTERNAL = 'external';
+
+    public const PORTFOLIO_IMAGES = 'images';
+
     public const STATUS_ACTIVE = 'active';
 
     public const STATUS_CLOSED = 'closed';
@@ -27,6 +31,7 @@ class Publication extends Model
         'type',
         'title',
         'description',
+        'portfolio_type',
         'portfolio_url',
         'status',
         'published_at',
@@ -73,5 +78,10 @@ class Publication extends Model
     public static function statuses(): array
     {
         return [self::STATUS_ACTIVE, self::STATUS_CLOSED, self::STATUS_HIDDEN];
+    }
+
+    public static function portfolioTypes(): array
+    {
+        return [self::PORTFOLIO_EXTERNAL, self::PORTFOLIO_IMAGES];
     }
 }

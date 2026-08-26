@@ -22,6 +22,7 @@ class UpdatePublicationRequest extends StorePublicationRequest
     {
         return [
             ...parent::rules(),
+            'images' => ['nullable', 'prohibited_unless:portfolio_type,'.Publication::PORTFOLIO_IMAGES, 'array', 'max:6'],
             'remove_images' => ['nullable', 'array'],
             'remove_images.*' => ['integer', Rule::exists('seeker_publication_images', 'id')],
         ];
@@ -36,8 +37,13 @@ class UpdatePublicationRequest extends StorePublicationRequest
                     ->whereIn('id', array_unique($this->input('remove_images', [])))
                     ->count();
                 $uploaded = count($this->file('images', []));
+                $remaining = $publication->images()->count() - $removed + $uploaded;
 
-                if ($publication->images()->count() - $removed + $uploaded > 6) {
+                if ($this->input('portfolio_type') === Publication::PORTFOLIO_IMAGES && $remaining < 1) {
+                    $validator->errors()->add('images', trans('seeker::messages.validation.images_required'));
+                }
+
+                if ($this->input('portfolio_type') === Publication::PORTFOLIO_IMAGES && $remaining > 6) {
                     $validator->errors()->add('images', trans('seeker::messages.validation.max_images'));
                 }
             },
