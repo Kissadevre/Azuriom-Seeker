@@ -44,4 +44,3 @@ Before releasing a new version:
 4. Verify guest, verified-user, owner, moderator, and unauthorized-user flows.
 5. Test image upload, rendering, removal, publication deletion, plugin enable/disable, and route caching.
 6. Test with both the default Azuriom theme and the target custom theme.
-
