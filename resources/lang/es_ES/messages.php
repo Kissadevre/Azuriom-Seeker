@@ -37,6 +37,15 @@ return [
         'external' => 'Portafolio externo',
         'images' => 'Subir imágenes',
     ],
+    'pricing_types' => [
+        'points' => 'Puntos de Zibuu',
+        'free' => 'Gratuito',
+        'negotiable' => 'A convenir',
+    ],
+    'visibility' => [
+        'public' => 'Visible para todos',
+        'members' => 'Requiere una cuenta de Zibuu',
+    ],
     'statuses' => [
         'active' => 'Activa',
         'closed' => 'Cerrada',
@@ -51,6 +60,9 @@ return [
         'images' => 'Imágenes de referencia',
         'current_images' => 'Imágenes de referencia actuales',
         'remove_images' => 'Eliminar imágenes seleccionadas',
+        'guest_visibility' => 'Permitir que invitados vean esta publicación',
+        'pricing_type' => 'Pago o precio del servicio',
+        'price' => 'Precio en puntos de Zibuu',
         'status' => 'Estado',
     ],
     'help' => [
@@ -63,6 +75,12 @@ return [
         'portfolio_url' => 'Solo se aceptan enlaces HTTP y HTTPS.',
         'images' => 'Sube entre 1 y 6 imágenes JPG, PNG o WebP de 5 MB cada una.',
         'remove_images' => 'Si eliminas todas las imágenes, debes subir al menos un reemplazo.',
+        'guest_visibility' => 'Al desactivarlo, solamente los miembros autenticados de Zibuu podrán encontrar y ver la publicación.',
+        'pricing_type' => 'Indica si el servicio tiene un precio fijo en puntos, es gratuito o se acordará con los interesados.',
+        'pricing_points' => 'Establece un precio fijo usando los puntos del sitio.',
+        'pricing_free' => 'Este servicio no requiere ningún pago.',
+        'pricing_negotiable' => 'El pago se discutirá y acordará posteriormente.',
+        'price' => 'El precio mostrado es informativo; Seeker todavía no transfiere puntos.',
     ],
     'actions' => [
         'filter' => 'Aplicar filtros',

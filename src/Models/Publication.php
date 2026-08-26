@@ -19,6 +19,12 @@ class Publication extends Model
 
     public const PORTFOLIO_IMAGES = 'images';
 
+    public const PRICING_POINTS = 'points';
+
+    public const PRICING_FREE = 'free';
+
+    public const PRICING_NEGOTIABLE = 'negotiable';
+
     public const STATUS_ACTIVE = 'active';
 
     public const STATUS_CLOSED = 'closed';
@@ -33,11 +39,16 @@ class Publication extends Model
         'description',
         'portfolio_type',
         'portfolio_url',
+        'is_guest_visible',
+        'pricing_type',
+        'price',
         'status',
         'published_at',
     ];
 
     protected $casts = [
+        'is_guest_visible' => 'boolean',
+        'price' => 'decimal:2',
         'published_at' => 'datetime',
     ];
 
@@ -83,5 +94,10 @@ class Publication extends Model
     public static function portfolioTypes(): array
     {
         return [self::PORTFOLIO_EXTERNAL, self::PORTFOLIO_IMAGES];
+    }
+
+    public static function pricingTypes(): array
+    {
+        return [self::PRICING_POINTS, self::PRICING_FREE, self::PRICING_NEGOTIABLE];
     }
 }

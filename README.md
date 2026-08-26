@@ -13,6 +13,8 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 - Authenticated creation and management of commission offers and talent searches.
 - One required portfolio format per publication: an HTTP/HTTPS external link or uploaded reference images, never both.
 - Between one and six privately stored images when the uploaded portfolio format is selected (JPG, PNG, or WebP, 5 MB each).
+- Per-publication visibility for everyone or authenticated Zibuu members only.
+- Informational service pricing as Zibuu points, free, or to be agreed between interested users.
 - Owner-controlled active and closed states.
 - Permission-based moderation with a protected hidden state.
 - English and Spanish (`es_ES`) translations.

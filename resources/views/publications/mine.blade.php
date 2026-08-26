@@ -22,7 +22,14 @@
                     <tbody>
                         @foreach($publications as $publication)
                             <tr>
-                                <td><a class="fw-semibold text-decoration-none" href="{{ route('seeker.publications.show', $publication) }}">{{ $publication->title }}</a><div class="small text-muted">{{ format_date_compact($publication->created_at) }}</div></td>
+                                <td>
+                                    <a class="fw-semibold text-decoration-none" href="{{ route('seeker.publications.show', $publication) }}">{{ $publication->title }}</a>
+                                    <div class="small text-muted">{{ format_date_compact($publication->created_at) }}</div>
+                                    <div class="d-flex flex-wrap gap-1 mt-1">
+                                        <span class="badge text-bg-light">{{ $publication->pricing_type === 'points' ? format_money((float) $publication->price) : trans('seeker::messages.pricing_types.'.$publication->pricing_type) }}</span>
+                                        <span class="badge {{ $publication->is_guest_visible ? 'text-bg-light' : 'text-bg-secondary' }}">@lang($publication->is_guest_visible ? 'seeker::messages.visibility.public' : 'seeker::messages.visibility.members')</span>
+                                    </div>
+                                </td>
                                 <td>@lang('seeker::messages.types.'.$publication->type)</td>
                                 <td><span class="badge {{ $publication->status === 'active' ? 'text-bg-success' : ($publication->status === 'hidden' ? 'text-bg-danger' : 'text-bg-secondary') }}">@lang('seeker::messages.statuses.'.$publication->status)</span></td>
                                 <td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{{ route('seeker.publications.edit', $publication) }}"><i class="bi bi-pencil" aria-hidden="true"></i><span class="visually-hidden">@lang('seeker::messages.edit')</span></a></td>

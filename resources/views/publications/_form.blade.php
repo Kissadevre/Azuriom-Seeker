@@ -92,6 +92,57 @@
     <div class="form-text">@lang('seeker::messages.help.images')</div>
 </div>
 
+<div class="card mb-4 seeker-setting-card">
+    <div class="card-body p-4">
+        <div class="form-check form-switch d-flex align-items-start gap-3 p-0">
+            <div class="flex-grow-1">
+                <label class="form-check-label fw-semibold d-block" for="guestVisibility">@lang('seeker::messages.fields.guest_visibility')</label>
+                <div class="form-text mt-1">@lang('seeker::messages.help.guest_visibility')</div>
+            </div>
+            <div>
+                <input type="hidden" name="is_guest_visible" value="0">
+                <input id="guestVisibility" class="form-check-input seeker-switch m-0" type="checkbox" role="switch" name="is_guest_visible" value="1" @checked((bool) old('is_guest_visible', $publication->is_guest_visible ?? true))>
+            </div>
+        </div>
+        @error('is_guest_visible')<div class="text-danger small mt-2">{{ $message }}</div>@enderror
+    </div>
+</div>
+
+@php
+    $selectedPricingType = old(
+        'pricing_type',
+        $publication->pricing_type ?? \Azuriom\Plugin\Seeker\Models\Publication::PRICING_NEGOTIABLE
+    );
+@endphp
+
+<fieldset class="mb-4" data-pricing-choice>
+    <legend class="form-label fw-semibold">@lang('seeker::messages.fields.pricing_type')</legend>
+    <p class="form-text mt-0">@lang('seeker::messages.help.pricing_type')</p>
+    <div class="row g-3">
+        @foreach(\Azuriom\Plugin\Seeker\Models\Publication::pricingTypes() as $pricingType)
+            <div class="col-md-4">
+                <label class="seeker-choice-card card h-100 p-3">
+                    <span class="d-flex gap-3">
+                        <input class="form-check-input mt-1" type="radio" name="pricing_type" value="{{ $pricingType }}" @checked($selectedPricingType === $pricingType) required>
+                        <span><strong class="d-block">@lang('seeker::messages.pricing_types.'.$pricingType)</strong><small class="text-muted">@lang('seeker::messages.help.pricing_'.$pricingType)</small></span>
+                    </span>
+                </label>
+            </div>
+        @endforeach
+    </div>
+    @error('pricing_type')<div class="text-danger small mt-2">{{ $message }}</div>@enderror
+</fieldset>
+
+<div class="mb-4" data-pricing-panel="points">
+    <label class="form-label fw-semibold" for="publicationPrice">@lang('seeker::messages.fields.price')</label>
+    <div class="input-group">
+        <input id="publicationPrice" type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', $publication->price ?? '') }}" min="0.01" max="999999999999.99" step="0.01" inputmode="decimal">
+        <span class="input-group-text">{{ money_name() }}</span>
+        @error('price')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    </div>
+    <div class="form-text">@lang('seeker::messages.help.price')</div>
+</div>
+
 <div class="d-flex justify-content-end gap-2">
     <a class="btn btn-outline-secondary" href="{{ isset($publication) ? route('seeker.publications.show', $publication) : route('seeker.index') }}">@lang('messages.actions.cancel')</a>
     <button class="btn btn-primary px-4"><i class="bi bi-check-lg me-1" aria-hidden="true"></i> @lang(isset($publication) ? 'seeker::messages.actions.update' : 'seeker::messages.actions.save')</button>

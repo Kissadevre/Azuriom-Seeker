@@ -37,6 +37,15 @@ return [
         'external' => 'External portfolio',
         'images' => 'Upload images',
     ],
+    'pricing_types' => [
+        'points' => 'Zibuu points',
+        'free' => 'Free',
+        'negotiable' => 'To be agreed',
+    ],
+    'visibility' => [
+        'public' => 'Visible to everyone',
+        'members' => 'Zibuu account required',
+    ],
     'statuses' => [
         'active' => 'Active',
         'closed' => 'Closed',
@@ -51,6 +60,9 @@ return [
         'images' => 'Reference images',
         'current_images' => 'Current reference images',
         'remove_images' => 'Remove selected images',
+        'guest_visibility' => 'Allow guests to view this publication',
+        'pricing_type' => 'Payment or service price',
+        'price' => 'Price in Zibuu points',
         'status' => 'Status',
     ],
     'help' => [
@@ -63,6 +75,12 @@ return [
         'portfolio_url' => 'Only HTTP and HTTPS links are accepted.',
         'images' => 'Upload between 1 and 6 JPG, PNG, or WebP images, 5 MB each.',
         'remove_images' => 'If you remove every image, you must upload at least one replacement.',
+        'guest_visibility' => 'When disabled, only authenticated Zibuu members can find and view the publication.',
+        'pricing_type' => 'Indicate whether the service has a fixed point price, is free, or will be agreed with interested users.',
+        'pricing_points' => 'Set a fixed price using the site points.',
+        'pricing_free' => 'No payment is required for this service.',
+        'pricing_negotiable' => 'Discuss and agree on payment later.',
+        'price' => 'The displayed price is informational; Seeker does not transfer points yet.',
     ],
     'actions' => [
         'filter' => 'Apply filters',

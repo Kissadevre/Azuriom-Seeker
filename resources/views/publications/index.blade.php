@@ -65,7 +65,15 @@
                             <div class="seeker-card-placeholder"><i class="bi bi-stars" aria-hidden="true"></i></div>
                         @endif
                         <div class="card-body d-flex flex-column">
-                            <div class="mb-2"><span class="badge {{ $publication->type === 'commission' ? 'text-bg-primary' : 'text-bg-info' }}">@lang('seeker::messages.types.'.$publication->type)</span></div>
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <span class="badge {{ $publication->type === 'commission' ? 'text-bg-primary' : 'text-bg-info' }}">@lang('seeker::messages.types.'.$publication->type)</span>
+                                <span class="badge text-bg-light">
+                                    {{ $publication->pricing_type === 'points' ? format_money((float) $publication->price) : trans('seeker::messages.pricing_types.'.$publication->pricing_type) }}
+                                </span>
+                                @if(! $publication->is_guest_visible)
+                                    <span class="badge text-bg-secondary"><i class="bi bi-lock-fill me-1" aria-hidden="true"></i>@lang('seeker::messages.visibility.members')</span>
+                                @endif
+                            </div>
                             <h2 class="h5 card-title">{{ $publication->title }}</h2>
                             <p class="card-text text-muted flex-grow-1">{{ \Illuminate\Support\Str::limit($publication->description, 150) }}</p>
                             <div class="d-flex align-items-center gap-2 small text-muted mb-3">

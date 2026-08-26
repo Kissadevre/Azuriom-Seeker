@@ -20,6 +20,9 @@
                         @if($publication->status !== 'active')
                             <span class="badge text-bg-secondary">@lang('seeker::messages.statuses.'.$publication->status)</span>
                         @endif
+                        @if(! $publication->is_guest_visible)
+                            <span class="badge text-bg-secondary"><i class="bi bi-lock-fill me-1" aria-hidden="true"></i>@lang('seeker::messages.visibility.members')</span>
+                        @endif
                     </div>
                     <h1 class="display-6 fw-bold">{{ $publication->title }}</h1>
                     <div class="d-flex align-items-center gap-3 text-muted mb-4">
@@ -63,6 +66,13 @@
                     <div class="d-flex align-items-center gap-3 mb-3">
                         <img src="{{ $publication->user->getAvatar(64) }}" width="64" height="64" class="rounded-circle" alt="">
                         <div><strong>{{ $publication->user->name }}</strong><div class="small text-muted">@lang('seeker::messages.types.'.$publication->type)</div></div>
+                    </div>
+
+                    <div class="seeker-price-box rounded p-3 mb-3">
+                        <small class="d-block text-muted mb-1">@lang('seeker::messages.fields.pricing_type')</small>
+                        <strong class="fs-5">
+                            {{ $publication->pricing_type === 'points' ? format_money((float) $publication->price) : trans('seeker::messages.pricing_types.'.$publication->pricing_type) }}
+                        </strong>
                     </div>
 
                     @if(auth()->id() === $publication->user_id)

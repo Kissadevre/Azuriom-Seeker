@@ -18,12 +18,15 @@ class PublicationImageController extends Controller
             && $publication->published_at->isPast();
         $canPreview = auth()->check()
             && (auth()->id() === $publication->user_id || auth()->user()->can('seeker.moderate'));
+        $canViewPublished = $isVisible && ($publication->is_guest_visible || auth()->check());
 
-        abort_unless($isVisible || $canPreview, 404);
+        abort_unless($canViewPublished || $canPreview, 404);
         abort_unless(Storage::disk('local')->exists($image->path), 404);
 
         return Storage::disk('local')->response($image->path, $image->original_name, [
-            'Cache-Control' => 'public, max-age=86400',
+            'Cache-Control' => $isVisible && $publication->is_guest_visible
+                ? 'public, max-age=86400'
+                : 'private, no-store',
             'Content-Type' => $image->mime_type,
             'X-Content-Type-Options' => 'nosniff',
         ]);

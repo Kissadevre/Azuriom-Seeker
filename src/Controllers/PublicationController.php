@@ -7,6 +7,7 @@ use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Requests\PublicationStatusRequest;
 use Azuriom\Plugin\Seeker\Requests\StorePublicationRequest;
 use Azuriom\Plugin\Seeker\Requests\UpdatePublicationRequest;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,7 @@ class PublicationController extends Controller
 
         $publications = Publication::query()
             ->visible()
+            ->when($request->user() === null, fn ($query) => $query->where('is_guest_visible', true))
             ->with(['user', 'images'])
             ->when($type, fn ($query) => $query->where('type', $type))
             ->when($search !== '', fn ($query) => $query->where(function ($query) use ($search) {
@@ -68,9 +70,13 @@ class PublicationController extends Controller
             $publication = DB::transaction(function () use ($request, &$storedPaths) {
                 $publication = new Publication($request->safe()->only([
                     'type', 'title', 'description', 'portfolio_type', 'portfolio_url',
+                    'is_guest_visible', 'pricing_type', 'price',
                 ]));
                 if ($publication->portfolio_type === Publication::PORTFOLIO_IMAGES) {
                     $publication->portfolio_url = null;
+                }
+                if ($publication->pricing_type !== Publication::PRICING_POINTS) {
+                    $publication->price = null;
                 }
                 $publication->user_id = $request->user()->id;
                 $publication->status = Publication::STATUS_ACTIVE;
@@ -107,12 +113,16 @@ class PublicationController extends Controller
             DB::transaction(function () use ($request, $publication, &$storedPaths, &$removedPaths) {
                 $publication->update($request->safe()->only([
                     'type', 'title', 'description', 'portfolio_type', 'portfolio_url',
+                    'is_guest_visible', 'pricing_type', 'price',
                 ]));
 
                 if ($publication->portfolio_type === Publication::PORTFOLIO_IMAGES) {
                     $publication->portfolio_url = null;
-                    $publication->save();
                 }
+                if ($publication->pricing_type !== Publication::PRICING_POINTS) {
+                    $publication->price = null;
+                }
+                $publication->save();
 
                 $imagesToRemove = $publication->portfolio_type === Publication::PORTFOLIO_EXTERNAL
                     ? $publication->images()
@@ -165,6 +175,10 @@ class PublicationController extends Controller
             && (auth()->id() === $publication->user_id || auth()->user()->can('seeker.moderate'));
 
         abort_unless($isVisible || $canPreview, 404);
+
+        if ($isVisible && ! $publication->is_guest_visible && auth()->guest()) {
+            throw new AuthenticationException;
+        }
     }
 
     private function storeImages(Publication $publication, array $files, array &$storedPaths): void
