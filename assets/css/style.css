@@ -1,0 +1,61 @@
+.seeker-hero {
+    background: linear-gradient(135deg, rgba(var(--bs-primary-rgb), .16), rgba(var(--bs-info-rgb), .08));
+}
+
+.seeker-card {
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.seeker-card:hover {
+    box-shadow: 0 .75rem 1.75rem rgba(0, 0, 0, .1);
+    transform: translateY(-3px);
+}
+
+.seeker-card-image,
+.seeker-card-placeholder {
+    width: 100%;
+    height: 13rem;
+    object-fit: cover;
+}
+
+.seeker-card-placeholder {
+    display: grid;
+    place-items: center;
+    color: var(--bs-primary);
+    font-size: 3rem;
+    background: rgba(var(--bs-primary-rgb), .1);
+}
+
+.seeker-title-icon {
+    display: inline-grid;
+    width: 3.25rem;
+    height: 3.25rem;
+    place-items: center;
+    border-radius: .75rem;
+    color: #fff;
+    font-size: 1.4rem;
+    background: var(--bs-primary);
+}
+
+.seeker-description {
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+}
+
+.seeker-gallery-image,
+.seeker-form-image {
+    width: 100%;
+    object-fit: cover;
+}
+
+.seeker-gallery-image {
+    height: 18rem;
+}
+
+.seeker-form-image {
+    height: 8rem;
+}
+
+.seeker-sidebar {
+    top: 1.5rem;
+}
