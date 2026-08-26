@@ -12,6 +12,13 @@ return [
     'all_types' => 'All publication types',
     'view_details' => 'View details',
     'portfolio' => 'View external portfolio',
+    'external_warning' => [
+        'title' => 'You are leaving Zibuu',
+        'description' => 'This portfolio is hosted on an external website. Check the destination before continuing.',
+        'destination' => 'You will be redirected to:',
+        'cancel' => 'Do not go',
+        'continue' => 'Continue',
+    ],
     'published_by' => 'Published by :user',
     'published_on' => 'Published :date',
     'references' => 'Reference images',

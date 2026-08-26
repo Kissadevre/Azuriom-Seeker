@@ -32,9 +32,9 @@
                     <div class="seeker-description">{!! nl2br(e($publication->description)) !!}</div>
 
                     @if($publication->portfolio_url)
-                        <a class="btn btn-primary mt-4" href="{{ $publication->portfolio_url }}" target="_blank" rel="noopener noreferrer nofollow">
+                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="modal" data-bs-target="#externalPortfolioWarning">
                             <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i> @lang('seeker::messages.portfolio')
-                        </a>
+                        </button>
                     @endif
                 </div>
             </article>
@@ -89,4 +89,31 @@
             </div>
         </aside>
     </div>
+
+    @if($publication->portfolio_url)
+        <div class="modal fade" id="externalPortfolioWarning" tabindex="-1" aria-labelledby="externalPortfolioWarningTitle" aria-describedby="externalPortfolioWarningDescription" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-0 pb-0">
+                        <div class="seeker-external-warning-icon" aria-hidden="true"><i class="bi bi-box-arrow-up-right"></i></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@lang('messages.actions.close')"></button>
+                    </div>
+                    <div class="modal-body px-4 pt-3 pb-4">
+                        <h2 class="h4" id="externalPortfolioWarningTitle">@lang('seeker::messages.external_warning.title')</h2>
+                        <p class="text-muted" id="externalPortfolioWarningDescription">@lang('seeker::messages.external_warning.description')</p>
+                        <div class="seeker-external-destination rounded p-3">
+                            <small class="d-block text-muted mb-1">@lang('seeker::messages.external_warning.destination')</small>
+                            <span class="font-monospace text-break">{{ $publication->portfolio_url }}</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 pt-0 px-4 pb-4">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@lang('seeker::messages.external_warning.cancel')</button>
+                        <a class="btn btn-primary" href="{{ $publication->portfolio_url }}" target="_blank" rel="noopener noreferrer nofollow">
+                            @lang('seeker::messages.external_warning.continue') <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection

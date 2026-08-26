@@ -12,6 +12,13 @@ return [
     'all_types' => 'Todos los tipos de publicación',
     'view_details' => 'Ver detalles',
     'portfolio' => 'Ver portafolio externo',
+    'external_warning' => [
+        'title' => 'Estás saliendo de Zibuu',
+        'description' => 'Este portafolio se encuentra en un sitio web externo. Verifica el destino antes de continuar.',
+        'destination' => 'Serás redirigido a:',
+        'cancel' => 'No ir',
+        'continue' => 'Continuar',
+    ],
     'published_by' => 'Publicado por :user',
     'published_on' => 'Publicado :date',
     'references' => 'Imágenes de referencia',
