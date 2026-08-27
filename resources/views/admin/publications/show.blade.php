@@ -88,7 +88,7 @@
                             <td class="text-center">{{ $conversation->messages_count }}</td>
                             <td class="text-center">{{ $conversation->reports_count }}</td>
                             <td class="text-nowrap">{{ format_date($conversation->created_at, true) }}</td>
-                            <td class="text-nowrap">{{ format_date($conversation->last_message_at ?? $conversation->updated_at, true) }}</td>
+                            <td class="text-nowrap">{{ format_date($conversation->updated_at, true) }}</td>
                         </tr>
                     @empty
                         <tr><td colspan="7" class="text-center text-muted py-5">@lang('seeker::admin.publications.no_conversations')</td></tr>

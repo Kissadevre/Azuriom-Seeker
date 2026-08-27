@@ -27,6 +27,8 @@
                             <div class="small text-muted text-truncate">{{ $conversation->publication->title }}</div>
                             @if($conversation->status === 'completed')
                                 <span class="badge text-bg-success mt-1">@lang('seeker::messages.completion.completed')</span>
+                            @elseif($conversation->status === 'closed')
+                                <span class="badge text-bg-danger mt-1">@lang('seeker::messages.conversations.closed_by_moderation_short')</span>
                             @elseif($conversation->completion_status === 'pending')
                                 <span class="badge text-bg-warning mt-1">@lang('seeker::messages.completion.pending')</span>
                             @endif

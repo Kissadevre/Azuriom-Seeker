@@ -5,6 +5,7 @@ namespace Azuriom\Plugin\Seeker\Providers;
 use Azuriom\Extensions\Plugin\BasePluginServiceProvider;
 use Azuriom\Models\ActionLog;
 use Azuriom\Models\Permission;
+use Azuriom\Plugin\Seeker\Models\Conversation;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -30,6 +31,13 @@ class SeekerServiceProvider extends BasePluginServiceProvider
             'icon' => 'sliders',
             'color' => 'info',
             'message' => 'seeker::admin.logs.settings_updated',
+        ]);
+
+        ActionLog::registerLogs('seeker.conversations.closed', [
+            'icon' => 'lock',
+            'color' => 'danger',
+            'message' => 'seeker::admin.logs.conversation_closed',
+            'model' => Conversation::class,
         ]);
     }
 

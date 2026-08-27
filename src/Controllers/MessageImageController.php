@@ -14,7 +14,10 @@ class MessageImageController extends Controller
     {
         $message->loadMissing('conversation');
 
-        abort_unless($message->conversation->includes($request->user()), 404);
+        abort_unless(
+            $message->conversation->includes($request->user()) || $request->user()->can('seeker.moderate'),
+            404
+        );
         abort_if($message->image_path === null, 404);
         abort_unless(Storage::disk('local')->exists($message->image_path), 404);
 

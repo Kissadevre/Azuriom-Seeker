@@ -37,6 +37,12 @@
             </div>
         @endif
 
+        @if($conversation->status === 'closed')
+            <div class="alert alert-danger rounded-0 border-start-0 border-end-0 mb-0">
+                <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>@lang('seeker::messages.conversations.closed_by_moderation')
+            </div>
+        @endif
+
         @if($conversation->completion_status === 'accepted')
             <div class="alert alert-success rounded-0 border-start-0 border-end-0 mb-0">
                 <div class="d-flex flex-wrap justify-content-between gap-2">
@@ -53,7 +59,7 @@
                     <div class="border-top mt-3 pt-3">{!! nl2br(e($conversation->final_message)) !!}</div>
                 @endif
             </div>
-        @elseif($conversation->isPaidCommission())
+        @elseif($conversation->status === 'active' && $conversation->isPaidCommission())
             @if($conversation->completion_status === 'rejected')
                 <div class="alert alert-danger rounded-0 border-start-0 border-end-0 mb-0">
                     <i class="bi bi-x-circle me-2" aria-hidden="true"></i>@lang('seeker::messages.completion.rejected_notice')
@@ -177,7 +183,7 @@
                     @endif
                 </form>
             @else
-                <div class="text-center text-muted py-2"><i class="bi bi-lock me-2" aria-hidden="true"></i>@lang('seeker::messages.completion.conversation_closed')</div>
+                <div class="text-center text-muted py-2"><i class="bi bi-lock me-2" aria-hidden="true"></i>@lang($conversation->status === 'closed' ? 'seeker::messages.conversations.closed_by_moderation_short' : 'seeker::messages.completion.conversation_closed')</div>
             @endif
         </div>
     </div>

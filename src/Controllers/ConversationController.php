@@ -119,7 +119,8 @@ class ConversationController extends Controller
         $completionServicePoints = null;
         $messageImagesEnabled = $settings->messageImagesEnabled();
 
-        if ($conversation->completion_status === Conversation::COMPLETION_PENDING
+        if ($conversation->status === Conversation::STATUS_ACTIVE
+            && $conversation->completion_status === Conversation::COMPLETION_PENDING
             && $conversation->isPaidCommission()) {
             $completionServicePoints = $completionService->calculateServicePoints(
                 $conversation,

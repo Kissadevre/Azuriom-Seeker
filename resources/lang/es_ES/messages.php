@@ -145,6 +145,8 @@ return [
         'image' => 'Adjuntar una imagen',
         'image_help' => 'Una imagen JPG, PNG o WebP por mensaje, de hasta 5 MB. El texto es opcional cuando adjuntas una imagen.',
         'image_message' => 'Imagen',
+        'closed_by_moderation' => 'Moderación cerró esta conversación. Su historial permanece disponible, pero ningún participante puede enviar mensajes ni continuar el flujo de finalización.',
+        'closed_by_moderation_short' => 'Cerrada por moderación',
     ],
     'reports' => [
         'action' => 'Reportar conversación',

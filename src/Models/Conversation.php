@@ -15,6 +15,8 @@ class Conversation extends Model
 
     public const STATUS_COMPLETED = 'completed';
 
+    public const STATUS_CLOSED = 'closed';
+
     public const COMPLETION_NONE = 'none';
 
     public const COMPLETION_PENDING = 'pending';
@@ -110,6 +112,11 @@ class Conversation extends Model
     public function includes(User $user): bool
     {
         return $this->client_id === $user->id || $this->author_id === $user->id;
+    }
+
+    public static function statuses(): array
+    {
+        return [self::STATUS_ACTIVE, self::STATUS_COMPLETED, self::STATUS_CLOSED];
     }
 
     public function otherParticipant(User $user): User
