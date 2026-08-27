@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', trans('seeker::messages.contact.title'))
+@section('title', trans('seeker::messages.contact.title_'.$publication->type))
 
 @push('styles')
     <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
@@ -18,7 +18,7 @@
                     <div class="d-flex align-items-center gap-3">
                         <img src="{{ $publication->user->getAvatar(56) }}" width="56" height="56" class="rounded-circle" alt="">
                         <div class="flex-grow-1">
-                            <h1 class="h4 mb-1">@lang('seeker::messages.contact.title')</h1>
+                            <h1 class="h4 mb-1">@lang('seeker::messages.contact.title_'.$publication->type)</h1>
                             <div class="text-muted">{{ $publication->user->name }} · {{ $publication->title }}</div>
                         </div>
                         <strong>@include('seeker::publications._price', ['publication' => $publication])</strong>
@@ -44,15 +44,15 @@
             <form method="POST" action="{{ route('seeker.conversations.store', $publication) }}" class="card">
                 @csrf
                 <div class="card-body p-4">
-                    <label class="form-label fw-semibold" for="contactMessage">@lang('seeker::messages.contact.message')</label>
+                    <label class="form-label fw-semibold" for="contactMessage">@lang('seeker::messages.contact.message_'.$publication->type)</label>
                     <textarea id="contactMessage" name="content" rows="7" minlength="5" maxlength="2000" class="form-control @error('content') is-invalid @enderror" required autofocus>{{ old('content') }}</textarea>
                     @error('content')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     @error('contact')<div class="alert alert-danger mt-3 mb-0">{{ $message }}</div>@enderror
-                    <div class="form-text">@lang('seeker::messages.contact.message_help')</div>
+                    <div class="form-text">@lang('seeker::messages.contact.message_help_'.$publication->type)</div>
                 </div>
                 <div class="card-footer d-flex justify-content-end gap-2 p-3">
                     <a class="btn btn-outline-secondary" href="{{ route('seeker.publications.show', $publication) }}">@lang('messages.actions.cancel')</a>
-                    <button class="btn btn-primary"><i class="bi bi-send me-1" aria-hidden="true"></i> @lang('seeker::messages.contact.send')</button>
+                    <button class="btn btn-primary"><i class="bi bi-send me-1" aria-hidden="true"></i> @lang('seeker::messages.contact.send_'.$publication->type)</button>
                 </div>
             </form>
         </div>

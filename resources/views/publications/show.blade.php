@@ -83,7 +83,7 @@
                                 </a>
                             @else
                                 <a class="btn btn-primary" href="{{ route('seeker.conversations.create', $publication) }}">
-                                    <i class="bi bi-chat-dots me-1" aria-hidden="true"></i> @lang('seeker::messages.contact.action')
+                                    <i class="bi bi-chat-dots me-1" aria-hidden="true"></i> @lang('seeker::messages.contact.action_'.$publication->type)
                                 </a>
                             @endif
                         </div>
