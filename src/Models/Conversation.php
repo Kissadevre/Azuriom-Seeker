@@ -101,6 +101,11 @@ class Conversation extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
     public function scopeForUser(Builder $query, User $user): Builder
     {
         return $query->where(function (Builder $query) use ($user) {

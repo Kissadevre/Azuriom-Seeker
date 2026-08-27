@@ -5,6 +5,7 @@ namespace Azuriom\Plugin\Seeker\Services;
 use Azuriom\Models\User;
 use Azuriom\Plugin\Seeker\Models\Conversation;
 use Azuriom\Plugin\Seeker\Models\Publication;
+use Azuriom\Plugin\Seeker\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -67,6 +68,21 @@ class ConversationStarter
                 'held_points' => $heldPoints,
                 'last_message_at' => now(),
             ]);
+
+            if ($escrowStatus === Conversation::ESCROW_HELD) {
+                Transaction::create([
+                    'conversation_id' => $conversation->id,
+                    'payer_id' => $lockedClient->id,
+                    'payee_id' => $lockedPublication->user_id,
+                    'payer_name' => $lockedClient->name,
+                    'payee_name' => $lockedPublication->user->name,
+                    'publication_title' => $lockedPublication->title,
+                    'type' => Transaction::TYPE_SERVICE,
+                    'status' => Transaction::STATUS_HELD,
+                    'amount' => $heldPoints,
+                    'held_at' => now(),
+                ]);
+            }
 
             $conversation->messages()->create([
                 'sender_id' => $lockedClient->id,

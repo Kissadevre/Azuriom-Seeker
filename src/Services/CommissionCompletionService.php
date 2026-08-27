@@ -5,6 +5,7 @@ namespace Azuriom\Plugin\Seeker\Services;
 use Azuriom\Models\User;
 use Azuriom\Plugin\Seeker\Models\Conversation;
 use Azuriom\Plugin\Seeker\Models\Publication;
+use Azuriom\Plugin\Seeker\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -97,6 +98,52 @@ class CommissionCompletionService
             }
             $lockedAuthor->addMoney($servicePoints + $tipPoints);
 
+            $completedAt = now();
+            if ($lockedConversation->publication->price_basis === Publication::PRICE_BASIS_FIXED) {
+                $serviceTransaction = Transaction::query()
+                    ->where('conversation_id', $lockedConversation->id)
+                    ->where('type', Transaction::TYPE_SERVICE)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+                abort_unless(
+                    $serviceTransaction->status === Transaction::STATUS_HELD
+                    && (float) $serviceTransaction->amount === $servicePoints,
+                    409
+                );
+                $serviceTransaction->update([
+                    'status' => Transaction::STATUS_COMPLETED,
+                    'completed_at' => $completedAt,
+                ]);
+            } else {
+                Transaction::create([
+                    'conversation_id' => $lockedConversation->id,
+                    'payer_id' => $lockedClient->id,
+                    'payee_id' => $lockedAuthor->id,
+                    'payer_name' => $lockedClient->name,
+                    'payee_name' => $lockedAuthor->name,
+                    'publication_title' => $lockedConversation->publication->title,
+                    'type' => Transaction::TYPE_SERVICE,
+                    'status' => Transaction::STATUS_COMPLETED,
+                    'amount' => $servicePoints,
+                    'completed_at' => $completedAt,
+                ]);
+            }
+
+            if ($tipPoints > 0) {
+                Transaction::create([
+                    'conversation_id' => $lockedConversation->id,
+                    'payer_id' => $lockedClient->id,
+                    'payee_id' => $lockedAuthor->id,
+                    'payer_name' => $lockedClient->name,
+                    'payee_name' => $lockedAuthor->name,
+                    'publication_title' => $lockedConversation->publication->title,
+                    'type' => Transaction::TYPE_TIP,
+                    'status' => Transaction::STATUS_COMPLETED,
+                    'amount' => $tipPoints,
+                    'completed_at' => $completedAt,
+                ]);
+            }
+
             $lockedConversation->update([
                 'status' => Conversation::STATUS_COMPLETED,
                 'completion_status' => Conversation::COMPLETION_ACCEPTED,
@@ -105,7 +152,7 @@ class CommissionCompletionService
                 'tip_points' => $tipPoints,
                 'final_message' => filled($finalMessage) ? trim($finalMessage) : null,
                 'completion_responded_at' => now(),
-                'completed_at' => now(),
+                'completed_at' => $completedAt,
             ]);
 
             return [

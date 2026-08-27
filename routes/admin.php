@@ -5,8 +5,8 @@ use Azuriom\Plugin\Seeker\Controllers\Admin\ProfileReportController;
 use Azuriom\Plugin\Seeker\Controllers\Admin\PublicationController;
 use Azuriom\Plugin\Seeker\Controllers\Admin\ReportController;
 use Azuriom\Plugin\Seeker\Controllers\Admin\RestrictionController;
-use Azuriom\Plugin\Seeker\Controllers\Admin\SectionController;
 use Azuriom\Plugin\Seeker\Controllers\Admin\SettingController;
+use Azuriom\Plugin\Seeker\Controllers\Admin\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('settings', [SettingController::class, 'show'])->name('settings');
@@ -28,4 +28,4 @@ Route::patch('restrictions/{restriction}/revoke', [RestrictionController::class,
 Route::delete('restrictions/users/{user}/publications', [RestrictionController::class, 'removePublications'])->name('restrictions.publications.remove');
 Route::get('profile-reports', [ProfileReportController::class, 'index'])->name('profile-reports.index');
 Route::patch('profile-reports/{report}', [ProfileReportController::class, 'update'])->name('profile-reports.update');
-Route::get('transactions', [SectionController::class, 'transactions'])->name('transactions.index');
+Route::get('transactions', [TransactionController::class, 'index'])->name('transactions.index');

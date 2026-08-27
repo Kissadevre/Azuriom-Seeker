@@ -18,6 +18,7 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 - Unified report moderation for publications, profiles, and conversations, including evidence snapshots and direct target links.
 - Individual timed or indefinite restrictions for publishing, starting contacts, profile visibility, and complete Seeker access, with moderator attribution and revocation history.
 - Moderation-safe bulk publication removal that preserves linked conversations, reports, and financial evidence.
+- Administrative point ledger with payer, recipient, publication, hold and delivery state, service and tip breakdowns, filters, and aggregate Seeker spending statistics.
 - One required portfolio format per publication: an HTTP/HTTPS external link or uploaded reference images, never both.
 - Between one and six privately stored images when the uploaded portfolio format is selected (JPG, PNG, or WebP, 5 MB each).
 - Per-publication visibility for everyone or authenticated Zibuu members only.
