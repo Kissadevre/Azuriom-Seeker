@@ -19,9 +19,9 @@ Route::get('profiles/{user}', [ProfileController::class, 'show'])->name('profile
 Route::middleware(['auth', 'verified'])->prefix('publications')->name('publications.')->group(function () {
     Route::get('mine', [PublicationController::class, 'mine'])->name('mine');
     Route::get('create', [PublicationController::class, 'create'])->name('create');
-    Route::post('/', [PublicationController::class, 'store'])->middleware('throttle:10,1')->name('store');
+    Route::post('/', [PublicationController::class, 'store'])->middleware(['throttle:seeker.publications.create', 'captcha'])->name('store');
     Route::get('{publication}/edit', [PublicationController::class, 'edit'])->name('edit');
-    Route::put('{publication}', [PublicationController::class, 'update'])->middleware('throttle:20,1')->name('update');
+    Route::put('{publication}', [PublicationController::class, 'update'])->middleware(['throttle:seeker.publications.edit', 'captcha'])->name('update');
     Route::patch('{publication}/status', [PublicationController::class, 'updateStatus'])->name('status');
     Route::delete('{publication}', [PublicationController::class, 'destroy'])->name('destroy');
 });

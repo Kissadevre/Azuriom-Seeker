@@ -290,6 +290,9 @@ return [
             'other' => 'Otro',
         ],
     ],
+    'security' => [
+        'rate_limited' => 'Demasiados cambios de publicaciones en Seeker. Inténtalo de nuevo en :seconds segundos.',
+    ],
     'notifications' => [
         'new_conversation' => ':user está interesado en “:publication”.',
         'new_message' => 'Tienes un nuevo mensaje de Seeker de :user.',

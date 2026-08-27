@@ -290,6 +290,9 @@ return [
             'other' => 'Other',
         ],
     ],
+    'security' => [
+        'rate_limited' => 'Too many Seeker publication changes. Try again in :seconds seconds.',
+    ],
     'notifications' => [
         'new_conversation' => ':user is interested in “:publication”.',
         'new_message' => 'You have a new Seeker message from :user.',

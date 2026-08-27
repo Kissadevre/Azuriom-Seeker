@@ -166,6 +166,8 @@
     </fieldset>
 </div>
 
+@include('elements.captcha', ['center' => true])
+
 <div class="d-flex justify-content-end gap-2">
     <a class="btn btn-outline-secondary" href="{{ isset($publication) ? route('seeker.publications.show', $publication) : route('seeker.index') }}">@lang('messages.actions.cancel')</a>
     <button class="btn btn-primary px-4"><i class="bi bi-check-lg me-1" aria-hidden="true"></i> @lang(isset($publication) ? 'seeker::messages.actions.update' : 'seeker::messages.actions.save')</button>
