@@ -19,7 +19,7 @@
 
 <div class="mb-4">
     <label class="form-label fw-semibold" for="publicationDescription">@lang('seeker::messages.fields.description')</label>
-    <textarea id="publicationDescription" name="description" class="form-control @error('description') is-invalid @enderror" rows="10" minlength="20" maxlength="10000" required>{{ old('description', $publication->description ?? '') }}</textarea>
+    <textarea id="publicationDescription" name="description" class="form-control @error('description') is-invalid @enderror" rows="10" required>{{ old('description', $publication->description ?? '') }}</textarea>
     @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
     <div class="form-text">@lang('seeker::messages.help.description')</div>
 </div>

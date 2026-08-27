@@ -3,6 +3,7 @@
 @section('title', trans('seeker::messages.publish'))
 
 @include('seeker::_assets')
+@include('seeker::publications._editor')
 
 @section('content')
     <div class="seeker-public-shell">

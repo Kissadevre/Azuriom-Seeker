@@ -88,7 +88,7 @@
                 <div class="card-body">
                     <a class="h5 text-decoration-none" href="{{ route('seeker.admin.publications.show', $conversation->publication) }}">{{ $conversation->publication->title }}</a>
                     <div class="d-flex flex-wrap gap-2 mt-2"><span class="badge text-bg-light">@lang('seeker::messages.types.'.$conversation->publication->type)</span><span class="badge text-bg-light">@include('seeker::publications._price', ['publication' => $conversation->publication])</span></div>
-                    <p class="text-muted mt-3 mb-0">{{ \Illuminate\Support\Str::limit($conversation->publication->description, 300) }}</p>
+                    <p class="text-muted mt-3 mb-0">{{ \Illuminate\Support\Str::limit(app(\Azuriom\Plugin\Seeker\Services\PublicationRichText::class)->plainText($conversation->publication->description), 300) }}</p>
                 </div>
             </div>
         </div>

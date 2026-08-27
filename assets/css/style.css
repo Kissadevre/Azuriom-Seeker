@@ -635,6 +635,16 @@
     overflow-wrap: anywhere;
 }
 
+.seeker-description > :last-child {
+    margin-bottom: 0;
+}
+
+.seeker-description blockquote {
+    padding-left: 1rem;
+    border-left: .25rem solid rgba(var(--bs-primary-rgb), .35);
+    color: var(--bs-secondary-color);
+}
+
 .seeker-gallery-image,
 .seeker-form-image {
     width: 100%;

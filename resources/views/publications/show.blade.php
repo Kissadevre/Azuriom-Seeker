@@ -25,7 +25,7 @@
                         @endif
                     </div>
                     <h1 class="display-6 fw-bold">{{ $publication->title }}</h1>
-                    <div class="seeker-description">{!! nl2br(e($publication->description)) !!}</div>
+                    <div class="seeker-description">{!! app(\Azuriom\Plugin\Seeker\Services\PublicationRichText::class)->render($publication->description) !!}</div>
 
                     @if($publication->portfolio_type === 'external' && $publication->portfolio_url)
                         <button class="btn btn-primary mt-4" type="button" data-bs-toggle="modal" data-bs-target="#externalPortfolioWarning">

@@ -11,6 +11,7 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 
 - Public catalog with text search and publication-type filters.
 - Authenticated creation and management of commission offers and talent searches.
+- Minimal TinyMCE rich-text descriptions with a server-enforced HTML allowlist and no embedded image, video, audio, iframe, or file uploads.
 - Account and IP rate limits plus Azuriom-configured CAPTCHA verification for publication creation and editing.
 - Administrative settings for feature availability and fully configurable publication rate-limit attempts and windows.
 - Per-format portfolio availability controls with an enforced minimum of one enabled format; existing portfolio content remains visible when its format is disabled.

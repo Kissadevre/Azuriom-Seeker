@@ -4,12 +4,24 @@ namespace Azuriom\Plugin\Seeker\Requests;
 
 use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Models\PublicationMedia;
+use Azuriom\Plugin\Seeker\Services\PublicationRichText;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StorePublicationRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $description = $this->input('description');
+
+        if (is_string($description)) {
+            $this->merge([
+                'description' => app(PublicationRichText::class)->sanitize($description),
+            ]);
+        }
+    }
+
     public function authorize(): bool
     {
         return $this->user() !== null;
@@ -20,7 +32,20 @@ class StorePublicationRequest extends FormRequest
         return [
             'type' => ['required', Rule::in(Publication::types())],
             'title' => ['required', 'string', 'min:5', 'max:120'],
-            'description' => ['required', 'string', 'min:20', 'max:10000'],
+            'description' => [
+                'required',
+                'string',
+                'max:50000',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    $length = mb_strlen(app(PublicationRichText::class)->plainText((string) $value));
+
+                    if ($length < 20) {
+                        $fail(trans('seeker::messages.validation.description_min'));
+                    } elseif ($length > 10000) {
+                        $fail(trans('seeker::messages.validation.description_max'));
+                    }
+                },
+            ],
             'portfolio_type' => ['required', Rule::in($this->allowedPortfolioTypes())],
             'portfolio_url' => ['required_if:portfolio_type,'.Publication::PORTFOLIO_EXTERNAL, 'prohibited_unless:portfolio_type,'.Publication::PORTFOLIO_EXTERNAL, 'nullable', 'url:http,https', 'max:2048'],
             'images' => ['required_if:portfolio_type,'.Publication::PORTFOLIO_IMAGES, 'prohibited_unless:portfolio_type,'.Publication::PORTFOLIO_IMAGES, 'array', 'min:1', 'max:6'],

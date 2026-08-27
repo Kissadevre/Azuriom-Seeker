@@ -121,7 +121,7 @@ return [
     'help' => [
         'commission' => 'Use this when you offer a service or take commissions.',
         'talent' => 'Use this when your project is looking for a specific talent.',
-        'description' => 'Explain the scope, skills, deliverables, availability, and how interested users should proceed.',
+        'description' => 'Use rich text to explain the scope, skills, deliverables, availability, and how interested users should proceed. Images, video, and audio belong only in the portfolio.',
         'portfolio_type' => 'Choose one option: an external link, an image gallery, one video, or one audio file.',
         'external' => 'Send visitors to a portfolio hosted on another website.',
         'uploaded_images' => 'Show reference work directly in your publication.',
@@ -159,6 +159,8 @@ return [
         'cannot_delete_with_conversations' => 'This publication cannot be deleted because it has conversations, reports, or held points. You can close it instead.',
     ],
     'validation' => [
+        'description_min' => 'The description must contain at least 20 text characters.',
+        'description_max' => 'The description may not contain more than 10,000 text characters.',
         'images_required' => 'Upload at least one reference image or choose an external portfolio.',
         'max_images' => 'A publication can have at most 6 reference images.',
         'media_required' => 'Upload a file for :type or choose another portfolio option.',

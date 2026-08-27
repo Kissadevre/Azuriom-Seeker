@@ -121,7 +121,7 @@ return [
     'help' => [
         'commission' => 'Usa esta opción cuando ofrezcas un servicio o aceptes comisiones.',
         'talent' => 'Usa esta opción cuando tu proyecto busque un talento específico.',
-        'description' => 'Explica el alcance, habilidades, entregables, disponibilidad y cómo deben proceder los interesados.',
+        'description' => 'Usa texto enriquecido para explicar el alcance, habilidades, entregables, disponibilidad y cómo deben proceder los interesados. Las imágenes, videos y audios deben agregarse únicamente en el portafolio.',
         'portfolio_type' => 'Elige una opción: un enlace externo, una galería de imágenes, un video o un archivo de audio.',
         'external' => 'Envía a los visitantes a un portafolio alojado en otro sitio web.',
         'uploaded_images' => 'Muestra trabajos de referencia directamente en tu publicación.',
@@ -159,6 +159,8 @@ return [
         'cannot_delete_with_conversations' => 'Esta publicación no puede eliminarse porque tiene conversaciones, reportes o puntos retenidos. Puedes cerrarla en su lugar.',
     ],
     'validation' => [
+        'description_min' => 'La descripción debe contener al menos 20 caracteres de texto.',
+        'description_max' => 'La descripción no puede contener más de 10,000 caracteres de texto.',
         'images_required' => 'Sube al menos una imagen de referencia o elige un portafolio externo.',
         'max_images' => 'Una publicación puede tener hasta 6 imágenes de referencia.',
         'media_required' => 'Sube un archivo para :type o elige otra opción de portafolio.',
