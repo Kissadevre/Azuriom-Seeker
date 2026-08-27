@@ -244,6 +244,7 @@ return [
         'view_profile' => 'Ver perfil',
         'profile_hidden' => 'Perfil oculto para todos',
         'apply_title' => 'Aplicar una restricción',
+        'apply_to_user' => 'Restringir a :user',
         'type' => 'Restricción',
         'types' => [
             'publish' => 'No puede publicar en Seeker',

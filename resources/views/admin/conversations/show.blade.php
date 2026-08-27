@@ -114,10 +114,14 @@
 
     <div class="row g-4 mb-4">
         @foreach([['role' => 'author', 'user' => $conversation->author], ['role' => 'client', 'user' => $conversation->client]] as $participant)
-            <div class="col-md-6"><div class="card seeker-admin-card h-100"><div class="card-body d-flex align-items-center gap-3"><img src="{{ $participant['user']->getAvatar(56) }}" width="56" height="56" class="rounded-circle" alt=""><div><div class="small text-body-secondary">@lang('seeker::admin.conversations.'.$participant['role'])</div><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $participant['user']) }}" target="_blank" rel="noopener">{{ $participant['user']->name }}</a><div class="small text-body-secondary">ID #{{ $participant['user']->id }}</div></div></div></div>
+            <div class="col-md-6"><div class="card seeker-admin-card h-100"><div class="card-body d-flex align-items-center justify-content-between gap-3"><div class="d-flex align-items-center gap-3"><img src="{{ $participant['user']->getAvatar(56) }}" width="56" height="56" class="rounded-circle" alt=""><div><div class="small text-body-secondary">@lang('seeker::admin.conversations.'.$participant['role'])</div><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $participant['user']) }}" target="_blank" rel="noopener">{{ $participant['user']->name }}</a><div class="small text-body-secondary">ID #{{ $participant['user']->id }}</div></div></div><button class="btn btn-sm btn-outline-warning flex-shrink-0" type="button" data-bs-toggle="modal" data-bs-target="#conversationRestriction{{ $participant['user']->id }}" title="@lang('seeker::admin.restrictions.apply_to_user', ['user' => $participant['user']->name])" aria-label="@lang('seeker::admin.restrictions.apply_to_user', ['user' => $participant['user']->name])"><i class="bi bi-person-lock" aria-hidden="true"></i></button></div></div>
             </div>
         @endforeach
     </div>
+
+    @foreach([$conversation->author, $conversation->client] as $restrictionUser)
+        @include('seeker::admin.conversations._restriction-modal', ['user' => $restrictionUser])
+    @endforeach
 
     @if($reports->isNotEmpty())
         <div class="card seeker-admin-card mb-4">
@@ -152,3 +156,27 @@
     </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-restriction-modal]').forEach((modal) => {
+                const duration = modal.querySelector('[data-restriction-duration]');
+                const expiration = modal.querySelector('[data-restriction-expiration]');
+                const input = expiration?.querySelector('input');
+                const updateExpiration = () => {
+                    const timed = duration?.value === 'until';
+                    expiration?.classList.toggle('d-none', ! timed);
+                    if (input) input.required = timed;
+                };
+                duration?.addEventListener('change', updateExpiration);
+                updateExpiration();
+            });
+
+            @if($errors->any() && (int) old('conversation_id') === $conversation->id && (int) old('user_id') > 0)
+                const invalidModal = document.getElementById('conversationRestriction{{ (int) old('user_id') }}');
+                if (invalidModal) bootstrap.Modal.getOrCreateInstance(invalidModal).show();
+            @endif
+        });
+    </script>
+@endpush

@@ -5,6 +5,7 @@ namespace Azuriom\Plugin\Seeker\Controllers\Admin;
 use Azuriom\Http\Controllers\Controller;
 use Azuriom\Models\ActionLog;
 use Azuriom\Models\User;
+use Azuriom\Plugin\Seeker\Models\Conversation;
 use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Models\UserRestriction;
 use Azuriom\Plugin\Seeker\Services\RestrictionService;
@@ -88,9 +89,17 @@ class RestrictionController extends Controller
             'duration' => ['required', Rule::in(['indefinite', 'until'])],
             'expires_at' => ['nullable', 'required_if:duration,until', 'date', 'after:now'],
             'reason' => ['required', 'string', 'min:5', 'max:1000'],
+            'conversation_id' => ['nullable', 'integer', Rule::exists(Conversation::class, 'id')],
         ]);
 
         $user = User::query()->findOrFail($validated['user_id']);
+        $conversation = filled($validated['conversation_id'] ?? null)
+            ? Conversation::query()->findOrFail($validated['conversation_id'])
+            : null;
+
+        abort_if($conversation !== null
+            && ! in_array($user->id, [$conversation->author_id, $conversation->client_id], true), 403);
+
         $restriction = DB::transaction(function () use ($request, $user, $validated) {
             User::query()->lockForUpdate()->findOrFail($user->id);
 
@@ -119,7 +128,11 @@ class RestrictionController extends Controller
             'type' => $restriction->type,
         ]);
 
-        return to_route('seeker.admin.restrictions.index', ['user_id' => $user->id])
+        return to_route($conversation === null
+            ? 'seeker.admin.restrictions.index'
+            : 'seeker.admin.conversations.show', $conversation === null
+                ? ['user_id' => $user->id]
+                : $conversation)
             ->with('success', trans('seeker::admin.restrictions.created'));
     }
 
