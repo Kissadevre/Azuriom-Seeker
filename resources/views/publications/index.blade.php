@@ -78,7 +78,10 @@
                             <p class="card-text text-muted flex-grow-1">{{ \Illuminate\Support\Str::limit($publication->description, 150) }}</p>
                             <div class="d-flex align-items-center gap-2 small text-muted mb-3">
                                 <img src="{{ $publication->user->getAvatar(32) }}" width="32" height="32" class="rounded-circle" alt="">
-                                <span>{{ $publication->user->name }}</span>
+                                <div>
+                                    <div>{{ $publication->user->name }}</div>
+                                    <div>@include('seeker::publications._reputation', ['rating' => $publication->author_rating, 'count' => $publication->author_reviews_count])</div>
+                                </div>
                             </div>
                             <a class="btn btn-outline-primary stretched-link" href="{{ route('seeker.publications.show', $publication) }}">@lang('seeker::messages.view_details')</a>
                         </div>

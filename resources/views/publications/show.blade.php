@@ -65,7 +65,11 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center gap-3 mb-3">
                         <img src="{{ $publication->user->getAvatar(64) }}" width="64" height="64" class="rounded-circle" alt="">
-                        <div><strong>{{ $publication->user->name }}</strong><div class="small text-muted">@lang('seeker::messages.types.'.$publication->type)</div></div>
+                        <div>
+                            <strong>{{ $publication->user->name }}</strong>
+                            <div class="small text-muted">@lang('seeker::messages.types.'.$publication->type)</div>
+                            <div class="small mt-1">@include('seeker::publications._reputation', ['rating' => $reputation->rating, 'count' => $reputation->reviews_count])</div>
+                        </div>
                     </div>
 
                     <div class="seeker-price-box rounded p-3 mb-3">
@@ -111,6 +115,36 @@
             </div>
         </aside>
     </div>
+
+    <section class="card mt-4">
+        <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <h2 class="h5 mb-0">@lang('seeker::messages.reviews.reputation_title', ['user' => $publication->user->name])</h2>
+            <div>@include('seeker::publications._reputation', ['rating' => $reputation->rating, 'count' => $reputation->reviews_count])</div>
+        </div>
+        <div class="card-body">
+            @forelse($authorReviews as $review)
+                <article class="{{ ! $loop->last ? 'border-bottom mb-3 pb-3' : '' }}">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="{{ $review->reviewer->getAvatar(32) }}" width="32" height="32" class="rounded-circle" alt="">
+                            <strong>{{ $review->reviewer->name }}</strong>
+                            <span class="badge text-bg-success"><i class="bi bi-patch-check me-1" aria-hidden="true"></i>@lang('seeker::messages.reviews.verified')</span>
+                        </div>
+                        <div class="text-warning" aria-label="@lang('seeker::messages.reviews.rating_value', ['rating' => $review->rating])">
+                            @foreach(range(1, 5) as $star)<i class="bi bi-star{{ $star <= $review->rating ? '-fill' : '' }}" aria-hidden="true"></i>@endforeach
+                        </div>
+                    </div>
+                    <p class="mb-1">{{ $review->comment }}</p>
+                    <small class="text-muted">{{ format_date_compact($review->created_at) }}</small>
+                </article>
+            @empty
+                <div class="text-center text-muted py-4">@lang('seeker::messages.reviews.no_reviews_yet')</div>
+            @endforelse
+        </div>
+        @if($authorReviews->hasPages())
+            <div class="card-footer d-flex justify-content-center">{{ $authorReviews->links() }}</div>
+        @endif
+    </section>
 
     @if($publication->portfolio_type === 'external' && $publication->portfolio_url)
         <div class="modal fade" id="externalPortfolioWarning" tabindex="-1" aria-labelledby="externalPortfolioWarningTitle" aria-describedby="externalPortfolioWarningDescription" aria-hidden="true">

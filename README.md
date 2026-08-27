@@ -18,6 +18,7 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 - Private one-to-one conversations between publication authors and interested members.
 - Transactional point holds for fixed-price services, with duplicate-contact protection and no early delivery to the author.
 - Author-requested completion for fixed and hourly point commissions, with persistent delivery-attempt counts, client approval, optional tips, final messages, and read-only completed conversations.
+- Mutual verified ratings and short experience comments after completion, aggregated as user reputation across every publication.
 - Participant-only conversation reports with categorized reasons, immutable message cutoffs, and duplicate-report protection.
 - Owner-controlled active and closed states.
 - Permission-based moderation with a protected hidden state.
@@ -38,7 +39,7 @@ The plugin does not modify Azuriom core files, root routes, root build configura
 
 ## Roadmap
 
-The next domain milestone is the dispute and refund workflow for completion requests that cannot be resolved by the participants. Reviews and reputation should only become writable after a collaboration is completed; this prevents arbitrary or self-issued ratings. Additional planned work includes an administrative report-review interface, talent categories, richer profiles, and configurable moderation settings.
+The next domain milestone is the dispute and refund workflow for completion requests that cannot be resolved by the participants. Additional planned work includes review moderation, an administrative report-review interface, talent categories, richer profiles, and configurable moderation settings.
 
 ## Development checks
 

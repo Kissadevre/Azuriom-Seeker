@@ -92,6 +92,9 @@ class ConversationController extends Controller
         $conversationReport = $conversation->reports()
             ->where('reporter_id', $request->user()->id)
             ->first();
+        $conversationReview = $conversation->reviews()
+            ->where('reviewer_id', $request->user()->id)
+            ->first();
         $completionServicePoints = null;
 
         if ($conversation->completion_status === Conversation::COMPLETION_PENDING
@@ -111,6 +114,7 @@ class ConversationController extends Controller
             'conversation',
             'messages',
             'conversationReport',
+            'conversationReview',
             'completionServicePoints'
         ));
     }

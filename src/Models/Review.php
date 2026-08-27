@@ -28,6 +28,11 @@ class Review extends Model
         return $this->belongsTo(Publication::class);
     }
 
+    public function conversation()
+    {
+        return $this->belongsTo(Conversation::class);
+    }
+
     public function reviewer()
     {
         return $this->belongsTo(User::class, 'reviewer_id');

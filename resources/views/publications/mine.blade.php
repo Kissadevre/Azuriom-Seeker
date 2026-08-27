@@ -28,6 +28,7 @@
                                     <div class="d-flex flex-wrap gap-1 mt-1">
                                         <span class="badge text-bg-light">@include('seeker::publications._price', ['publication' => $publication])</span>
                                         <span class="badge {{ $publication->is_guest_visible ? 'text-bg-light' : 'text-bg-secondary' }}">@lang($publication->is_guest_visible ? 'seeker::messages.visibility.public' : 'seeker::messages.visibility.members')</span>
+                                        <span class="badge text-bg-light">@include('seeker::publications._reputation', ['rating' => $publication->author_rating, 'count' => $publication->author_reviews_count])</span>
                                     </div>
                                 </td>
                                 <td>@lang('seeker::messages.types.'.$publication->type)</td>

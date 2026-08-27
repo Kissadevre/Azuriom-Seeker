@@ -112,6 +112,30 @@
             @endif
         @endif
 
+        @if($conversation->completion_status === 'accepted')
+            <div class="border-bottom p-3">
+                @if($conversationReview === null)
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div>
+                            <strong class="d-block">@lang('seeker::messages.reviews.conversation_title')</strong>
+                            <span class="small text-muted">@lang('seeker::messages.reviews.conversation_description', ['user' => $other->name])</span>
+                        </div>
+                        <a class="btn btn-primary" href="{{ route('seeker.conversations.reviews.create', $conversation) }}">
+                            <i class="bi bi-star me-1" aria-hidden="true"></i>@lang('seeker::messages.reviews.action')
+                        </a>
+                    </div>
+                @else
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <strong>@lang('seeker::messages.reviews.your_review')</strong>
+                        <span class="text-warning" aria-label="@lang('seeker::messages.reviews.rating_value', ['rating' => $conversationReview->rating])">
+                            @foreach(range(1, 5) as $star)<i class="bi bi-star{{ $star <= $conversationReview->rating ? '-fill' : '' }}" aria-hidden="true"></i>@endforeach
+                        </span>
+                    </div>
+                    <div class="small text-muted mt-1">{{ $conversationReview->comment }}</div>
+                @endif
+            </div>
+        @endif
+
         <div class="card-body seeker-chat-messages p-3 p-md-4">
             @if($messages->hasPages())<div class="d-flex justify-content-center mb-4">{{ $messages->links() }}</div>@endif
             @foreach($messages->getCollection()->reverse() as $message)

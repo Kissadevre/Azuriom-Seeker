@@ -5,6 +5,7 @@ namespace Azuriom\Plugin\Seeker\Controllers;
 use Azuriom\Http\Controllers\Controller;
 use Azuriom\Plugin\Seeker\Models\Conversation;
 use Azuriom\Plugin\Seeker\Models\Publication;
+use Azuriom\Plugin\Seeker\Models\Review;
 use Azuriom\Plugin\Seeker\Requests\PublicationStatusRequest;
 use Azuriom\Plugin\Seeker\Requests\StorePublicationRequest;
 use Azuriom\Plugin\Seeker\Requests\UpdatePublicationRequest;
@@ -26,6 +27,7 @@ class PublicationController extends Controller
 
         $publications = Publication::query()
             ->visible()
+            ->withAuthorReputation()
             ->when($request->user() === null, fn ($query) => $query->where('is_guest_visible', true))
             ->with(['user', 'images'])
             ->when($type, fn ($query) => $query->where('type', $type))
@@ -44,6 +46,17 @@ class PublicationController extends Controller
     {
         $this->ensureVisibleToCurrentUser($publication);
         $publication->load(['user', 'images']);
+        $reputation = Review::query()
+            ->where('reviewed_user_id', $publication->user_id)
+            ->where('is_visible', true)
+            ->selectRaw('AVG(rating) as rating, COUNT(*) as reviews_count')
+            ->first();
+        $authorReviews = Review::query()
+            ->where('reviewed_user_id', $publication->user_id)
+            ->where('is_visible', true)
+            ->with('reviewer')
+            ->latest()
+            ->paginate(6, ['*'], 'reviews_page');
         $contactConversation = auth()->check() && auth()->id() !== $publication->user_id
             ? Conversation::query()
                 ->where('publication_id', $publication->id)
@@ -51,13 +64,19 @@ class PublicationController extends Controller
                 ->first()
             : null;
 
-        return view('seeker::publications.show', compact('publication', 'contactConversation'));
+        return view('seeker::publications.show', compact(
+            'publication',
+            'contactConversation',
+            'reputation',
+            'authorReviews'
+        ));
     }
 
     public function mine(Request $request): View
     {
         $publications = Publication::query()
             ->where('user_id', $request->user()->id)
+            ->withAuthorReputation()
             ->with('images')
             ->latest()
             ->paginate(12);

@@ -55,6 +55,8 @@ class Publication extends Model
         'is_guest_visible' => 'boolean',
         'price' => 'decimal:2',
         'published_at' => 'datetime',
+        'author_rating' => 'float',
+        'author_reviews_count' => 'integer',
     ];
 
     protected static function booted(): void
@@ -89,6 +91,20 @@ class Publication extends Model
         return $query->where('status', self::STATUS_ACTIVE)
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now());
+    }
+
+    public function scopeWithAuthorReputation(Builder $query): Builder
+    {
+        return $query->select('seeker_publications.*')->addSelect([
+            'author_rating' => Review::query()
+                ->selectRaw('AVG(rating)')
+                ->whereColumn('reviewed_user_id', 'seeker_publications.user_id')
+                ->where('is_visible', true),
+            'author_reviews_count' => Review::query()
+                ->selectRaw('COUNT(*)')
+                ->whereColumn('reviewed_user_id', 'seeker_publications.user_id')
+                ->where('is_visible', true),
+        ]);
     }
 
     public static function types(): array

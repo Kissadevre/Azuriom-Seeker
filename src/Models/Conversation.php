@@ -94,6 +94,11 @@ class Conversation extends Model
         return $this->hasMany(ConversationReport::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function scopeForUser(Builder $query, User $user): Builder
     {
         return $query->where(function (Builder $query) use ($user) {
