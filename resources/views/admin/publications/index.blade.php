@@ -35,8 +35,15 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="flex-grow-1" style="min-width: 14rem; max-width: 24rem">
+                    <label class="form-label small fw-semibold" for="publicationReports">@lang('seeker::admin.publications.report_filter')</label>
+                    <select id="publicationReports" name="reported" class="form-select" onchange="this.form.submit()">
+                        <option value="">@lang('seeker::admin.publications.all_report_states')</option>
+                        <option value="1" @selected($reported)>@lang('seeker::admin.publications.with_reports')</option>
+                    </select>
+                </div>
                 <div class="seeker-admin-filter-actions">
-                    @if(filled($status) || filled($type))
+                    @if(filled($status) || filled($type) || $reported)
                         <a class="btn btn-outline-secondary" href="{{ route('seeker.admin.publications.index') }}"><i class="bi bi-x-lg me-1" aria-hidden="true"></i>@lang('seeker::admin.clear_filters')</a>
                     @endif
                 </div>

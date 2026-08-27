@@ -19,6 +19,7 @@ class PublicationController extends Controller
         $type = in_array($request->query('type'), Publication::types(), true)
             ? $request->query('type')
             : null;
+        $reported = $request->query('reported') === '1';
 
         $publications = Publication::query()
             ->withTrashed()
@@ -26,11 +27,12 @@ class PublicationController extends Controller
             ->withCount('conversations')
             ->when($status, fn ($query) => $query->where('status', $status))
             ->when($type, fn ($query) => $query->where('type', $type))
+            ->when($reported, fn ($query) => $query->whereHas('reports'))
             ->latest()
             ->paginate(20)
             ->withQueryString();
 
-        return view('seeker::admin.publications.index', compact('publications', 'status', 'type'));
+        return view('seeker::admin.publications.index', compact('publications', 'status', 'type', 'reported'));
     }
 
     public function show(Publication $publication): View
