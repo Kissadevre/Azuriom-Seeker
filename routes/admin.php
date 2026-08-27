@@ -3,6 +3,7 @@
 use Azuriom\Plugin\Seeker\Controllers\Admin\ConversationController;
 use Azuriom\Plugin\Seeker\Controllers\Admin\ProfileReportController;
 use Azuriom\Plugin\Seeker\Controllers\Admin\PublicationController;
+use Azuriom\Plugin\Seeker\Controllers\Admin\ReportController;
 use Azuriom\Plugin\Seeker\Controllers\Admin\SectionController;
 use Azuriom\Plugin\Seeker\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,11 @@ Route::patch('publications/{publication}/status', [PublicationController::class,
 Route::get('conversations', [ConversationController::class, 'index'])->name('conversations.index');
 Route::get('conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
 Route::patch('conversations/{conversation}/close', [ConversationController::class, 'close'])->name('conversations.close');
+Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+Route::patch('reports/{type}/{report}', [ReportController::class, 'update'])
+    ->where('type', 'publication|profile|conversation')
+    ->whereNumber('report')
+    ->name('reports.update');
 Route::get('profile-reports', [ProfileReportController::class, 'index'])->name('profile-reports.index');
 Route::patch('profile-reports/{report}', [ProfileReportController::class, 'update'])->name('profile-reports.update');
 Route::get('transactions', [SectionController::class, 'transactions'])->name('transactions.index');

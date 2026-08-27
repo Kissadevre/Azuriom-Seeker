@@ -5,6 +5,7 @@ namespace Azuriom\Plugin\Seeker\Controllers;
 use Azuriom\Http\Controllers\Controller;
 use Azuriom\Plugin\Seeker\Models\Conversation;
 use Azuriom\Plugin\Seeker\Models\Publication;
+use Azuriom\Plugin\Seeker\Models\PublicationReport;
 use Azuriom\Plugin\Seeker\Models\Review;
 use Azuriom\Plugin\Seeker\Requests\PublicationStatusRequest;
 use Azuriom\Plugin\Seeker\Requests\StorePublicationRequest;
@@ -66,6 +67,12 @@ class PublicationController extends Controller
                 ->where('client_id', auth()->id())
                 ->first()
             : null;
+        $publicationReport = auth()->check() && auth()->id() !== $publication->user_id
+            ? PublicationReport::query()
+                ->where('publication_id', $publication->id)
+                ->where('reporter_id', auth()->id())
+                ->first()
+            : null;
         $newConversationsEnabled = $settings->newConversationsEnabled();
 
         return view('seeker::publications.show', compact(
@@ -73,7 +80,8 @@ class PublicationController extends Controller
             'contactConversation',
             'reputation',
             'authorReviews',
-            'newConversationsEnabled'
+            'newConversationsEnabled',
+            'publicationReport'
         ));
     }
 
@@ -209,7 +217,7 @@ class PublicationController extends Controller
     {
         $this->ensureOwner($publication);
 
-        if ($publication->conversations()->exists()) {
+        if ($publication->conversations()->exists() || $publication->reports()->exists()) {
             return back()->with('error', trans('seeker::messages.alerts.cannot_delete_with_conversations'));
         }
 

@@ -86,6 +86,11 @@ class Publication extends Model
         return $this->hasMany(Conversation::class);
     }
 
+    public function reports()
+    {
+        return $this->hasMany(PublicationReport::class);
+    }
+
     public function scopeVisible(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_ACTIVE)

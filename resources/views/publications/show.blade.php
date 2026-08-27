@@ -95,6 +95,17 @@
                                 </a>
                             @endif
                         </div>
+                        @auth
+                            @if($publication->status === 'active' && $publication->published_at?->isPast())
+                                <div class="d-grid mb-3">
+                                    @if($publicationReport === null)
+                                        <a class="btn btn-outline-danger" href="{{ route('seeker.publications.reports.create', $publication) }}"><i class="bi bi-flag me-1" aria-hidden="true"></i>@lang('seeker::messages.publication_reports.action')</a>
+                                    @else
+                                        <button class="btn btn-outline-warning" type="button" disabled><i class="bi bi-flag me-1" aria-hidden="true"></i>@lang('seeker::messages.publication_reports.sent_badge')</button>
+                                    @endif
+                                </div>
+                            @endif
+                        @endauth
                     @endif
 
                     @if(auth()->id() === $publication->user_id)

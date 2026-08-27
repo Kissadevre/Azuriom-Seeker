@@ -39,6 +39,12 @@ class SeekerServiceProvider extends BasePluginServiceProvider
             'message' => 'seeker::admin.logs.conversation_closed',
             'model' => Conversation::class,
         ]);
+
+        ActionLog::registerLogs('seeker.reports.updated', [
+            'icon' => 'flag',
+            'color' => 'warning',
+            'message' => 'seeker::admin.logs.report_updated',
+        ]);
     }
 
     protected function routeDescriptions(): array
@@ -107,7 +113,7 @@ class SeekerServiceProvider extends BasePluginServiceProvider
                     'seeker.admin.settings' => trans('seeker::admin.nav.settings'),
                     'seeker.admin.publications.index' => trans('seeker::admin.nav.publications'),
                     'seeker.admin.conversations.index' => trans('seeker::admin.nav.conversations'),
-                    'seeker.admin.profile-reports.index' => trans('seeker::admin.nav.reports'),
+                    'seeker.admin.reports.index' => trans('seeker::admin.nav.reports'),
                     'seeker.admin.transactions.index' => trans('seeker::admin.nav.transactions'),
                 ],
             ],

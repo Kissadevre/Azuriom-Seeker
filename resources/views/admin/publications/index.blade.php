@@ -6,7 +6,7 @@
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div><h1 class="h3 mb-1">@lang('seeker::admin.publications.title')</h1><p class="text-muted mb-0">@lang('seeker::admin.publications.subtitle')</p></div>
         <div class="d-flex flex-wrap gap-2">
-            <a class="btn btn-outline-danger" href="{{ route('seeker.admin.profile-reports.index') }}"><i class="bi bi-flag me-1" aria-hidden="true"></i>@lang('seeker::admin.profile_reports.title')</a>
+            <a class="btn btn-outline-danger" href="{{ route('seeker.admin.reports.index') }}"><i class="bi bi-flag me-1" aria-hidden="true"></i>@lang('seeker::admin.reports.title')</a>
             <form method="GET">
                 <select name="status" class="form-select" onchange="this.form.submit()">
                 <option value="">@lang('seeker::admin.all_statuses')</option>
