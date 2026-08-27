@@ -7,9 +7,11 @@ use Azuriom\Plugin\Seeker\Models\Conversation;
 use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Models\PublicationReport;
 use Azuriom\Plugin\Seeker\Models\Review;
+use Azuriom\Plugin\Seeker\Models\UserRestriction;
 use Azuriom\Plugin\Seeker\Requests\PublicationStatusRequest;
 use Azuriom\Plugin\Seeker\Requests\StorePublicationRequest;
 use Azuriom\Plugin\Seeker\Requests\UpdatePublicationRequest;
+use Azuriom\Plugin\Seeker\Services\RestrictionService;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\RedirectResponse;
@@ -22,7 +24,7 @@ use Throwable;
 
 class PublicationController extends Controller
 {
-    public function index(Request $request, SeekerSettings $settings): View
+    public function index(Request $request, SeekerSettings $settings, RestrictionService $restrictions): View
     {
         $type = in_array($request->query('type'), Publication::types(), true) ? $request->query('type') : null;
         $search = mb_substr(trim((string) $request->query('search')), 0, 100);
@@ -41,12 +43,13 @@ class PublicationController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        $publicationsEnabled = $settings->publicationsEnabled();
+        $publicationsEnabled = $settings->publicationsEnabled()
+            && ! $restrictions->restricted($request->user(), UserRestriction::TYPE_PUBLISH);
 
         return view('seeker::publications.index', compact('publications', 'type', 'search', 'publicationsEnabled'));
     }
 
-    public function show(Publication $publication, SeekerSettings $settings): View
+    public function show(Publication $publication, SeekerSettings $settings, RestrictionService $restrictions): View
     {
         $this->ensureVisibleToCurrentUser($publication);
         $publication->load(['user', 'images']);
@@ -74,6 +77,7 @@ class PublicationController extends Controller
                 ->first()
             : null;
         $newConversationsEnabled = $settings->newConversationsEnabled();
+        $contactRestricted = $restrictions->restricted(auth()->user(), UserRestriction::TYPE_CONTACT);
 
         return view('seeker::publications.show', compact(
             'publication',
@@ -81,11 +85,12 @@ class PublicationController extends Controller
             'reputation',
             'authorReviews',
             'newConversationsEnabled',
+            'contactRestricted',
             'publicationReport'
         ));
     }
 
-    public function mine(Request $request, SeekerSettings $settings): View
+    public function mine(Request $request, SeekerSettings $settings, RestrictionService $restrictions): View
     {
         $publications = Publication::query()
             ->where('user_id', $request->user()->id)
@@ -94,26 +99,40 @@ class PublicationController extends Controller
             ->latest()
             ->paginate(12);
 
-        $publicationsEnabled = $settings->publicationsEnabled();
+        $publicationsEnabled = $settings->publicationsEnabled()
+            && ! $restrictions->restricted($request->user(), UserRestriction::TYPE_PUBLISH);
 
         return view('seeker::publications.mine', compact('publications', 'publicationsEnabled'));
     }
 
-    public function create(SeekerSettings $settings): View|RedirectResponse
+    public function create(SeekerSettings $settings, RestrictionService $restrictions): View|RedirectResponse
     {
         if (! $settings->publicationsEnabled()) {
             return to_route('seeker.publications.mine')
                 ->with('error', trans('seeker::messages.features.publications_disabled'));
         }
 
+        if ($restrictions->restricted(auth()->user(), UserRestriction::TYPE_PUBLISH)) {
+            return to_route('seeker.publications.mine')
+                ->with('error', trans('seeker::messages.restrictions.publish'));
+        }
+
         return view('seeker::publications.create');
     }
 
-    public function store(StorePublicationRequest $request, SeekerSettings $settings): RedirectResponse
-    {
+    public function store(
+        StorePublicationRequest $request,
+        SeekerSettings $settings,
+        RestrictionService $restrictions
+    ): RedirectResponse {
         if (! $settings->publicationsEnabled()) {
             return to_route('seeker.publications.mine')
                 ->with('error', trans('seeker::messages.features.publications_disabled'));
+        }
+
+        if ($restrictions->restricted($request->user(), UserRestriction::TYPE_PUBLISH)) {
+            return to_route('seeker.publications.mine')
+                ->with('error', trans('seeker::messages.restrictions.publish'));
         }
 
         $storedPaths = [];
@@ -221,7 +240,7 @@ class PublicationController extends Controller
             return back()->with('error', trans('seeker::messages.alerts.cannot_delete_with_conversations'));
         }
 
-        $publication->delete();
+        $publication->forceDelete();
 
         return redirect()->route('seeker.publications.mine')
             ->with('success', trans('seeker::messages.alerts.deleted'));

@@ -18,6 +18,7 @@ class PublicationController extends Controller
             : null;
 
         $publications = Publication::query()
+            ->withTrashed()
             ->with('user')
             ->withCount('conversations')
             ->when($status, fn ($query) => $query->where('status', $status))
@@ -42,6 +43,7 @@ class PublicationController extends Controller
 
     public function updateStatus(PublicationStatusRequest $request, Publication $publication): RedirectResponse
     {
+        abort_if($publication->trashed(), 409);
         $publication->status = $request->validated('status');
         $publication->published_at ??= now();
         $publication->save();

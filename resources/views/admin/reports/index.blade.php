@@ -29,6 +29,7 @@
                 <tbody>
                     @forelse($reports as $item)
                         @php($report = $item->report)
+                        @php($reportedUser = $item->report_type === 'publication' ? $report->publication->user : ($item->report_type === 'profile' ? $report->profileUser : $report->reportedUser))
                         <tr>
                             <td><span class="badge text-bg-{{ $item->report_type === 'publication' ? 'primary' : ($item->report_type === 'profile' ? 'info' : 'secondary') }}">@lang('seeker::admin.reports.types.'.$item->report_type)</span></td>
                             <td style="min-width: 14rem">
@@ -53,7 +54,13 @@
                             </td>
                             <td class="text-nowrap">{{ format_date($report->created_at, true) }}</td>
                             <td><span class="badge text-bg-{{ $report->status === 'pending' ? 'warning' : ($report->status === 'reviewed' ? 'success' : 'secondary') }}">@lang('seeker::admin.reports.statuses.'.$report->status)</span></td>
-                            <td><form method="POST" action="{{ route('seeker.admin.reports.update', [$item->report_type, $report->id]) }}" class="d-flex justify-content-end gap-2">@csrf @method('PATCH')<select name="status" class="form-select form-select-sm" aria-label="@lang('seeker::admin.reports.update_status')">@foreach(\Azuriom\Plugin\Seeker\Models\ProfileReport::statuses() as $reportStatus)<option value="{{ $reportStatus }}" @selected($report->status === $reportStatus)>@lang('seeker::admin.reports.statuses.'.$reportStatus)</option>@endforeach</select><button class="btn btn-sm btn-primary">@lang('messages.actions.save')</button></form></td>
+                            <td>
+                                <div class="d-flex justify-content-end gap-1 mb-2">
+                                    <a class="btn btn-sm btn-outline-warning text-nowrap" href="{{ route('seeker.admin.restrictions.index', ['user_id' => $report->reporter_id]) }}">@lang('seeker::admin.reports.restrict_reporter')</a>
+                                    <a class="btn btn-sm btn-outline-danger text-nowrap" href="{{ route('seeker.admin.restrictions.index', ['user_id' => $reportedUser->id]) }}">@lang('seeker::admin.reports.restrict_reported')</a>
+                                </div>
+                                <form method="POST" action="{{ route('seeker.admin.reports.update', [$item->report_type, $report->id]) }}" class="d-flex justify-content-end gap-2">@csrf @method('PATCH')<select name="status" class="form-select form-select-sm" aria-label="@lang('seeker::admin.reports.update_status')">@foreach(\Azuriom\Plugin\Seeker\Models\ProfileReport::statuses() as $reportStatus)<option value="{{ $reportStatus }}" @selected($report->status === $reportStatus)>@lang('seeker::admin.reports.statuses.'.$reportStatus)</option>@endforeach</select><button class="btn btn-sm btn-primary">@lang('messages.actions.save')</button></form>
+                            </td>
                         </tr>
                     @empty
                         <tr><td colspan="8" class="text-center text-muted py-5">@lang('seeker::admin.reports.empty')</td></tr>

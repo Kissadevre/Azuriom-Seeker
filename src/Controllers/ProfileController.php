@@ -9,7 +9,9 @@ use Azuriom\Plugin\Seeker\Models\Profile;
 use Azuriom\Plugin\Seeker\Models\ProfileReport;
 use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Models\Review;
+use Azuriom\Plugin\Seeker\Models\UserRestriction;
 use Azuriom\Plugin\Seeker\Requests\UpdateProfileRequest;
+use Azuriom\Plugin\Seeker\Services\RestrictionService;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,8 +19,14 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    public function show(Request $request, User $user, SeekerSettings $settings): View
-    {
+    public function show(
+        Request $request,
+        User $user,
+        SeekerSettings $settings,
+        RestrictionService $restrictions
+    ): View {
+        abort_if($restrictions->restricted($user, UserRestriction::TYPE_PROFILE), 404);
+
         $profile = Profile::query()->where('user_id', $user->id)->first();
         abort_unless($this->hasSeekerPresence($user, $profile) || $request->user()?->id === $user->id, 404);
 
@@ -83,9 +91,18 @@ class ProfileController extends Controller
         ));
     }
 
-    public function edit(Request $request, User $user, SeekerSettings $settings): View|RedirectResponse
-    {
+    public function edit(
+        Request $request,
+        User $user,
+        SeekerSettings $settings,
+        RestrictionService $restrictions
+    ): View|RedirectResponse {
         abort_unless($request->user()->id === $user->id, 403);
+
+        if ($restrictions->restricted($user, UserRestriction::TYPE_PROFILE)) {
+            return to_route('seeker.index')
+                ->with('error', trans('seeker::messages.restrictions.profile'));
+        }
 
         if (! $settings->biographiesEnabled()) {
             return to_route('seeker.profiles.show', $user)
@@ -97,8 +114,17 @@ class ProfileController extends Controller
         return view('seeker::profiles.edit', compact('user', 'profile'));
     }
 
-    public function update(UpdateProfileRequest $request, User $user, SeekerSettings $settings): RedirectResponse
-    {
+    public function update(
+        UpdateProfileRequest $request,
+        User $user,
+        SeekerSettings $settings,
+        RestrictionService $restrictions
+    ): RedirectResponse {
+        if ($restrictions->restricted($user, UserRestriction::TYPE_PROFILE)) {
+            return to_route('seeker.index')
+                ->with('error', trans('seeker::messages.restrictions.profile'));
+        }
+
         if (! $settings->biographiesEnabled()) {
             return to_route('seeker.profiles.show', $user)
                 ->with('error', trans('seeker::messages.features.biographies_disabled'));

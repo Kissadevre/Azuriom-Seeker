@@ -13,11 +13,13 @@ class PublicationImageController extends Controller
     public function show(PublicationImage $image): StreamedResponse
     {
         $publication = $image->publication;
-        $isVisible = $publication->status === Publication::STATUS_ACTIVE
+        $isVisible = ! $publication->trashed()
+            && $publication->status === Publication::STATUS_ACTIVE
             && $publication->published_at !== null
             && $publication->published_at->isPast();
         $canPreview = auth()->check()
-            && (auth()->id() === $publication->user_id || auth()->user()->can('seeker.moderate'));
+            && (auth()->user()->can('seeker.moderate')
+                || (! $publication->trashed() && auth()->id() === $publication->user_id));
         $canViewPublished = $isVisible && ($publication->is_guest_visible || auth()->check());
 
         abort_unless($canViewPublished || $canPreview, 404);

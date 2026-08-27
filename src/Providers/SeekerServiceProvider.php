@@ -5,7 +5,9 @@ namespace Azuriom\Plugin\Seeker\Providers;
 use Azuriom\Extensions\Plugin\BasePluginServiceProvider;
 use Azuriom\Models\ActionLog;
 use Azuriom\Models\Permission;
+use Azuriom\Models\User;
 use Azuriom\Plugin\Seeker\Models\Conversation;
+use Azuriom\Plugin\Seeker\Models\UserRestriction;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -44,6 +46,27 @@ class SeekerServiceProvider extends BasePluginServiceProvider
             'icon' => 'flag',
             'color' => 'warning',
             'message' => 'seeker::admin.logs.report_updated',
+        ]);
+
+        ActionLog::registerLogs([
+            'seeker.restrictions.created' => [
+                'icon' => 'person-lock',
+                'color' => 'danger',
+                'message' => 'seeker::admin.logs.restriction_created',
+                'model' => UserRestriction::class,
+            ],
+            'seeker.restrictions.revoked' => [
+                'icon' => 'unlock',
+                'color' => 'success',
+                'message' => 'seeker::admin.logs.restriction_revoked',
+                'model' => UserRestriction::class,
+            ],
+            'seeker.publications.removed_for_user' => [
+                'icon' => 'trash',
+                'color' => 'danger',
+                'message' => 'seeker::admin.logs.publications_removed',
+                'model' => User::class,
+            ],
         ]);
     }
 
@@ -114,6 +137,7 @@ class SeekerServiceProvider extends BasePluginServiceProvider
                     'seeker.admin.publications.index' => trans('seeker::admin.nav.publications'),
                     'seeker.admin.conversations.index' => trans('seeker::admin.nav.conversations'),
                     'seeker.admin.reports.index' => trans('seeker::admin.nav.reports'),
+                    'seeker.admin.restrictions.index' => trans('seeker::admin.nav.restrictions'),
                     'seeker.admin.transactions.index' => trans('seeker::admin.nav.transactions'),
                 ],
             ],

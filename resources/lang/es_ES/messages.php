@@ -324,6 +324,16 @@ return [
         'new_conversations_disabled_short' => 'Nuevos contactos pausados',
         'biographies_disabled' => 'Las biografías de Seeker están desactivadas actualmente.',
     ],
+    'restrictions' => [
+        'access' => 'Tu acceso a Seeker fue restringido por moderación.',
+        'publish' => 'Moderación restringió temporalmente tu capacidad para crear publicaciones en Seeker.',
+        'contact' => 'Moderación restringió temporalmente tu capacidad para iniciar conversaciones nuevas en Seeker.',
+        'contact_short' => 'Contacto restringido',
+        'profile' => 'Tu perfil de Seeker fue restringido por moderación y no puede verse ni editarse.',
+    ],
+    'publications' => [
+        'removed' => 'Publicación eliminada',
+    ],
     'notifications' => [
         'new_conversation' => ':user está interesado en “:publication”.',
         'new_message' => 'Tienes un nuevo mensaje de Seeker de :user.',

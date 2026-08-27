@@ -3,16 +3,20 @@
 @section('title', $publication->title)
 
 @section('content')
+    @if($publication->trashed())
+        <div class="alert alert-dark"><i class="bi bi-trash me-2" aria-hidden="true"></i>@lang('seeker::admin.publications.removed_notice')</div>
+    @endif
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
         <div>
             <a class="text-decoration-none" href="{{ route('seeker.admin.publications.index') }}"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i>@lang('seeker::admin.publications.back')</a>
             <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
                 <h1 class="h3 mb-0">{{ $publication->title }}</h1>
-                <span class="badge {{ $publication->status === 'active' ? 'text-bg-success' : ($publication->status === 'hidden' ? 'text-bg-danger' : 'text-bg-secondary') }}">@lang('seeker::messages.statuses.'.$publication->status)</span>
+                @if($publication->trashed())<span class="badge text-bg-dark">@lang('seeker::admin.publications.removed')</span>@else<span class="badge {{ $publication->status === 'active' ? 'text-bg-success' : ($publication->status === 'hidden' ? 'text-bg-danger' : 'text-bg-secondary') }}">@lang('seeker::messages.statuses.'.$publication->status)</span>@endif
                 <span class="badge text-bg-light">@lang('seeker::messages.types.'.$publication->type)</span>
             </div>
         </div>
         <div class="d-flex flex-wrap gap-2">
+            @unless($publication->trashed())
             <a class="btn btn-outline-primary" href="{{ route('seeker.publications.show', $publication) }}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>@lang('seeker::admin.publications.public_view')</a>
             <form method="POST" action="{{ route('seeker.admin.publications.status', $publication) }}" class="d-flex gap-2">
                 @csrf @method('PATCH')
@@ -23,6 +27,7 @@
                 </select>
                 <button class="btn btn-primary">@lang('messages.actions.save')</button>
             </form>
+            @endunless
         </div>
     </div>
 

@@ -43,7 +43,7 @@ class PublicationReport extends Model
 
     public function publication()
     {
-        return $this->belongsTo(Publication::class);
+        return $this->belongsTo(Publication::class)->withTrashed();
     }
 
     public function reporter()

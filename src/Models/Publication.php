@@ -6,10 +6,12 @@ use Azuriom\Models\Traits\HasTablePrefix;
 use Azuriom\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Publication extends Model
 {
     use HasTablePrefix;
+    use SoftDeletes;
 
     public const TYPE_COMMISSION = 'commission';
 
@@ -62,7 +64,9 @@ class Publication extends Model
     protected static function booted(): void
     {
         static::deleting(function (self $publication) {
-            $publication->images()->get()->each->delete();
+            if ($publication->isForceDeleting()) {
+                $publication->images()->get()->each->delete();
+            }
         });
     }
 

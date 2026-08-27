@@ -6,9 +6,11 @@ use Azuriom\Http\Controllers\Controller;
 use Azuriom\Notifications\AlertNotification;
 use Azuriom\Plugin\Seeker\Models\Conversation;
 use Azuriom\Plugin\Seeker\Models\Publication;
+use Azuriom\Plugin\Seeker\Models\UserRestriction;
 use Azuriom\Plugin\Seeker\Requests\ContactPublicationRequest;
 use Azuriom\Plugin\Seeker\Services\CommissionCompletionService;
 use Azuriom\Plugin\Seeker\Services\ConversationStarter;
+use Azuriom\Plugin\Seeker\Services\RestrictionService;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -31,8 +33,12 @@ class ConversationController extends Controller
         return view('seeker::conversations.index', compact('conversations', 'user'));
     }
 
-    public function create(Request $request, Publication $publication, SeekerSettings $settings): View|RedirectResponse
-    {
+    public function create(
+        Request $request,
+        Publication $publication,
+        SeekerSettings $settings,
+        RestrictionService $restrictions
+    ): View|RedirectResponse {
         $this->ensureContactable($publication, $request);
 
         $existing = Conversation::query()
@@ -42,6 +48,11 @@ class ConversationController extends Controller
 
         if ($existing !== null) {
             return to_route('seeker.conversations.show', $existing);
+        }
+
+        if ($restrictions->restricted($request->user(), UserRestriction::TYPE_CONTACT)) {
+            return to_route('seeker.publications.show', $publication)
+                ->with('error', trans('seeker::messages.restrictions.contact'));
         }
 
         if (! $settings->newConversationsEnabled()) {
@@ -58,7 +69,8 @@ class ConversationController extends Controller
         ContactPublicationRequest $request,
         Publication $publication,
         ConversationStarter $starter,
-        SeekerSettings $settings
+        SeekerSettings $settings,
+        RestrictionService $restrictions
     ): RedirectResponse {
         $this->ensureContactable($publication, $request);
 
@@ -69,6 +81,11 @@ class ConversationController extends Controller
 
         if ($existing !== null) {
             return to_route('seeker.conversations.show', $existing);
+        }
+
+        if ($restrictions->restricted($request->user(), UserRestriction::TYPE_CONTACT)) {
+            return to_route('seeker.publications.show', $publication)
+                ->with('error', trans('seeker::messages.restrictions.contact'));
         }
 
         if (! $settings->newConversationsEnabled()) {

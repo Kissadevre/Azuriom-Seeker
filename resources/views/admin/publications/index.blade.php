@@ -27,14 +27,14 @@
                         <tr>
                             <td><a class="fw-semibold text-decoration-none" href="{{ route('seeker.admin.publications.show', $publication) }}">{{ $publication->title }}</a><div class="small text-muted">@lang('seeker::messages.types.'.$publication->type)</div></td>
                             <td><a class="text-body text-decoration-none" href="{{ route('seeker.profiles.show', $publication->user) }}" target="_blank" rel="noopener">{{ $publication->user->name }}</a></td>
-                            <td><span class="badge {{ $publication->status === 'active' ? 'text-bg-success' : ($publication->status === 'hidden' ? 'text-bg-danger' : 'text-bg-secondary') }}">@lang('seeker::messages.statuses.'.$publication->status)</span></td>
+                            <td>@if($publication->trashed())<span class="badge text-bg-dark">@lang('seeker::admin.publications.removed')</span>@else<span class="badge {{ $publication->status === 'active' ? 'text-bg-success' : ($publication->status === 'hidden' ? 'text-bg-danger' : 'text-bg-secondary') }}">@lang('seeker::messages.statuses.'.$publication->status)</span>@endif</td>
                             <td class="text-nowrap">{{ format_date($publication->created_at, true) }}</td>
                             <td class="text-nowrap">{{ format_date($publication->updated_at, true) }}</td>
                             <td class="text-center"><a class="badge text-bg-primary text-decoration-none" href="{{ route('seeker.admin.publications.show', $publication) }}#conversations">{{ $publication->conversations_count }}</a></td>
                             <td>
                                 <div class="d-flex justify-content-end gap-2">
                                     <a class="btn btn-sm btn-outline-primary" href="{{ route('seeker.admin.publications.show', $publication) }}"><i class="bi bi-eye me-1" aria-hidden="true"></i>@lang('seeker::admin.details')</a>
-                                    <form method="POST" action="{{ route('seeker.admin.publications.status', $publication) }}" class="d-flex gap-2">
+                                    @unless($publication->trashed())<form method="POST" action="{{ route('seeker.admin.publications.status', $publication) }}" class="d-flex gap-2">
                                         @csrf @method('PATCH')
                                         <select name="status" class="form-select form-select-sm" aria-label="@lang('seeker::admin.set_status')">
                                             @foreach(\Azuriom\Plugin\Seeker\Models\Publication::statuses() as $publicationStatus)
@@ -42,7 +42,7 @@
                                             @endforeach
                                         </select>
                                         <button class="btn btn-sm btn-primary">@lang('messages.actions.save')</button>
-                                    </form>
+                                    </form>@endunless
                                 </div>
                             </td>
                         </tr>

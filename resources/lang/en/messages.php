@@ -324,6 +324,16 @@ return [
         'new_conversations_disabled_short' => 'New contacts paused',
         'biographies_disabled' => 'Seeker biographies are currently disabled.',
     ],
+    'restrictions' => [
+        'access' => 'Your access to Seeker has been restricted by moderation.',
+        'publish' => 'Moderation has temporarily restricted your ability to create Seeker publications.',
+        'contact' => 'Moderation has temporarily restricted your ability to start new Seeker conversations.',
+        'contact_short' => 'Contact restricted',
+        'profile' => 'Your Seeker profile was restricted by moderation and cannot be viewed or edited.',
+    ],
+    'publications' => [
+        'removed' => 'Publication removed',
+    ],
     'notifications' => [
         'new_conversation' => ':user is interested in “:publication”.',
         'new_message' => 'You have a new Seeker message from :user.',
