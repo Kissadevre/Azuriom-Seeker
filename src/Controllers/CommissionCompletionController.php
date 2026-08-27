@@ -39,14 +39,22 @@ class CommissionCompletionController extends Controller
             ->with('success', trans('seeker::messages.completion.requested'));
     }
 
-    public function show(Request $request, Conversation $conversation, CommissionCompletionService $completionService): View
+    public function show(
+        Request $request,
+        Conversation $conversation,
+        CommissionCompletionService $completionService
+    ): View|RedirectResponse
     {
         abort_unless($conversation->client_id === $request->user()->id, 403);
         $conversation->load(['publication', 'author']);
+
+        if ($conversation->status !== Conversation::STATUS_ACTIVE
+            || $conversation->completion_status !== Conversation::COMPLETION_PENDING) {
+            return to_route('seeker.conversations.show', $conversation);
+        }
+
         abort_unless(
-            $conversation->status === Conversation::STATUS_ACTIVE
-            && $conversation->completion_status === Conversation::COMPLETION_PENDING
-            && $conversation->isPaidCommission(),
+            $conversation->isPaidCommission(),
             409
         );
 
