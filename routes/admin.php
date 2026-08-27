@@ -23,6 +23,7 @@ Route::patch('reports/{type}/{report}', [ReportController::class, 'update'])
     ->whereNumber('report')
     ->name('reports.update');
 Route::get('restrictions', [RestrictionController::class, 'index'])->name('restrictions.index');
+Route::get('restrictions/users/search', [RestrictionController::class, 'searchUsers'])->name('restrictions.users.search');
 Route::post('restrictions', [RestrictionController::class, 'store'])->name('restrictions.store');
 Route::patch('restrictions/{restriction}/revoke', [RestrictionController::class, 'revoke'])->name('restrictions.revoke');
 Route::delete('restrictions/users/{user}/publications', [RestrictionController::class, 'removePublications'])->name('restrictions.publications.remove');

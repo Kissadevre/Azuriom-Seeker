@@ -8,6 +8,7 @@ use Azuriom\Models\User;
 use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Models\UserRestriction;
 use Azuriom\Plugin\Seeker\Services\RestrictionService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,10 @@ class RestrictionController extends Controller
                 ->where('user_id', $selectedUser->id)
                 ->where('type', UserRestriction::TYPE_PROFILE)
                 ->exists();
+        $restrictionUserId = (int) $request->old('user_id', $selectedUser?->id);
+        $restrictionUser = $restrictionUserId > 0
+            ? User::query()->find($restrictionUserId)
+            : null;
 
         $restrictions = UserRestriction::query()
             ->with(['user', 'createdBy', 'revokedBy'])
@@ -48,8 +53,31 @@ class RestrictionController extends Controller
             'restrictions',
             'state',
             'selectedUser',
-            'selectedUserProfileRestricted'
+            'selectedUserProfileRestricted',
+            'restrictionUser'
         ));
+    }
+
+    public function searchUsers(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'q' => ['required', 'string', 'min:2', 'max:64'],
+        ]);
+
+        $users = User::query()
+            ->registered()
+            ->search(trim($validated['q']), 'name')
+            ->orderBy('name')
+            ->limit(10)
+            ->get();
+
+        return response()->json([
+            'data' => $users->map(fn (User $user) => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'avatar' => $user->getAvatar(40),
+            ]),
+        ]);
     }
 
     public function store(Request $request, RestrictionService $restrictionService): RedirectResponse

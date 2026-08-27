@@ -321,6 +321,59 @@
                 object-fit: cover;
             }
 
+            .seeker-admin-user-combobox {
+                position: relative;
+            }
+
+            .seeker-admin-user-combobox-results {
+                position: absolute;
+                top: calc(100% - 1.15rem);
+                right: 0;
+                left: 0;
+                z-index: 1080;
+                max-height: 16rem;
+                overflow-y: auto;
+                border-radius: .65rem;
+                box-shadow: 0 .75rem 2rem rgba(0, 0, 0, .14);
+            }
+
+            .seeker-admin-user-option {
+                display: flex;
+                align-items: center;
+                gap: .7rem;
+                text-align: left;
+            }
+
+            .seeker-admin-user-option img {
+                flex: 0 0 auto;
+                object-fit: cover;
+            }
+
+            .seeker-admin-user-combobox-spinner {
+                color: var(--bs-primary);
+                background: var(--bs-body-bg);
+            }
+
+            .seeker-admin-selected-user {
+                display: flex;
+                min-height: calc(2.25rem + 2px);
+                align-items: center;
+                gap: .7rem;
+                padding: .45rem .6rem;
+                border: 1px solid var(--bs-border-color);
+                border-radius: var(--bs-border-radius);
+                background: var(--bs-body-bg);
+            }
+
+            .seeker-admin-selected-user img {
+                flex: 0 0 auto;
+                object-fit: cover;
+            }
+
+            .seeker-admin-selected-user .min-w-0 {
+                min-width: 0;
+            }
+
             .seeker-admin-status {
                 display: inline-flex;
                 align-items: center;
