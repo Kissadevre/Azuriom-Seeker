@@ -126,9 +126,13 @@
     @if($reports->isNotEmpty())
         <div class="card seeker-admin-card mb-4">
             <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::admin.conversations.reports')</h2></div>
-            <div class="table-responsive"><table class="table table-hover align-middle seeker-admin-table mb-0"><thead><tr><th>@lang('seeker::admin.conversations.reporter')</th><th>@lang('seeker::admin.conversations.reported_user')</th><th>@lang('seeker::admin.conversations.reason')</th><th>@lang('seeker::admin.conversations.report_details')</th><th>@lang('seeker::admin.status')</th></tr></thead><tbody>
+            <div class="table-responsive"><table class="table table-hover align-middle seeker-admin-table seeker-admin-row-details-table mb-0"><thead><tr><th><span class="visually-hidden">@lang('seeker::admin.conversations.report_details')</span></th><th>@lang('seeker::admin.conversations.reporter')</th><th>@lang('seeker::admin.conversations.reported_user')</th><th>@lang('seeker::admin.conversations.reason')</th><th>@lang('seeker::admin.status')</th></tr></thead><tbody>
                 @foreach($reports as $report)
-                    <tr><td>{{ $report->reporter->name }}</td><td>{{ $report->reportedUser->name }}</td><td>@lang('seeker::messages.reports.reasons.'.$report->reason)</td><td style="min-width: 18rem; white-space: pre-wrap">{{ $report->details }}</td><td><span class="badge text-bg-{{ $report->status === 'pending' ? 'warning' : ($report->status === 'reviewed' ? 'success' : 'secondary') }}">@lang('seeker::messages.reports.statuses.'.$report->status)</span></td></tr>
+                    <tr>
+                        <td class="seeker-admin-row-details-control"><button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#conversationReportDetails{{ $report->id }}" aria-expanded="false" aria-controls="conversationReportDetails{{ $report->id }}" title="@lang('seeker::admin.conversations.report_details')"><i class="bi bi-chevron-right" aria-hidden="true"></i><span class="visually-hidden">@lang('seeker::admin.conversations.report_details')</span></button></td>
+                        <td>{{ $report->reporter->name }}</td><td>{{ $report->reportedUser->name }}</td><td>@lang('seeker::messages.reports.reasons.'.$report->reason)</td><td><span class="badge text-bg-{{ $report->status === 'pending' ? 'warning' : ($report->status === 'reviewed' ? 'success' : 'secondary') }}">@lang('seeker::messages.reports.statuses.'.$report->status)</span></td>
+                    </tr>
+                    <tr class="seeker-admin-row-details"><td colspan="5"><div class="collapse" id="conversationReportDetails{{ $report->id }}"><div class="seeker-admin-row-details-content"><div class="small fw-semibold text-body-secondary mb-2"><i class="bi bi-card-text me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.report_details')</div><div style="white-space: pre-wrap">{{ $report->details }}</div></div></div></td></tr>
                 @endforeach
             </tbody></table></div>
         </div>
