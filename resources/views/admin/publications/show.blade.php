@@ -16,7 +16,38 @@
             <a class="text-decoration-none" href="{{ route('seeker.admin.publications.index') }}"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i>@lang('seeker::admin.publications.back')</a>
             <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
                 <h1 class="h3 mb-0">{{ $publication->title }}</h1>
-                @if($publication->trashed())<span class="badge text-bg-dark">@lang('seeker::admin.publications.removed')</span>@else<span class="badge {{ $publication->status === 'active' ? 'text-bg-success' : ($publication->status === 'hidden' ? 'text-bg-danger' : 'text-bg-secondary') }}">@lang('seeker::messages.statuses.'.$publication->status)</span>@endif
+                @if($publication->trashed())
+                    <span class="badge text-bg-dark seeker-admin-status"><i class="bi bi-trash" aria-hidden="true"></i>@lang('seeker::admin.publications.removed')</span>
+                @else
+                    <div class="dropdown">
+                        <button class="badge border-0 dropdown-toggle {{ $publication->status === 'active' ? 'text-bg-success' : ($publication->status === 'hidden' ? 'text-bg-danger' : 'text-bg-secondary') }} seeker-admin-status seeker-admin-status-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                aria-label="@lang('seeker::admin.set_status')">
+                            @lang('seeker::messages.statuses.'.$publication->status)
+                        </button>
+                        <ul class="dropdown-menu seeker-admin-status-menu">
+                            @foreach([
+                                \Azuriom\Plugin\Seeker\Models\Publication::STATUS_ACTIVE => ['check-lg', 'text-success'],
+                                \Azuriom\Plugin\Seeker\Models\Publication::STATUS_CLOSED => ['x-lg', 'text-secondary'],
+                                \Azuriom\Plugin\Seeker\Models\Publication::STATUS_HIDDEN => ['eye-slash', 'text-danger'],
+                            ] as $publicationStatus => [$statusIcon, $statusColor])
+                                <li>
+                                    <form method="POST" action="{{ route('seeker.admin.publications.status', $publication) }}">
+                                        @csrf @method('PATCH')
+                                        <input type="hidden" name="status" value="{{ $publicationStatus }}">
+                                        <button class="dropdown-item d-flex align-items-center gap-2 {{ $publication->status === $publicationStatus ? 'active' : '' }}" @disabled($publication->status === $publicationStatus)>
+                                            <i class="bi bi-{{ $statusIcon }} {{ $publication->status === $publicationStatus ? '' : $statusColor }}" aria-hidden="true"></i>
+                                            <span>@lang('seeker::messages.statuses.'.$publicationStatus)</span>
+                                            @if($publication->status === $publicationStatus)<i class="bi bi-check ms-auto" aria-hidden="true"></i>@endif
+                                        </button>
+                                    </form>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <span class="badge text-bg-light">@lang('seeker::messages.types.'.$publication->type)</span>
             </div>
         </div>
@@ -24,15 +55,6 @@
         <div class="seeker-admin-header-actions d-flex flex-wrap gap-2">
             @unless($publication->trashed())
             <a class="btn btn-outline-primary" href="{{ route('seeker.publications.show', $publication) }}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>@lang('seeker::admin.publications.public_view')</a>
-            <form method="POST" action="{{ route('seeker.admin.publications.status', $publication) }}" class="d-flex gap-2">
-                @csrf @method('PATCH')
-                <select name="status" class="form-select" aria-label="@lang('seeker::admin.set_status')">
-                    @foreach(\Azuriom\Plugin\Seeker\Models\Publication::statuses() as $publicationStatus)
-                        <option value="{{ $publicationStatus }}" @selected($publication->status === $publicationStatus)>@lang('seeker::messages.statuses.'.$publicationStatus)</option>
-                    @endforeach
-                </select>
-                <button class="btn btn-primary">@lang('messages.actions.save')</button>
-            </form>
             @endunless
         </div>
     </div>
