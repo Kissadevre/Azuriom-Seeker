@@ -2,19 +2,22 @@
 
 @section('title', trans('seeker::messages.publication_reports.title'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @section('content')
-    <div class="mb-4"><a class="text-decoration-none" href="{{ route('seeker.publications.show', $publication) }}"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i>@lang('seeker::messages.publication_reports.back')</a></div>
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <form method="POST" action="{{ route('seeker.publications.reports.store', $publication) }}" class="card">
+    <div class="seeker-public-shell">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                @include('seeker::_page-header', [
+                    'pageIcon' => 'bi-flag',
+                    'pageTitle' => trans('seeker::messages.publication_reports.title'),
+                    'pageSubtitle' => trans('seeker::messages.publication_reports.reporting', ['publication' => $publication->title]),
+                    'backUrl' => route('seeker.publications.show', $publication),
+                    'backLabel' => trans('seeker::messages.publication_reports.back'),
+                ])
+                <form method="POST" action="{{ route('seeker.publications.reports.store', $publication) }}" class="card seeker-form-card seeker-report-card">
                 @csrf
                 <div class="card-body p-4 p-md-5">
-                    <h1 class="h3 mb-1">@lang('seeker::messages.publication_reports.title')</h1>
-                    <p class="text-muted mb-4">@lang('seeker::messages.publication_reports.reporting', ['publication' => $publication->title])</p>
                     <div class="alert alert-info"><i class="bi bi-info-circle me-2" aria-hidden="true"></i>@lang('seeker::messages.publication_reports.notice')</div>
                     <div class="mb-3">
                         <label class="form-label" for="publicationReportReason">@lang('seeker::messages.publication_reports.reason')</label>
@@ -32,7 +35,8 @@
                     </div>
                     <div class="d-flex justify-content-end gap-2"><a class="btn btn-outline-secondary" href="{{ route('seeker.publications.show', $publication) }}">@lang('messages.actions.cancel')</a><button class="btn btn-danger"><i class="bi bi-flag me-1" aria-hidden="true"></i>@lang('seeker::messages.publication_reports.submit')</button></div>
                 </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

@@ -2,20 +2,23 @@
 
 @section('title', trans('seeker::messages.publish'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @section('content')
-    <div class="row justify-content-center">
-        <div class="col-xl-9">
-            <div class="d-flex align-items-center gap-3 mb-4">
-                <span class="seeker-title-icon"><i class="bi bi-plus-lg" aria-hidden="true"></i></span>
-                <h1 class="h2 mb-0">@lang('seeker::messages.publish')</h1>
-            </div>
-            <form method="POST" action="{{ route('seeker.publications.store') }}" enctype="multipart/form-data" class="card" id="captcha-form">
+    <div class="seeker-public-shell">
+        <div class="row justify-content-center">
+            <div class="col-xl-9">
+                @include('seeker::_page-header', [
+                    'pageIcon' => 'bi-plus-lg',
+                    'pageTitle' => trans('seeker::messages.publish'),
+                    'pageSubtitle' => trans('seeker::messages.publish_description'),
+                    'backUrl' => route('seeker.index'),
+                    'backLabel' => trans('seeker::messages.back'),
+                ])
+                <form method="POST" action="{{ route('seeker.publications.store') }}" enctype="multipart/form-data" class="card seeker-form-card" id="captcha-form">
                 <div class="card-body p-4">@include('seeker::publications._form')</div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

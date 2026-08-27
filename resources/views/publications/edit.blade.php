@@ -2,21 +2,24 @@
 
 @section('title', trans('seeker::messages.edit'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @section('content')
-    <div class="row justify-content-center">
-        <div class="col-xl-9">
-            <div class="d-flex align-items-center gap-3 mb-4">
-                <span class="seeker-title-icon"><i class="bi bi-pencil" aria-hidden="true"></i></span>
-                <h1 class="h2 mb-0">@lang('seeker::messages.edit')</h1>
-            </div>
-            <form method="POST" action="{{ route('seeker.publications.update', $publication) }}" enctype="multipart/form-data" class="card" id="captcha-form">
+    <div class="seeker-public-shell">
+        <div class="row justify-content-center">
+            <div class="col-xl-9">
+                @include('seeker::_page-header', [
+                    'pageIcon' => 'bi-pencil',
+                    'pageTitle' => trans('seeker::messages.edit'),
+                    'pageSubtitle' => trans('seeker::messages.edit_description', ['publication' => $publication->title]),
+                    'backUrl' => route('seeker.publications.show', $publication),
+                    'backLabel' => trans('seeker::messages.publication_reports.back'),
+                ])
+                <form method="POST" action="{{ route('seeker.publications.update', $publication) }}" enctype="multipart/form-data" class="card seeker-form-card" id="captcha-form">
                 @method('PUT')
                 <div class="card-body p-4">@include('seeker::publications._form')</div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

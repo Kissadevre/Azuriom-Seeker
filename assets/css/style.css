@@ -166,7 +166,7 @@
 }
 
 .seeker-filter-card {
-    background: rgba(var(--bs-body-bg-rgb), .82);
+    background: var(--bs-body-bg);
     backdrop-filter: blur(.5rem);
 }
 
@@ -180,6 +180,74 @@
 
 .seeker-publication-card .card-text {
     line-height: 1.65;
+}
+
+.seeker-form-card > .card-body {
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.seeker-form-intro {
+    max-width: 44rem;
+    color: var(--bs-secondary-color);
+}
+
+.seeker-publication-detail > .card-body {
+    padding: clamp(1.35rem, 4vw, 3rem);
+}
+
+.seeker-publication-detail h1 {
+    max-width: 22ch;
+    font-size: clamp(2rem, 5vw, 3.15rem);
+    line-height: 1.05;
+}
+
+.seeker-author-summary {
+    padding: .85rem;
+    border: 1px solid rgba(var(--bs-secondary-rgb), .12);
+    border-radius: .9rem;
+    background: rgba(var(--bs-secondary-rgb), .035);
+}
+
+.seeker-profile-avatar {
+    object-fit: cover;
+    box-shadow: 0 0 0 .3rem rgba(var(--bs-primary-rgb), .08);
+}
+
+.seeker-profile-hero {
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(236, 111, 169, .07), rgba(155, 124, 247, .06) 50%, rgba(69, 201, 237, .08));
+}
+
+.seeker-profile-hero .seeker-profile-avatar {
+    width: clamp(5.5rem, 12vw, 7rem);
+    height: clamp(5.5rem, 12vw, 7rem);
+}
+
+.seeker-stat-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.seeker-stat-card i {
+    display: inline-grid;
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    border-radius: .85rem;
+    background: rgba(var(--bs-primary-rgb), .09);
+}
+
+.seeker-profile-publication {
+    transition: border-color .15s ease, transform .15s ease;
+}
+
+.seeker-profile-publication:hover {
+    border-color: rgba(var(--bs-primary-rgb), .45);
+    transform: translateY(-2px);
+}
+
+.seeker-report-card {
+    border-top: .25rem solid var(--bs-danger);
 }
 
 .seeker-table-card .table > :not(caption) > * > * {
@@ -230,7 +298,17 @@
 
 .seeker-choice-card {
     cursor: pointer;
-    transition: border-color .15s ease, background-color .15s ease;
+    transition: border-color .15s ease, background-color .15s ease, transform .15s ease;
+}
+
+.seeker-choice-card:hover {
+    border-color: rgba(var(--bs-primary-rgb), .45);
+    transform: translateY(-1px);
+}
+
+.seeker-choice-card:focus-within {
+    outline: .2rem solid rgba(var(--bs-primary-rgb), .2);
+    outline-offset: .1rem;
 }
 
 .seeker-choice-card:has(input:checked) {
@@ -389,5 +467,21 @@
         height: 3.25rem;
         border-radius: .85rem;
         font-size: 1.35rem;
+    }
+
+    .seeker-publication-detail h1 {
+        max-width: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .seeker-card,
+    .seeker-choice-card {
+        transition: none;
+    }
+
+    .seeker-card:hover,
+    .seeker-choice-card:hover {
+        transform: none;
     }
 }

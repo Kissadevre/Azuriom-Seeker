@@ -2,18 +2,15 @@
 
 @section('title', $publication->title)
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @section('content')
-    <div class="mb-4">
-        <a class="text-decoration-none" href="{{ route('seeker.index') }}"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i> @lang('seeker::messages.back')</a>
-    </div>
+    <div class="seeker-public-shell">
+    <a class="seeker-back-link" href="{{ route('seeker.index') }}"><i class="bi bi-arrow-left" aria-hidden="true"></i>@lang('seeker::messages.back')</a>
 
     <div class="row g-4">
         <div class="col-lg-8">
-            <article class="card mb-4">
+            <article class="card seeker-publication-detail mb-4">
                 <div class="card-body p-4 p-lg-5">
                     <div class="d-flex flex-wrap gap-2 mb-3">
                         <span class="badge {{ $publication->type === 'commission' ? 'text-bg-primary' : 'text-bg-info' }}">@lang('seeker::messages.types.'.$publication->type)</span>
@@ -28,7 +25,7 @@
                     <div class="d-flex align-items-center gap-3 text-muted mb-4">
                         <a href="{{ route('seeker.profiles.show', $publication->user) }}"><img src="{{ $publication->user->getAvatar(42) }}" width="42" height="42" class="rounded-circle" alt=""></a>
                         <div>
-                            <div><a class="text-reset text-decoration-none" href="{{ route('seeker.profiles.show', $publication->user) }}">@lang('seeker::messages.published_by', ['user' => $publication->user->name])</a></div>
+                            <div><a class="fw-semibold text-reset text-decoration-none" href="{{ route('seeker.profiles.show', $publication->user) }}">@lang('seeker::messages.published_by', ['user' => $publication->user->name])</a></div>
                             <small>@lang('seeker::messages.published_on', ['date' => format_date_compact($publication->published_at ?? $publication->created_at)])</small>
                         </div>
                     </div>
@@ -63,8 +60,8 @@
         <aside class="col-lg-4">
             <div class="card position-sticky seeker-sidebar">
                 <div class="card-body">
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <a href="{{ route('seeker.profiles.show', $publication->user) }}"><img src="{{ $publication->user->getAvatar(64) }}" width="64" height="64" class="rounded-circle" alt=""></a>
+                    <div class="seeker-author-summary d-flex align-items-center gap-3 mb-3">
+                        <a href="{{ route('seeker.profiles.show', $publication->user) }}"><img src="{{ $publication->user->getAvatar(64) }}" width="64" height="64" class="rounded-circle seeker-profile-avatar" alt=""></a>
                         <div>
                             <a class="fw-bold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $publication->user) }}">{{ $publication->user->name }}</a>
                             <div class="small text-muted">@lang('seeker::messages.types.'.$publication->type)</div>
@@ -135,7 +132,7 @@
         </aside>
     </div>
 
-    <section class="card mt-4">
+    <section class="card mt-4 overflow-hidden">
         <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
             <h2 class="h5 mb-0">@lang('seeker::messages.reviews.reputation_title', ['user' => $publication->user->name])</h2>
             <div>@include('seeker::publications._reputation', ['rating' => $reputation->rating, 'count' => $reputation->reviews_count])</div>
@@ -191,4 +188,5 @@
             </div>
         </div>
     @endif
+    </div>
 @endsection

@@ -2,19 +2,18 @@
 
 @section('title', trans('seeker::messages.profiles.title', ['user' => $user->name]))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @if($canModerateProfile)
     @include('seeker::admin._styles')
 @endif
 
 @section('content')
-    <div class="card mb-4">
+    <div class="seeker-public-shell">
+    <div class="card seeker-profile-hero mb-4">
         <div class="card-body p-4 p-lg-5">
             <div class="d-flex flex-wrap align-items-start gap-4">
-                <img src="{{ $user->getAvatar(112) }}" width="112" height="112" class="rounded-circle" alt="">
+                <img src="{{ $user->getAvatar(112) }}" width="112" height="112" class="rounded-circle seeker-profile-avatar" alt="">
                 <div class="flex-grow-1">
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                         <div>
@@ -97,7 +96,7 @@
             ['icon' => 'bi-bag-check', 'value' => $statistics['client_completed'], 'label' => 'client_completed'],
         ] as $stat)
             <div class="col-6 col-lg-3">
-                <div class="card h-100"><div class="card-body text-center"><i class="bi {{ $stat['icon'] }} fs-3 text-primary" aria-hidden="true"></i><div class="display-6 fw-semibold">{{ $stat['value'] }}</div><div class="small text-muted">@lang('seeker::messages.profiles.stats.'.$stat['label'])</div></div></div>
+                <div class="card seeker-stat-card h-100"><div class="card-body text-center"><i class="bi {{ $stat['icon'] }} fs-3 text-primary mb-2" aria-hidden="true"></i><div class="display-6 fw-semibold">{{ $stat['value'] }}</div><div class="small text-muted">@lang('seeker::messages.profiles.stats.'.$stat['label'])</div></div></div>
             </div>
         @endforeach
     </div>
@@ -137,12 +136,13 @@
 
     @if($publications->isNotEmpty())
         <section class="mt-4">
-            <h2 class="h4 mb-3">@lang('seeker::messages.profiles.publications')</h2>
+            <h2 class="seeker-section-title"><i class="bi bi-megaphone" aria-hidden="true"></i>@lang('seeker::messages.profiles.publications')</h2>
             <div class="row g-3">
                 @foreach($publications as $publication)
-                    <div class="col-md-6 col-xl-4"><a class="card h-100 text-decoration-none" href="{{ route('seeker.publications.show', $publication) }}"><div class="card-body"><span class="badge text-bg-light mb-2">@lang('seeker::messages.types.'.$publication->type)</span><h3 class="h6 text-body">{{ $publication->title }}</h3><span class="small text-muted">@include('seeker::publications._price', ['publication' => $publication])</span></div></a></div>
+                    <div class="col-md-6 col-xl-4"><a class="card seeker-profile-publication h-100 text-decoration-none" href="{{ route('seeker.publications.show', $publication) }}"><div class="card-body"><span class="badge text-bg-light mb-2">@lang('seeker::messages.types.'.$publication->type)</span><h3 class="h6 text-body">{{ $publication->title }}</h3><span class="small text-muted">@include('seeker::publications._price', ['publication' => $publication])</span></div></a></div>
                 @endforeach
             </div>
         </section>
     @endif
+    </div>
 @endsection
