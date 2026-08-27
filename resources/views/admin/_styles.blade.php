@@ -296,6 +296,22 @@
                 font-size: 1rem;
             }
 
+            .seeker-admin-report-status-table tbody td:first-child {
+                border-left: .25rem solid transparent;
+            }
+
+            .seeker-admin-report-status-table tbody tr.seeker-admin-report-status-pending > td:first-child {
+                border-left-color: var(--bs-warning);
+            }
+
+            .seeker-admin-report-status-table tbody tr.seeker-admin-report-status-reviewed > td:first-child {
+                border-left-color: var(--bs-success);
+            }
+
+            .seeker-admin-report-status-table tbody tr.seeker-admin-report-status-dismissed > td:first-child {
+                border-left-color: var(--bs-primary);
+            }
+
             .seeker-admin-switch-row {
                 display: flex;
                 align-items: center;
