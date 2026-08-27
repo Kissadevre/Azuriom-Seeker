@@ -49,9 +49,13 @@
                         <div class="row g-3">
                             @foreach($publication->images as $image)
                                 <div class="col-md-6">
-                                    <a href="{{ route('seeker.images.show', $image) }}" target="_blank" rel="noopener">
-                                        <img src="{{ route('seeker.images.show', $image) }}" class="seeker-gallery-image rounded" alt="{{ $image->original_name }}">
-                                    </a>
+                                    @include('seeker::publications._gallery-trigger', [
+                                        'image' => $image,
+                                        'galleryId' => 'publicationGallery',
+                                        'galleryIndex' => $loop->index,
+                                        'galleryTotal' => $publication->images->count(),
+                                        'imageClass' => 'seeker-gallery-image rounded',
+                                    ])
                                 </div>
                             @endforeach
                         </div>
@@ -171,6 +175,13 @@
             <div class="card-footer d-flex justify-content-center">{{ $authorReviews->links() }}</div>
         @endif
     </section>
+
+    @if($publication->portfolio_type === 'images' && $publication->images->isNotEmpty())
+        @include('seeker::publications._gallery', [
+            'galleryId' => 'publicationGallery',
+            'galleryTitle' => trans('seeker::messages.gallery.title'),
+        ])
+    @endif
 
     @if($publication->portfolio_type === 'external' && $publication->portfolio_url)
         <div class="modal fade" id="externalPortfolioWarning" tabindex="-1" aria-labelledby="externalPortfolioWarningTitle" aria-describedby="externalPortfolioWarningDescription" aria-hidden="true">

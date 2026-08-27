@@ -23,6 +23,7 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 - Administrative point ledger with payer, recipient, publication, hold and delivery state, service and tip breakdowns, filters, and aggregate Seeker spending statistics.
 - One required portfolio format per publication: an HTTP/HTTPS external link, uploaded reference images, one video, or one audio file; formats cannot be combined.
 - Between one and six privately stored images when the uploaded portfolio format is selected (JPG, PNG, or WebP, 5 MB each).
+- Same-page reference gallery with keyboard navigation, image counters, and responsive previews.
 - One privately stored MP4 or WebM video, or one MP3, WAV, OGG, or M4A audio file, with a 10 MB limit and server-side MIME verification.
 - Per-publication visibility for everyone or authenticated Zibuu members only.
 - Informational service pricing as fixed or hourly Zibuu points, free, or to be agreed between interested users.

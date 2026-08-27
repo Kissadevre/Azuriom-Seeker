@@ -104,7 +104,16 @@
                     @elseif($publication->portfolio_type === 'images' && $publication->images->isNotEmpty())
                         <div class="row g-3">
                             @foreach($publication->images as $image)
-                                <div class="col-6"><a href="{{ route('seeker.images.show', $image) }}" target="_blank" rel="noopener" class="text-decoration-none"><img src="{{ route('seeker.images.show', $image) }}" class="img-fluid rounded border" alt="{{ $image->original_name }}"><div class="small text-body-secondary text-truncate mt-1">{{ $image->original_name }}</div></a></div>
+                                <div class="col-6">
+                                    @include('seeker::publications._gallery-trigger', [
+                                        'image' => $image,
+                                        'galleryId' => 'adminPublicationGallery',
+                                        'galleryIndex' => $loop->index,
+                                        'galleryTotal' => $publication->images->count(),
+                                        'imageClass' => 'img-fluid rounded border',
+                                        'showName' => true,
+                                    ])
+                                </div>
                             @endforeach
                         </div>
                     @elseif(in_array($publication->portfolio_type, \Azuriom\Plugin\Seeker\Models\Publication::uploadedPortfolioTypes(), true) && ($portfolioMedia = $publication->media->firstWhere('type', $publication->portfolio_type)))
@@ -118,6 +127,13 @@
             </div>
         </div>
     </div>
+
+    @if($publication->portfolio_type === 'images' && $publication->images->isNotEmpty())
+        @include('seeker::publications._gallery', [
+            'galleryId' => 'adminPublicationGallery',
+            'galleryTitle' => trans('seeker::messages.gallery.title'),
+        ])
+    @endif
 
     @include('seeker::admin._restriction-modal', [
         'user' => $publication->user,

@@ -43,6 +43,13 @@ return [
     'published_on' => 'Publicado :date',
     'references' => 'Imágenes de referencia',
     'no_references' => 'No se subieron imágenes de referencia.',
+    'gallery' => [
+        'title' => 'Galería de referencias',
+        'open_image' => 'Abrir imagen :current de :total',
+        'previous' => 'Imagen anterior',
+        'next' => 'Imagen siguiente',
+        'counter' => ':current / :total',
+    ],
     'media' => [
         'video_title' => 'Video del portafolio',
         'audio_title' => 'Audio del portafolio',
