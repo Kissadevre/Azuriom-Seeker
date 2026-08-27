@@ -85,6 +85,23 @@
         </div>
     </div>
 
+    @if($reports->isNotEmpty())
+        <div class="card seeker-admin-card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center gap-2"><h2 class="h5 mb-0">@lang('seeker::admin.publications.linked_reports')</h2><span class="badge text-bg-warning">{{ $reports->count() }}</span></div>
+            <div class="table-responsive"><table class="table table-hover align-middle seeker-admin-table seeker-admin-row-details-table seeker-admin-report-status-table mb-0"><thead><tr><th><span class="visually-hidden">@lang('seeker::admin.publications.report_details')</span></th><th>@lang('seeker::admin.reports.reporter')</th><th>@lang('seeker::admin.reports.reason')</th><th>@lang('seeker::admin.created_at')</th></tr></thead><tbody>
+                @foreach($reports as $report)
+                    <tr class="seeker-admin-report-status-{{ $report->status }}">
+                        <td class="seeker-admin-row-details-control"><span class="visually-hidden">@lang('seeker::admin.status'): @lang('seeker::admin.reports.statuses.'.$report->status). </span><button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#publicationReportDetails{{ $report->id }}" aria-expanded="false" aria-controls="publicationReportDetails{{ $report->id }}" title="@lang('seeker::admin.publications.report_details')"><i class="bi bi-chevron-right" aria-hidden="true"></i><span class="visually-hidden">@lang('seeker::admin.publications.report_details')</span></button></td>
+                        <td><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $report->reporter) }}" target="_blank" rel="noopener">{{ $report->reporter->name }}</a></td>
+                        <td>@lang('seeker::messages.publication_reports.reasons.'.$report->reason)</td>
+                        <td class="text-nowrap text-body-secondary small">{{ format_date($report->created_at, true) }}</td>
+                    </tr>
+                    <tr class="seeker-admin-row-details seeker-admin-report-status-{{ $report->status }}"><td colspan="4"><div class="collapse" id="publicationReportDetails{{ $report->id }}"><div class="seeker-admin-row-details-content"><div class="small fw-semibold text-body-secondary mb-2"><i class="bi bi-card-text me-1" aria-hidden="true"></i>@lang('seeker::admin.publications.report_details')</div><div style="white-space: pre-wrap">{{ $report->details }}</div><div class="seeker-admin-detail-item mt-3"><div class="small fw-semibold text-body-secondary mb-2">@lang('seeker::admin.publications.reported_snapshot')</div><strong class="d-block">{{ $report->reported_title }}</strong><div class="mt-1" style="white-space: pre-wrap">{{ $report->reported_description }}</div>@if(filled($report->reported_portfolio_url))<div class="small text-break mt-2">{{ $report->reported_portfolio_url }}</div>@endif</div><div class="seeker-admin-row-details-actions"><form method="POST" action="{{ route('seeker.admin.reports.update', ['publication', $report->id]) }}" class="d-flex flex-wrap justify-content-end gap-2">@csrf @method('PATCH')<select name="status" class="form-select form-select-sm" aria-label="@lang('seeker::admin.reports.update_status')">@foreach(\Azuriom\Plugin\Seeker\Models\PublicationReport::statuses() as $reportStatus)<option value="{{ $reportStatus }}" @selected($report->status === $reportStatus)>@lang('seeker::admin.reports.statuses.'.$reportStatus)</option>@endforeach</select><button class="btn btn-sm btn-primary"><i class="bi bi-check-lg me-1" aria-hidden="true"></i>@lang('messages.actions.save')</button></form></div></div></div></td></tr>
+                @endforeach
+            </tbody></table></div>
+        </div>
+    @endif
+
     <div class="card seeker-admin-card" id="conversations">
         <div class="card-header d-flex justify-content-between align-items-center gap-2"><h2 class="h5 mb-0">@lang('seeker::admin.publications.linked_conversations')</h2><span class="badge text-bg-primary">{{ $publication->conversations_count }}</span></div>
         <div class="table-responsive">

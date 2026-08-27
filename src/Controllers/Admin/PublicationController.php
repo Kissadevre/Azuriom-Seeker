@@ -39,6 +39,11 @@ class PublicationController extends Controller
     public function show(Publication $publication): View
     {
         $publication->load(['user', 'images'])->loadCount('conversations');
+        $reports = $publication->reports()
+            ->with('reporter')
+            ->latest('created_at')
+            ->latest('id')
+            ->get();
         $conversations = $publication->conversations()
             ->with('client')
             ->withCount([
@@ -51,7 +56,7 @@ class PublicationController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('seeker::admin.publications.show', compact('publication', 'conversations'));
+        return view('seeker::admin.publications.show', compact('publication', 'reports', 'conversations'));
     }
 
     public function updateStatus(PublicationStatusRequest $request, Publication $publication): RedirectResponse
