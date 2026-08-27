@@ -18,7 +18,7 @@ return [
     'status' => 'Status',
     'created_at' => 'Created',
     'updated_at' => 'Last edited',
-    'conversations' => 'Conversations',
+    'conversation_count' => 'Conversations',
     'actions' => 'Actions',
     'empty' => 'There are no publications to moderate.',
     'view' => 'View',
@@ -37,6 +37,8 @@ return [
             'enabled' => 'Enable access to Seeker',
             'enabled_help' => 'When disabled, every public Seeker route and action becomes unavailable. The administrative panel remains accessible so Seeker can be managed and re-enabled.',
             'disabled_notice' => 'Seeker is currently unavailable to all site users.',
+            'status_enabled' => 'Available',
+            'status_disabled' => 'Unavailable',
         ],
         'features' => [
             'title' => 'Feature availability',
@@ -84,6 +86,7 @@ return [
     'publications' => [
         'title' => 'Seeker publications',
         'subtitle' => 'Review every publication and its linked activity.',
+        'filters' => 'Filter publications',
         'back' => 'Back to publications',
         'public_view' => 'Open public view',
         'content' => 'Publication content',
@@ -118,6 +121,8 @@ return [
     'conversations' => [
         'title' => 'Seeker conversations',
         'subtitle' => 'Review private conversations and their complete message history.',
+        'filters' => 'Filter conversations',
+        'apply_filters' => 'Apply filters',
         'detail_title' => 'Conversation #:id',
         'back' => 'Back to conversations',
         'publication' => 'Linked publication',
@@ -173,6 +178,7 @@ return [
     'reports' => [
         'title' => 'Seeker reports',
         'subtitle' => 'Review reports against publications, profiles, and private conversations.',
+        'filters' => 'Filter reports',
         'pending_count' => ':count pending',
         'type' => 'Report type',
         'target' => 'Reported content',
@@ -206,6 +212,8 @@ return [
     'restrictions' => [
         'title' => 'Seeker restrictions',
         'subtitle' => 'Apply, review, and lift individual restrictions while preserving the moderation history.',
+        'search_title' => 'Find a user or filter the history',
+        'history_title' => 'Restriction history',
         'user_id' => 'User ID',
         'state' => 'History state',
         'states' => ['active' => 'Active', 'history' => 'Ended', 'all' => 'All'],
@@ -249,6 +257,7 @@ return [
     'transactions' => [
         'title' => 'Seeker transactions',
         'subtitle' => 'Trace every point hold, service payment, and tip processed through Seeker.',
+        'filters' => 'Filter transactions',
         'all_statuses' => 'All transaction statuses',
         'all_types' => 'All transaction types',
         'user_id' => 'Payer or recipient user ID',
@@ -286,6 +295,7 @@ return [
     'profile_reports' => [
         'title' => 'Profile reports',
         'subtitle' => 'Review reports submitted against public Seeker profiles.',
+        'filters' => 'Filter profile reports',
         'publications' => 'Publication moderation',
         'all_statuses' => 'All statuses',
         'filter' => 'Filter',

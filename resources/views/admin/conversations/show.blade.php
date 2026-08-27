@@ -2,17 +2,23 @@
 
 @section('title', trans('seeker::admin.conversations.detail_title', ['id' => $conversation->id]))
 
+@include('seeker::admin._styles')
+
 @section('content')
-    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
-        <div>
+    <div class="seeker-admin-shell">
+    <div class="seeker-admin-header">
+        <div class="seeker-admin-heading">
+            <span class="seeker-admin-icon"><i class="bi bi-chat-dots" aria-hidden="true"></i></span>
+            <div>
             <a class="text-decoration-none" href="{{ route('seeker.admin.conversations.index') }}"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.back')</a>
             <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
                 <h1 class="h3 mb-0">@lang('seeker::admin.conversations.detail_title', ['id' => $conversation->id])</h1>
                 <span class="badge text-bg-{{ $conversation->status === 'active' ? 'primary' : ($conversation->status === 'completed' ? 'success' : 'danger') }}">@lang('seeker::admin.conversations.statuses.'.$conversation->status)</span>
             </div>
         </div>
+        </div>
         @if($conversation->status === 'active')
-            <form method="POST" action="{{ route('seeker.admin.conversations.close', $conversation) }}" onsubmit="return confirm(@js(trans('seeker::admin.conversations.close_confirm')))" class="text-end">
+            <form method="POST" action="{{ route('seeker.admin.conversations.close', $conversation) }}" onsubmit="return confirm(@js(trans('seeker::admin.conversations.close_confirm')))" class="seeker-admin-header-actions text-end">
                 @csrf @method('PATCH')
                 <button class="btn btn-danger"><i class="bi bi-lock me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.force_close')</button>
                 <div class="small text-muted mt-1">@lang('seeker::admin.conversations.close_help')</div>
@@ -29,7 +35,7 @@
 
     <div class="row g-4 mb-4">
         <div class="col-xl-7">
-            <div class="card h-100">
+            <div class="card seeker-admin-card h-100">
                 <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::admin.conversations.publication')</h2></div>
                 <div class="card-body">
                     <a class="h5 text-decoration-none" href="{{ route('seeker.admin.publications.show', $conversation->publication) }}">{{ $conversation->publication->title }}</a>
@@ -39,7 +45,7 @@
             </div>
         </div>
         <div class="col-xl-5">
-            <div class="card h-100">
+            <div class="card seeker-admin-card h-100">
                 <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::admin.conversations.details')</h2></div>
                 <div class="card-body">
                     <dl class="row mb-0 small">
@@ -60,15 +66,15 @@
 
     <div class="row g-4 mb-4">
         @foreach([['role' => 'author', 'user' => $conversation->author], ['role' => 'client', 'user' => $conversation->client]] as $participant)
-            <div class="col-md-6"><div class="card h-100"><div class="card-body d-flex align-items-center gap-3"><img src="{{ $participant['user']->getAvatar(56) }}" width="56" height="56" class="rounded-circle" alt=""><div><div class="small text-muted">@lang('seeker::admin.conversations.'.$participant['role'])</div><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $participant['user']) }}" target="_blank" rel="noopener">{{ $participant['user']->name }}</a><div class="small text-muted">ID #{{ $participant['user']->id }}</div></div></div></div>
+            <div class="col-md-6"><div class="card seeker-admin-card h-100"><div class="card-body d-flex align-items-center gap-3"><img src="{{ $participant['user']->getAvatar(56) }}" width="56" height="56" class="rounded-circle" alt=""><div><div class="small text-body-secondary">@lang('seeker::admin.conversations.'.$participant['role'])</div><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $participant['user']) }}" target="_blank" rel="noopener">{{ $participant['user']->name }}</a><div class="small text-body-secondary">ID #{{ $participant['user']->id }}</div></div></div></div>
             </div>
         @endforeach
     </div>
 
     @if($reports->isNotEmpty())
-        <div class="card mb-4">
+        <div class="card seeker-admin-card mb-4">
             <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::admin.conversations.reports')</h2></div>
-            <div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>@lang('seeker::admin.conversations.reporter')</th><th>@lang('seeker::admin.conversations.reported_user')</th><th>@lang('seeker::admin.conversations.reason')</th><th>@lang('seeker::admin.conversations.report_details')</th><th>@lang('seeker::admin.status')</th></tr></thead><tbody>
+            <div class="table-responsive"><table class="table table-hover align-middle seeker-admin-table mb-0"><thead><tr><th>@lang('seeker::admin.conversations.reporter')</th><th>@lang('seeker::admin.conversations.reported_user')</th><th>@lang('seeker::admin.conversations.reason')</th><th>@lang('seeker::admin.conversations.report_details')</th><th>@lang('seeker::admin.status')</th></tr></thead><tbody>
                 @foreach($reports as $report)
                     <tr><td>{{ $report->reporter->name }}</td><td>{{ $report->reportedUser->name }}</td><td>@lang('seeker::messages.reports.reasons.'.$report->reason)</td><td style="min-width: 18rem; white-space: pre-wrap">{{ $report->details }}</td><td><span class="badge text-bg-{{ $report->status === 'pending' ? 'warning' : ($report->status === 'reviewed' ? 'success' : 'secondary') }}">@lang('seeker::messages.reports.statuses.'.$report->status)</span></td></tr>
                 @endforeach
@@ -76,13 +82,13 @@
         </div>
     @endif
 
-    <div class="card">
+    <div class="card seeker-admin-card">
         <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2"><div><h2 class="h5 mb-0">@lang('seeker::admin.conversations.message_history')</h2><div class="small text-muted">@lang('seeker::admin.conversations.read_only')</div></div><span class="badge text-bg-secondary">{{ $conversation->messages_count }}</span></div>
         <div class="card-body p-3 p-md-4">
             @if($messages->hasPages())<div class="d-flex justify-content-center mb-4">{{ $messages->links() }}</div>@endif
             @forelse($messages->getCollection()->reverse() as $message)
                 <div class="d-flex {{ $message->sender_id === $conversation->client_id ? 'justify-content-end' : 'justify-content-start' }} mb-3">
-                    <div class="border rounded p-3 {{ $message->sender_id === $conversation->client_id ? 'bg-body-secondary' : '' }}" style="max-width: min(42rem, 90%)">
+                    <div class="seeker-admin-message {{ $message->sender_id === $conversation->client_id ? 'is-client' : '' }}">
                         <div class="small fw-semibold mb-2">{{ $message->sender->name }} <span class="fw-normal text-muted">· @lang($message->sender_id === $conversation->author_id ? 'seeker::admin.conversations.author' : 'seeker::admin.conversations.client')</span></div>
                         @if($message->image_path)
                             <a href="{{ route('seeker.messages.images.show', $message) }}" target="_blank" rel="noopener"><img src="{{ route('seeker.messages.images.show', $message) }}" class="img-fluid rounded" style="max-height: 24rem" loading="lazy" alt="{{ $message->image_original_name }}"></a>
@@ -92,8 +98,9 @@
                     </div>
                 </div>
             @empty
-                <div class="text-center text-muted py-5">@lang('seeker::admin.conversations.no_messages')</div>
+                <div class="seeker-admin-empty"><span class="seeker-admin-empty-icon"><i class="bi bi-chat-square-text" aria-hidden="true"></i></span><div class="fw-semibold">@lang('seeker::admin.conversations.no_messages')</div></div>
             @endforelse
         </div>
+    </div>
     </div>
 @endsection
