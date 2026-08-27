@@ -13,6 +13,16 @@ return [
     'empty_mine' => 'Todavía no has creado ninguna publicación.',
     'search' => 'Buscar por título o descripción',
     'all_types' => 'Todos los tipos de publicación',
+    'results_count' => ':count publicación|:count publicaciones',
+    'categories' => [
+        'label' => 'Explorar Seeker',
+        'all' => 'Todas las publicaciones',
+        'all_description' => 'Explora todas las oportunidades activas.',
+        'commissions' => 'Comisiones',
+        'commissions_description' => 'Servicios ofrecidos por creadores de Seeker.',
+        'talent' => 'Búsqueda de talento',
+        'talent_description' => 'Proyectos que buscan colaboradores.',
+    ],
     'view_details' => 'Ver detalles',
     'portfolio' => 'Ver portafolio externo',
     'external_warning' => [
@@ -98,6 +108,7 @@ return [
     ],
     'actions' => [
         'filter' => 'Aplicar filtros',
+        'search' => 'Buscar',
         'save' => 'Publicar',
         'update' => 'Guardar cambios',
     ],

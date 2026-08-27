@@ -13,6 +13,16 @@ return [
     'empty_mine' => 'You have not created any publications yet.',
     'search' => 'Search by title or description',
     'all_types' => 'All publication types',
+    'results_count' => ':count publication|:count publications',
+    'categories' => [
+        'label' => 'Explore Seeker',
+        'all' => 'All publications',
+        'all_description' => 'Browse every active opportunity.',
+        'commissions' => 'Commissions',
+        'commissions_description' => 'Services offered by Seeker creators.',
+        'talent' => 'Talent wanted',
+        'talent_description' => 'Projects looking for collaborators.',
+    ],
     'view_details' => 'View details',
     'portfolio' => 'View external portfolio',
     'external_warning' => [
@@ -98,6 +108,7 @@ return [
     ],
     'actions' => [
         'filter' => 'Apply filters',
+        'search' => 'Search',
         'save' => 'Publish',
         'update' => 'Save changes',
     ],

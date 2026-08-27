@@ -22,6 +22,9 @@
                         <a class="btn btn-outline-primary" href="{{ route('seeker.publications.mine') }}">
                             <i class="bi bi-briefcase me-1" aria-hidden="true"></i> @lang('seeker::messages.my_publications')
                         </a>
+                        <a class="btn btn-outline-primary" href="{{ route('seeker.conversations.index') }}">
+                            <i class="bi bi-chat-dots me-1" aria-hidden="true"></i> @lang('seeker::messages.conversations.title')
+                        </a>
                         @if($publicationsEnabled)
                             <a class="btn btn-primary" href="{{ route('seeker.publications.create') }}">
                                 <i class="bi bi-plus-lg me-1" aria-hidden="true"></i> @lang('seeker::messages.publish')
@@ -35,27 +38,40 @@
         </div>
     </div>
 
+    <nav class="seeker-category-nav mb-3" aria-label="@lang('seeker::messages.categories.label')">
+        <a class="seeker-category-link {{ $type === null ? 'active' : '' }}" href="{{ route('seeker.index', array_filter(['search' => $search])) }}" @if($type === null) aria-current="page" @endif>
+            <span class="seeker-category-icon"><i class="bi bi-grid" aria-hidden="true"></i></span>
+            <span><strong>@lang('seeker::messages.categories.all')</strong><small>@lang('seeker::messages.categories.all_description')</small></span>
+        </a>
+        <a class="seeker-category-link {{ $type === \Azuriom\Plugin\Seeker\Models\Publication::TYPE_COMMISSION ? 'active' : '' }}" href="{{ route('seeker.index', array_filter(['type' => \Azuriom\Plugin\Seeker\Models\Publication::TYPE_COMMISSION, 'search' => $search])) }}" @if($type === \Azuriom\Plugin\Seeker\Models\Publication::TYPE_COMMISSION) aria-current="page" @endif>
+            <span class="seeker-category-icon"><i class="bi bi-briefcase" aria-hidden="true"></i></span>
+            <span><strong>@lang('seeker::messages.categories.commissions')</strong><small>@lang('seeker::messages.categories.commissions_description')</small></span>
+        </a>
+        <a class="seeker-category-link {{ $type === \Azuriom\Plugin\Seeker\Models\Publication::TYPE_TALENT ? 'active' : '' }}" href="{{ route('seeker.index', array_filter(['type' => \Azuriom\Plugin\Seeker\Models\Publication::TYPE_TALENT, 'search' => $search])) }}" @if($type === \Azuriom\Plugin\Seeker\Models\Publication::TYPE_TALENT) aria-current="page" @endif>
+            <span class="seeker-category-icon"><i class="bi bi-people" aria-hidden="true"></i></span>
+            <span><strong>@lang('seeker::messages.categories.talent')</strong><small>@lang('seeker::messages.categories.talent_description')</small></span>
+        </a>
+    </nav>
+
     <div class="card seeker-filter-card mb-4">
         <div class="card-body p-3 p-lg-4">
-            <form method="GET" class="row g-2" role="search">
-                <div class="col-lg">
+            <form method="GET" class="d-flex flex-column flex-sm-row gap-2" role="search">
+                @if($type !== null)<input type="hidden" name="type" value="{{ $type }}">@endif
+                <div class="flex-grow-1">
                     <label class="visually-hidden" for="seekerSearch">@lang('seeker::messages.search')</label>
                     <div class="input-group"><span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span><input id="seekerSearch" type="search" name="search" class="form-control" value="{{ $search }}" placeholder="@lang('seeker::messages.search')"></div>
                 </div>
-                <div class="col-lg-3">
-                    <label class="visually-hidden" for="seekerType">@lang('seeker::messages.fields.type')</label>
-                    <select id="seekerType" name="type" class="form-select">
-                        <option value="">@lang('seeker::messages.all_types')</option>
-                        @foreach(\Azuriom\Plugin\Seeker\Models\Publication::types() as $publicationType)
-                            <option value="{{ $publicationType }}" @selected($type === $publicationType)>@lang('seeker::messages.types.'.$publicationType)</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-auto">
-                    <button class="btn btn-primary w-100"><i class="bi bi-search me-1" aria-hidden="true"></i> @lang('seeker::messages.actions.filter')</button>
-                </div>
+                <button class="btn btn-primary px-4"><i class="bi bi-search me-1" aria-hidden="true"></i>@lang('seeker::messages.actions.search')</button>
             </form>
         </div>
+    </div>
+
+    <div class="seeker-results-heading d-flex flex-wrap align-items-end justify-content-between gap-2 mb-3">
+        <div>
+            <span class="seeker-eyebrow">@lang('seeker::messages.categories.label')</span>
+            <h2 class="h4 mb-0">@lang('seeker::messages.categories.'.($type === 'commission' ? 'commissions' : ($type === 'talent' ? 'talent' : 'all')))</h2>
+        </div>
+        <span class="text-muted">@choice('seeker::messages.results_count', $publications->total(), ['count' => $publications->total()])</span>
     </div>
 
     @if($publications->isEmpty())
