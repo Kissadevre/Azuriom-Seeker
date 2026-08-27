@@ -134,6 +134,7 @@ return [
         'all_report_states' => 'Todas las conversaciones',
         'with_reports' => 'Conversaciones con reportes',
         'without_reports' => 'Conversaciones sin reportes',
+        'report_count' => '{1} :count reporte.|[2,*] :count reportes.',
         'dates' => 'Fechas',
         'detail_title' => 'Conversación n.º :id',
         'back' => 'Volver a conversaciones',

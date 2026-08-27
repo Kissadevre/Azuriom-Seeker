@@ -23,7 +23,7 @@ class ConversationController extends Controller
 
         $conversations = Conversation::query()
             ->with(['publication', 'client', 'author'])
-            ->withCount(['messages', 'reports'])
+            ->withCount('reports')
             ->when($status, fn ($query) => $query->where('status', $status))
             ->when($reports === 'with', fn ($query) => $query->whereHas('reports'))
             ->when($reports === 'without', fn ($query) => $query->whereDoesntHave('reports'))

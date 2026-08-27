@@ -223,6 +223,14 @@
                 text-align: center;
             }
 
+            .seeker-admin-conversations-table tbody td:first-child {
+                border-left: .25rem solid transparent;
+            }
+
+            .seeker-admin-conversations-table tbody tr.seeker-admin-row-reported > td:first-child {
+                border-left-color: var(--bs-warning);
+            }
+
             .seeker-admin-status-toggle {
                 cursor: pointer;
                 font: inherit;
