@@ -223,23 +223,16 @@
                 text-align: center;
             }
 
-            .seeker-admin-status-actions {
-                display: inline-flex;
-                align-items: center;
-                gap: .35rem;
+            .seeker-admin-status-toggle {
+                cursor: pointer;
+                font: inherit;
             }
 
-            .seeker-admin-status-actions .btn {
-                display: inline-flex;
-                width: 2.15rem;
-                height: 2.15rem;
-                align-items: center;
-                justify-content: center;
-                padding: 0;
-                border-radius: .55rem;
+            .seeker-admin-status-menu {
+                min-width: 13rem;
             }
 
-            .seeker-admin-status-actions .btn:disabled {
+            .seeker-admin-status-menu .dropdown-item:disabled {
                 opacity: 1;
             }
 
