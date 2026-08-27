@@ -20,6 +20,7 @@ return [
     'updated_at' => 'Last edited',
     'conversation_count' => 'Conversations',
     'actions' => 'Actions',
+    'clear_filters' => 'Clear filters',
     'empty' => 'There are no publications to moderate.',
     'view' => 'View',
     'details' => 'Details',

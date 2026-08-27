@@ -11,6 +11,7 @@
             'headerTitle' => trans('seeker::admin.publications.title'),
             'headerSubtitle' => trans('seeker::admin.publications.subtitle'),
             'headerTotal' => $publications->total(),
+            'headerTotalIcon' => 'bi-megaphone',
         ])
 
         <div class="seeker-admin-toolbar mb-4">
@@ -25,13 +26,18 @@
                         @endforeach
                     </select>
                 </form>
-                <a class="btn btn-outline-danger" href="{{ route('seeker.admin.reports.index') }}"><i class="bi bi-flag me-1" aria-hidden="true"></i>@lang('seeker::admin.reports.title')</a>
+                <div class="seeker-admin-filter-actions">
+                    @if(filled($status))
+                        <a class="btn btn-outline-secondary" href="{{ route('seeker.admin.publications.index') }}"><i class="bi bi-x-lg me-1" aria-hidden="true"></i>@lang('seeker::admin.clear_filters')</a>
+                    @endif
+                    <a class="btn btn-outline-danger" href="{{ route('seeker.admin.reports.index') }}"><i class="bi bi-flag me-1" aria-hidden="true"></i>@lang('seeker::admin.reports.title')</a>
+                </div>
             </div>
         </div>
 
         <div class="card seeker-admin-card">
             <div class="table-responsive">
-                <table class="table table-hover align-middle seeker-admin-table mb-0">
+                <table class="table table-hover align-middle seeker-admin-table seeker-admin-table--actions mb-0">
                     <thead><tr><th>@lang('seeker::admin.publication')</th><th>@lang('seeker::admin.author')</th><th>@lang('seeker::admin.status')</th><th>@lang('seeker::admin.created_at')</th><th>@lang('seeker::admin.updated_at')</th><th class="text-center">@lang('seeker::admin.conversation_count')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead>
                     <tbody>
                         @forelse($publications as $publication)

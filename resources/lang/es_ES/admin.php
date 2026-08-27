@@ -20,6 +20,7 @@ return [
     'updated_at' => 'Última edición',
     'conversation_count' => 'Conversaciones',
     'actions' => 'Acciones',
+    'clear_filters' => 'Limpiar filtros',
     'empty' => 'No hay publicaciones para moderar.',
     'view' => 'Ver',
     'details' => 'Detalles',

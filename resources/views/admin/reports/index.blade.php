@@ -11,6 +11,8 @@
             'headerTitle' => trans('seeker::admin.reports.title'),
             'headerSubtitle' => trans('seeker::admin.reports.subtitle'),
             'headerTotal' => trans('seeker::admin.reports.pending_count', ['count' => $counts['pending']]),
+            'headerTotalIcon' => 'bi-hourglass-split',
+            'headerTone' => 'danger',
         ])
 
         <div class="row g-3 mb-4">
@@ -24,13 +26,18 @@
             <div class="row g-2 align-items-end">
                 <div class="col-md"><label class="form-label small fw-semibold" for="reportType">@lang('seeker::admin.reports.type')</label><select id="reportType" name="type" class="form-select"><option value="">@lang('seeker::admin.reports.all_types')</option>@foreach(\Azuriom\Plugin\Seeker\Controllers\Admin\ReportController::TYPES as $reportType)<option value="{{ $reportType }}" @selected($type === $reportType)>@lang('seeker::admin.reports.types.'.$reportType)</option>@endforeach</select></div>
                 <div class="col-md"><label class="form-label small fw-semibold" for="reportStatus">@lang('seeker::admin.status')</label><select id="reportStatus" name="status" class="form-select"><option value="">@lang('seeker::admin.reports.all_statuses')</option>@foreach(\Azuriom\Plugin\Seeker\Models\ProfileReport::statuses() as $reportStatus)<option value="{{ $reportStatus }}" @selected($status === $reportStatus)>@lang('seeker::admin.reports.statuses.'.$reportStatus)</option>@endforeach</select></div>
-                <div class="col-md-auto"><button class="btn btn-primary w-100"><i class="bi bi-funnel me-1" aria-hidden="true"></i>@lang('seeker::admin.reports.filter')</button></div>
+                <div class="col-md-auto seeker-admin-filter-actions">
+                    <button class="btn btn-primary"><i class="bi bi-funnel me-1" aria-hidden="true"></i>@lang('seeker::admin.reports.filter')</button>
+                    @if(filled($type) || filled($status))
+                        <a class="btn btn-outline-secondary" href="{{ route('seeker.admin.reports.index') }}"><i class="bi bi-x-lg me-1" aria-hidden="true"></i>@lang('seeker::admin.clear_filters')</a>
+                    @endif
+                </div>
             </div>
         </form>
 
         <div class="card seeker-admin-card">
             <div class="table-responsive">
-                <table class="table table-hover align-middle seeker-admin-table mb-0">
+                <table class="table table-hover align-middle seeker-admin-table seeker-admin-table--actions mb-0">
                     <thead><tr><th>@lang('seeker::admin.reports.type')</th><th>@lang('seeker::admin.reports.target')</th><th>@lang('seeker::admin.reports.reporter')</th><th>@lang('seeker::admin.reports.reason')</th><th>@lang('seeker::admin.reports.details')</th><th>@lang('seeker::admin.created_at')</th><th>@lang('seeker::admin.status')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead>
                     <tbody>
                         @forelse($reports as $item)

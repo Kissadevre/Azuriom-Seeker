@@ -11,6 +11,8 @@
             'headerTitle' => trans('seeker::admin.restrictions.title'),
             'headerSubtitle' => trans('seeker::admin.restrictions.subtitle'),
             'headerTotal' => $restrictions->total(),
+            'headerTotalIcon' => 'bi-person-lock',
+            'headerTone' => 'danger',
         ])
 
         <form method="GET" class="seeker-admin-toolbar mb-4">
@@ -18,7 +20,12 @@
             <div class="row g-2 align-items-end">
                 <div class="col-md"><label class="form-label small fw-semibold" for="restrictionFilterUser">@lang('seeker::admin.restrictions.user_id')</label><input id="restrictionFilterUser" type="number" min="1" name="user_id" value="{{ $selectedUser?->id }}" class="form-control" placeholder="@lang('seeker::admin.restrictions.user_id')"></div>
                 <div class="col-md"><label class="form-label small fw-semibold" for="restrictionFilterState">@lang('seeker::admin.restrictions.state')</label><select id="restrictionFilterState" name="state" class="form-select">@foreach(['active', 'history', 'all'] as $restrictionState)<option value="{{ $restrictionState }}" @selected($state === $restrictionState)>@lang('seeker::admin.restrictions.states.'.$restrictionState)</option>@endforeach</select></div>
-                <div class="col-md-auto"><button class="btn btn-primary w-100"><i class="bi bi-search me-1" aria-hidden="true"></i>@lang('seeker::admin.restrictions.filter')</button></div>
+                <div class="col-md-auto seeker-admin-filter-actions">
+                    <button class="btn btn-primary"><i class="bi bi-search me-1" aria-hidden="true"></i>@lang('seeker::admin.restrictions.filter')</button>
+                    @if($selectedUser || $state !== 'active')
+                        <a class="btn btn-outline-secondary" href="{{ route('seeker.admin.restrictions.index') }}"><i class="bi bi-x-lg me-1" aria-hidden="true"></i>@lang('seeker::admin.clear_filters')</a>
+                    @endif
+                </div>
             </div>
         </form>
 
@@ -60,7 +67,7 @@
 
         <div class="card seeker-admin-card">
             <div class="card-header d-flex justify-content-between align-items-center"><h2>@lang('seeker::admin.restrictions.history_title')</h2><span class="badge rounded-pill text-bg-secondary">{{ $restrictions->total() }}</span></div>
-            <div class="table-responsive"><table class="table table-hover align-middle seeker-admin-table mb-0"><thead><tr><th>@lang('seeker::admin.restrictions.user')</th><th>@lang('seeker::admin.restrictions.type')</th><th>@lang('seeker::admin.restrictions.reason')</th><th>@lang('seeker::admin.restrictions.applied_by')</th><th>@lang('seeker::admin.restrictions.duration')</th><th>@lang('seeker::admin.status')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead><tbody>
+            <div class="table-responsive"><table class="table table-hover align-middle seeker-admin-table seeker-admin-table--actions mb-0"><thead><tr><th>@lang('seeker::admin.restrictions.user')</th><th>@lang('seeker::admin.restrictions.type')</th><th>@lang('seeker::admin.restrictions.reason')</th><th>@lang('seeker::admin.restrictions.applied_by')</th><th>@lang('seeker::admin.restrictions.duration')</th><th>@lang('seeker::admin.status')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead><tbody>
                 @forelse($restrictions as $restriction)
                     <tr>
                         <td><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.admin.restrictions.index', ['user_id' => $restriction->user_id, 'state' => $state]) }}">{{ $restriction->user->name }}</a><div class="small text-body-secondary">ID #{{ $restriction->user_id }}</div></td>

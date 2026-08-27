@@ -11,6 +11,8 @@
             'headerTitle' => trans('seeker::admin.transactions.title'),
             'headerSubtitle' => trans('seeker::admin.transactions.subtitle'),
             'headerTotal' => $transactions->total(),
+            'headerTotalIcon' => 'bi-arrow-left-right',
+            'headerTone' => 'success',
         ])
 
         @php($transactionStats = [
@@ -31,13 +33,18 @@
                 <div class="col-md"><label class="form-label small fw-semibold" for="transactionStatus">@lang('seeker::admin.status')</label><select id="transactionStatus" name="status" class="form-select"><option value="">@lang('seeker::admin.transactions.all_statuses')</option>@foreach(\Azuriom\Plugin\Seeker\Models\Transaction::statuses() as $transactionStatus)<option value="{{ $transactionStatus }}" @selected($status === $transactionStatus)>@lang('seeker::admin.transactions.statuses.'.$transactionStatus)</option>@endforeach</select></div>
                 <div class="col-md"><label class="form-label small fw-semibold" for="transactionType">@lang('seeker::admin.type')</label><select id="transactionType" name="type" class="form-select"><option value="">@lang('seeker::admin.transactions.all_types')</option>@foreach(\Azuriom\Plugin\Seeker\Models\Transaction::types() as $transactionType)<option value="{{ $transactionType }}" @selected($type === $transactionType)>@lang('seeker::admin.transactions.types.'.$transactionType)</option>@endforeach</select></div>
                 <div class="col-md"><label class="form-label small fw-semibold" for="transactionUser">@lang('seeker::admin.transactions.user_id')</label><input id="transactionUser" type="number" min="1" name="user_id" value="{{ $userId }}" class="form-control" placeholder="@lang('seeker::admin.transactions.user_id')"></div>
-                <div class="col-md-auto"><button class="btn btn-primary w-100"><i class="bi bi-funnel me-1" aria-hidden="true"></i>@lang('seeker::admin.transactions.filter')</button></div>
+                <div class="col-md-auto seeker-admin-filter-actions">
+                    <button class="btn btn-primary"><i class="bi bi-funnel me-1" aria-hidden="true"></i>@lang('seeker::admin.transactions.filter')</button>
+                    @if(filled($status) || filled($type) || filled($userId))
+                        <a class="btn btn-outline-secondary" href="{{ route('seeker.admin.transactions.index') }}"><i class="bi bi-x-lg me-1" aria-hidden="true"></i>@lang('seeker::admin.clear_filters')</a>
+                    @endif
+                </div>
             </div>
         </form>
 
         <div class="card seeker-admin-card">
             <div class="table-responsive">
-                <table class="table table-hover align-middle seeker-admin-table mb-0">
+                <table class="table table-hover align-middle seeker-admin-table seeker-admin-table--actions mb-0">
                     <thead><tr><th>@lang('seeker::admin.transactions.reference')</th><th>@lang('seeker::admin.transactions.publication')</th><th>@lang('seeker::admin.transactions.type')</th><th>@lang('seeker::admin.transactions.payer')</th><th>@lang('seeker::admin.transactions.payee')</th><th>@lang('seeker::admin.transactions.amount')</th><th>@lang('seeker::admin.status')</th><th>@lang('seeker::admin.transactions.date')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead>
                     <tbody>
                         @forelse($transactions as $transaction)

@@ -5,14 +5,35 @@
                 --seeker-admin-radius: .9rem;
                 --seeker-admin-soft-primary: rgba(var(--bs-primary-rgb), .1);
                 --seeker-admin-soft-secondary: rgba(var(--bs-secondary-rgb), .07);
+                --seeker-admin-accent: var(--bs-primary);
+                --seeker-admin-accent-rgb: var(--bs-primary-rgb);
+            }
+
+            .container-fluid:has(> .seeker-admin-shell) > h1.h3.mb-3 {
+                display: none;
             }
 
             .seeker-admin-header {
                 display: flex;
-                align-items: center;
+                align-items: flex-start;
                 justify-content: space-between;
                 gap: 1rem;
                 margin-bottom: 1.5rem;
+            }
+
+            .seeker-admin-header.is-danger {
+                --seeker-admin-accent: var(--bs-danger);
+                --seeker-admin-accent-rgb: var(--bs-danger-rgb);
+            }
+
+            .seeker-admin-header.is-warning {
+                --seeker-admin-accent: var(--bs-warning);
+                --seeker-admin-accent-rgb: var(--bs-warning-rgb);
+            }
+
+            .seeker-admin-header.is-success {
+                --seeker-admin-accent: var(--bs-success);
+                --seeker-admin-accent-rgb: var(--bs-success-rgb);
             }
 
             .seeker-admin-heading {
@@ -23,13 +44,24 @@
             }
 
             .seeker-admin-heading h1 {
-                margin-bottom: .2rem;
+                margin-bottom: .25rem;
                 font-size: calc(1.25rem + .35vw);
             }
 
             .seeker-admin-heading p {
                 margin-bottom: 0;
                 color: var(--bs-secondary-color);
+            }
+
+            .seeker-admin-eyebrow {
+                display: block;
+                margin-bottom: .2rem;
+                color: var(--seeker-admin-accent);
+                font-size: .7rem;
+                font-weight: 800;
+                letter-spacing: .075em;
+                line-height: 1;
+                text-transform: uppercase;
             }
 
             .seeker-admin-icon,
@@ -47,6 +79,8 @@
                 width: 3rem;
                 height: 3rem;
                 border-radius: .8rem;
+                color: var(--seeker-admin-accent);
+                background: rgba(var(--seeker-admin-accent-rgb), .1);
                 font-size: 1.35rem;
             }
 
@@ -55,10 +89,10 @@
                 align-items: center;
                 gap: .4rem;
                 padding: .4rem .7rem;
-                border: 1px solid rgba(var(--bs-primary-rgb), .15);
+                border: 1px solid rgba(var(--seeker-admin-accent-rgb), .15);
                 border-radius: 999px;
-                color: var(--bs-primary);
-                background: var(--seeker-admin-soft-primary);
+                color: var(--seeker-admin-accent);
+                background: rgba(var(--seeker-admin-accent-rgb), .1);
                 font-size: .8rem;
                 font-weight: 700;
                 white-space: nowrap;
@@ -93,6 +127,16 @@
                 box-shadow: 0 .2rem .8rem rgba(0, 0, 0, .025);
             }
 
+            .seeker-admin-toolbar .form-label {
+                margin-bottom: .35rem;
+            }
+
+            .seeker-admin-filter-actions {
+                display: flex;
+                align-items: center;
+                gap: .5rem;
+            }
+
             .seeker-admin-toolbar-title {
                 display: flex;
                 align-items: center;
@@ -121,6 +165,28 @@
                 padding-top: .95rem;
                 padding-bottom: .95rem;
                 vertical-align: middle;
+            }
+
+            .seeker-admin-table tbody tr:last-child > td {
+                border-bottom-width: 0;
+            }
+
+            .seeker-admin-table--actions th:last-child,
+            .seeker-admin-table--actions td:last-child {
+                position: sticky;
+                right: 0;
+                z-index: 1;
+                background: var(--bs-body-bg);
+                box-shadow: -.4rem 0 .65rem -.65rem rgba(0, 0, 0, .55);
+            }
+
+            .seeker-admin-table--actions thead th:last-child {
+                z-index: 2;
+                background: var(--bs-tertiary-bg);
+            }
+
+            .seeker-admin-table--actions.table-hover > tbody > tr:hover > td:last-child {
+                background: var(--bs-tertiary-bg);
             }
 
             .seeker-admin-action-group {
@@ -289,8 +355,51 @@
                     width: 100%;
                 }
 
-                .seeker-admin-switch-row {
+                .seeker-admin-heading {
                     align-items: flex-start;
+                }
+
+                .seeker-admin-icon {
+                    width: 2.65rem;
+                    height: 2.65rem;
+                    font-size: 1.15rem;
+                }
+
+                .seeker-admin-total {
+                    margin-left: 3.55rem;
+                }
+
+                .seeker-admin-toolbar {
+                    padding: .9rem;
+                }
+
+                .seeker-admin-filter-actions,
+                .seeker-admin-filter-actions > * {
+                    width: 100%;
+                }
+
+                .seeker-admin-switch-row {
+                    align-items: center;
+                    gap: 1rem;
+                    padding: 1rem;
+                }
+
+                .seeker-admin-card > .card-body.p-4 {
+                    padding: 1rem !important;
+                }
+
+                .seeker-admin-pagination {
+                    padding: .85rem 1rem;
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .seeker-admin-choice label {
+                    transition: none;
+                }
+
+                .seeker-admin-choice label:hover {
+                    transform: none;
                 }
             }
         </style>

@@ -11,19 +11,25 @@
             'headerTitle' => trans('seeker::admin.conversations.title'),
             'headerSubtitle' => trans('seeker::admin.conversations.subtitle'),
             'headerTotal' => $conversations->total(),
+            'headerTotalIcon' => 'bi-chat-dots',
         ])
 
         <form method="GET" class="seeker-admin-toolbar mb-4">
             <div class="seeker-admin-toolbar-title"><i class="bi bi-funnel" aria-hidden="true"></i>@lang('seeker::admin.conversations.filters')</div>
             <div class="row g-2 align-items-end">
                 <div class="col-md-5"><label class="form-label small fw-semibold" for="conversationStatus">@lang('seeker::admin.status')</label><select id="conversationStatus" name="status" class="form-select"><option value="">@lang('seeker::admin.conversations.all_statuses')</option>@foreach(\Azuriom\Plugin\Seeker\Models\Conversation::statuses() as $conversationStatus)<option value="{{ $conversationStatus }}" @selected($status === $conversationStatus)>@lang('seeker::admin.conversations.statuses.'.$conversationStatus)</option>@endforeach</select></div>
-                <div class="col-md-auto"><button class="btn btn-primary w-100"><i class="bi bi-funnel me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.apply_filters')</button></div>
+                <div class="col-md-auto seeker-admin-filter-actions">
+                    <button class="btn btn-primary"><i class="bi bi-funnel me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.apply_filters')</button>
+                    @if(filled($status))
+                        <a class="btn btn-outline-secondary" href="{{ route('seeker.admin.conversations.index') }}"><i class="bi bi-x-lg me-1" aria-hidden="true"></i>@lang('seeker::admin.clear_filters')</a>
+                    @endif
+                </div>
             </div>
         </form>
 
         <div class="card seeker-admin-card">
             <div class="table-responsive">
-                <table class="table table-hover align-middle seeker-admin-table mb-0">
+                <table class="table table-hover align-middle seeker-admin-table seeker-admin-table--actions mb-0">
                     <thead><tr><th>@lang('seeker::admin.conversations.publication')</th><th>@lang('seeker::admin.conversations.participants')</th><th>@lang('seeker::admin.status')</th><th class="text-center">@lang('seeker::admin.conversations.messages')</th><th class="text-center">@lang('seeker::admin.conversations.reports')</th><th>@lang('seeker::admin.created_at')</th><th>@lang('seeker::admin.conversations.last_activity')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead>
                     <tbody>
                         @forelse($conversations as $conversation)
