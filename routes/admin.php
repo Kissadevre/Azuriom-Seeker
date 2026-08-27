@@ -2,6 +2,7 @@
 
 use Azuriom\Plugin\Seeker\Controllers\Admin\ConversationController;
 use Azuriom\Plugin\Seeker\Controllers\Admin\ProfileReportController;
+use Azuriom\Plugin\Seeker\Controllers\Admin\ProfileController;
 use Azuriom\Plugin\Seeker\Controllers\Admin\PublicationController;
 use Azuriom\Plugin\Seeker\Controllers\Admin\ReportController;
 use Azuriom\Plugin\Seeker\Controllers\Admin\RestrictionController;
@@ -32,4 +33,5 @@ Route::patch('restrictions/{restriction}/revoke', [RestrictionController::class,
 Route::delete('restrictions/users/{user}/publications', [RestrictionController::class, 'removePublications'])->name('restrictions.publications.remove');
 Route::get('profile-reports', [ProfileReportController::class, 'index'])->name('profile-reports.index');
 Route::patch('profile-reports/{report}', [ProfileReportController::class, 'update'])->name('profile-reports.update');
+Route::delete('profiles/{user}/biography', [ProfileController::class, 'clearBiography'])->name('profiles.biography.clear');
 Route::get('transactions', [TransactionController::class, 'index'])->name('transactions.index');

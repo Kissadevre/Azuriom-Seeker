@@ -86,6 +86,7 @@ return [
         'restriction_created' => 'Applied the :type restriction to :user',
         'restriction_revoked' => 'Lifted the :type restriction from :user',
         'publications_removed' => 'Removed :count Seeker publications belonging to :user',
+        'biography_removed' => 'Removed the Seeker biography belonging to :user',
     ],
     'publications' => [
         'title' => 'Seeker publications',

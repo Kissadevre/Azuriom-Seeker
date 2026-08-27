@@ -78,6 +78,8 @@ class ProfileController extends Controller
                 ->first()
             : null;
         $biographiesEnabled = $settings->biographiesEnabled();
+        $canModerateProfile = $request->user()?->id !== $user->id
+            && $request->user()?->can('seeker.moderate') === true;
 
         return view('seeker::profiles.show', compact(
             'user',
@@ -87,7 +89,8 @@ class ProfileController extends Controller
             'reviews',
             'publications',
             'profileReport',
-            'biographiesEnabled'
+            'biographiesEnabled',
+            'canModerateProfile'
         ));
     }
 

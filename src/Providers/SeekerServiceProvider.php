@@ -90,6 +90,12 @@ class SeekerServiceProvider extends BasePluginServiceProvider
                 'message' => 'seeker::admin.logs.publications_removed',
                 'model' => User::class,
             ],
+            'seeker.profiles.biography_removed' => [
+                'icon' => 'person-x',
+                'color' => 'warning',
+                'message' => 'seeker::admin.logs.biography_removed',
+                'model' => User::class,
+            ],
         ]);
     }
 

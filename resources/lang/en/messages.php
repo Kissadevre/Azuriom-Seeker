@@ -256,6 +256,13 @@ return [
         'cancel' => 'Cancel',
         'save' => 'Save profile',
         'updated' => 'Your Seeker profile was updated.',
+        'moderation' => [
+            'restrict' => 'Restrict user',
+            'clear_biography' => 'Remove biography',
+            'clear_biography_title' => 'Remove user biography',
+            'clear_biography_confirm' => 'Remove :user’s biography? The original text will no longer be publicly available.',
+            'biography_removed' => 'The user biography was removed.',
+        ],
         'reputation_by_role' => 'Reputation by role',
         'as_author' => 'As commissioner',
         'as_client' => 'As client',

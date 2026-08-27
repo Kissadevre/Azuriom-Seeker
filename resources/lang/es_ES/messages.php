@@ -256,6 +256,13 @@ return [
         'cancel' => 'Cancelar',
         'save' => 'Guardar perfil',
         'updated' => 'Tu perfil de Seeker fue actualizado.',
+        'moderation' => [
+            'restrict' => 'Restringir usuario',
+            'clear_biography' => 'Eliminar biografía',
+            'clear_biography_title' => 'Eliminar biografía del usuario',
+            'clear_biography_confirm' => '¿Eliminar la biografía de :user? El texto original dejará de estar disponible públicamente.',
+            'biography_removed' => 'La biografía del usuario fue eliminada.',
+        ],
         'reputation_by_role' => 'Reputación por rol',
         'as_author' => 'Como comisionista',
         'as_client' => 'Como cliente',

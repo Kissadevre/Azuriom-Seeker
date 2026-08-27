@@ -89,8 +89,9 @@ class RestrictionController extends Controller
             'duration' => ['required', Rule::in(['indefinite', 'until'])],
             'expires_at' => ['nullable', 'required_if:duration,until', 'date', 'after:now'],
             'reason' => ['required', 'string', 'min:5', 'max:1000'],
-            'conversation_id' => ['nullable', 'integer', 'prohibits:publication_id', Rule::exists(Conversation::class, 'id')],
-            'publication_id' => ['nullable', 'integer', 'prohibits:conversation_id', Rule::exists(Publication::class, 'id')],
+            'conversation_id' => ['nullable', 'integer', 'prohibits:publication_id,profile_id', Rule::exists(Conversation::class, 'id')],
+            'publication_id' => ['nullable', 'integer', 'prohibits:conversation_id,profile_id', Rule::exists(Publication::class, 'id')],
+            'profile_id' => ['nullable', 'integer', 'prohibits:conversation_id,publication_id', Rule::exists(User::class, 'id')],
         ]);
 
         $user = User::query()->findOrFail($validated['user_id']);
@@ -100,10 +101,14 @@ class RestrictionController extends Controller
         $publication = filled($validated['publication_id'] ?? null)
             ? Publication::query()->withTrashed()->findOrFail($validated['publication_id'])
             : null;
+        $profileUser = filled($validated['profile_id'] ?? null)
+            ? User::query()->findOrFail($validated['profile_id'])
+            : null;
 
         abort_if($conversation !== null
             && ! in_array($user->id, [$conversation->author_id, $conversation->client_id], true), 403);
         abort_if($publication !== null && $publication->user_id !== $user->id, 403);
+        abort_if($profileUser !== null && $profileUser->id !== $user->id, 403);
 
         $restriction = DB::transaction(function () use ($request, $user, $validated) {
             User::query()->lockForUpdate()->findOrFail($user->id);
@@ -136,6 +141,7 @@ class RestrictionController extends Controller
         $redirect = match (true) {
             $conversation !== null => to_route('seeker.admin.conversations.show', $conversation),
             $publication !== null => to_route('seeker.admin.publications.show', $publication),
+            $profileUser !== null && $restriction->type !== UserRestriction::TYPE_PROFILE => to_route('seeker.profiles.show', $profileUser),
             default => to_route('seeker.admin.restrictions.index', ['user_id' => $user->id]),
         };
 

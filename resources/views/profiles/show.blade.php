@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
 @endpush
 
+@if($canModerateProfile)
+    @include('seeker::admin._styles')
+@endif
+
 @section('content')
     <div class="card mb-4">
         <div class="card-body p-4 p-lg-5">
@@ -18,7 +22,12 @@
                             <div class="text-muted">@lang('seeker::messages.profiles.member_since', ['date' => format_date_compact($user->created_at)])</div>
                         </div>
                         <div class="d-flex flex-wrap gap-2">
-                            @if(auth()->id() === $user->id)
+                            @if($canModerateProfile)
+                                <button class="btn btn-outline-warning" type="button" data-bs-toggle="modal" data-bs-target="#publicProfileRestriction{{ $user->id }}"><i class="bi bi-person-lock me-1" aria-hidden="true"></i>@lang('seeker::messages.profiles.moderation.restrict')</button>
+                                @if(filled($profile?->bio))
+                                    <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#clearBiographyModal"><i class="bi bi-trash me-1" aria-hidden="true"></i>@lang('seeker::messages.profiles.moderation.clear_biography')</button>
+                                @endif
+                            @elseif(auth()->id() === $user->id)
                                 @if($biographiesEnabled)
                                     <a class="btn btn-primary" href="{{ route('seeker.profiles.edit', $user) }}"><i class="bi bi-pencil me-1" aria-hidden="true"></i>@lang('seeker::messages.profiles.edit')</a>
                                 @endif
@@ -45,6 +54,40 @@
             </div>
         </div>
     </div>
+
+    @if($canModerateProfile)
+        @include('seeker::admin._restriction-modal', [
+            'user' => $user,
+            'modalId' => 'publicProfileRestriction'.$user->id,
+            'contextName' => 'profile_id',
+            'contextId' => $user->id,
+            'contextLabel' => trans('seeker::messages.profiles.title', ['user' => $user->name]),
+        ])
+
+        @if(filled($profile?->bio))
+            <div class="modal fade" id="clearBiographyModal" tabindex="-1" aria-labelledby="clearBiographyModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title fs-5" id="clearBiographyModalLabel"><i class="bi bi-trash text-danger me-2" aria-hidden="true"></i>@lang('seeker::messages.profiles.moderation.clear_biography_title')</h2>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@lang('messages.actions.close')"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>@lang('seeker::messages.profiles.moderation.clear_biography_confirm', ['user' => $user->name])</p>
+                            <div class="border rounded bg-body-tertiary p-3" style="white-space: pre-wrap">{{ $profile->bio }}</div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@lang('messages.actions.cancel')</button>
+                            <form method="POST" action="{{ route('seeker.admin.profiles.biography.clear', $user) }}">
+                                @csrf @method('DELETE')
+                                <button class="btn btn-danger"><i class="bi bi-trash me-1" aria-hidden="true"></i>@lang('seeker::messages.profiles.moderation.clear_biography')</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endif
 
     <div class="row g-3 mb-4">
         @foreach([
