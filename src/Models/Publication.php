@@ -115,4 +115,11 @@ class Publication extends Model
     {
         return [self::PRICE_BASIS_FIXED, self::PRICE_BASIS_HOURLY];
     }
+
+    public function requiresPointHold(): bool
+    {
+        return $this->type === self::TYPE_COMMISSION
+            && $this->pricing_type === self::PRICING_POINTS
+            && $this->price_basis === self::PRICE_BASIS_FIXED;
+    }
 }

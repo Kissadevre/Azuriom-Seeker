@@ -75,6 +75,20 @@
                         </strong>
                     </div>
 
+                    @if(auth()->id() !== $publication->user_id)
+                        <div class="d-grid mb-3">
+                            @if($contactConversation)
+                                <a class="btn btn-primary" href="{{ route('seeker.conversations.show', $contactConversation) }}">
+                                    <i class="bi bi-chat-dots me-1" aria-hidden="true"></i> @lang('seeker::messages.contact.continue')
+                                </a>
+                            @else
+                                <a class="btn btn-primary" href="{{ route('seeker.conversations.create', $publication) }}">
+                                    <i class="bi bi-chat-dots me-1" aria-hidden="true"></i> @lang('seeker::messages.contact.action')
+                                </a>
+                            @endif
+                        </div>
+                    @endif
+
                     @if(auth()->id() === $publication->user_id)
                         <hr>
                         <h2 class="h6">@lang('seeker::messages.management')</h2>

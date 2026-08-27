@@ -43,8 +43,7 @@ class ConversationStarter
             $heldPoints = 0.0;
             $escrowStatus = Conversation::ESCROW_NONE;
 
-            if ($lockedPublication->pricing_type === Publication::PRICING_POINTS
-                && $lockedPublication->price_basis === Publication::PRICE_BASIS_FIXED) {
+            if ($lockedPublication->requiresPointHold()) {
                 $heldPoints = (float) $lockedPublication->price;
 
                 if ($lockedClient->money < $heldPoints) {

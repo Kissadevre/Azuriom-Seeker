@@ -48,6 +48,11 @@ class SeekerServiceProvider extends BasePluginServiceProvider
                 'icon' => 'bi bi-briefcase',
                 'route' => 'seeker.publications.mine',
             ],
+            'seeker-messages' => [
+                'name' => trans('seeker::messages.conversations.title'),
+                'icon' => 'bi bi-chat-dots',
+                'route' => 'seeker.conversations.index',
+            ],
         ];
     }
 }

@@ -100,3 +100,30 @@
     border: 1px solid rgba(var(--bs-secondary-rgb), .2);
     background: rgba(var(--bs-secondary-rgb), .06);
 }
+
+.seeker-chat {
+    min-height: 34rem;
+}
+
+.seeker-chat-messages {
+    min-height: 22rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    background: rgba(var(--bs-secondary-rgb), .035);
+}
+
+.seeker-message {
+    max-width: min(80%, 42rem);
+    padding: .75rem 1rem;
+    border: 1px solid rgba(var(--bs-secondary-rgb), .18);
+    border-radius: 1rem 1rem 1rem .25rem;
+    background: var(--bs-body-bg);
+    overflow-wrap: anywhere;
+}
+
+.seeker-message-mine {
+    color: #fff;
+    border-color: var(--bs-primary);
+    border-radius: 1rem 1rem .25rem 1rem;
+    background: var(--bs-primary);
+}

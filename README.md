@@ -15,6 +15,8 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 - Between one and six privately stored images when the uploaded portfolio format is selected (JPG, PNG, or WebP, 5 MB each).
 - Per-publication visibility for everyone or authenticated Zibuu members only.
 - Informational service pricing as fixed or hourly Zibuu points, free, or to be agreed between interested users.
+- Private one-to-one conversations between publication authors and interested members.
+- Transactional point holds for fixed-price services, with duplicate-contact protection and no early delivery to the author.
 - Owner-controlled active and closed states.
 - Permission-based moderation with a protected hidden state.
 - English and Spanish (`es_ES`) translations.
@@ -34,7 +36,7 @@ The plugin does not modify Azuriom core files, root routes, root build configura
 
 ## Roadmap
 
-The next domain milestone is a collaboration/application workflow. Reviews and reputation should only become writable after both parties are connected to a completed collaboration; this prevents arbitrary or self-issued ratings. Additional planned work includes talent categories, richer profiles, notifications, reporting, and configurable moderation settings.
+The next domain milestone is the completion and dispute workflow that releases held points to the author or refunds them to the client. Reviews and reputation should only become writable after a collaboration is completed; this prevents arbitrary or self-issued ratings. Additional planned work includes hourly-work agreements, talent categories, richer profiles, reporting, and configurable moderation settings.
 
 ## Development checks
 

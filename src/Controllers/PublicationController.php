@@ -3,6 +3,7 @@
 namespace Azuriom\Plugin\Seeker\Controllers;
 
 use Azuriom\Http\Controllers\Controller;
+use Azuriom\Plugin\Seeker\Models\Conversation;
 use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Requests\PublicationStatusRequest;
 use Azuriom\Plugin\Seeker\Requests\StorePublicationRequest;
@@ -12,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Throwable;
 
@@ -42,8 +44,14 @@ class PublicationController extends Controller
     {
         $this->ensureVisibleToCurrentUser($publication);
         $publication->load(['user', 'images']);
+        $contactConversation = auth()->check() && auth()->id() !== $publication->user_id
+            ? Conversation::query()
+                ->where('publication_id', $publication->id)
+                ->where('client_id', auth()->id())
+                ->first()
+            : null;
 
-        return view('seeker::publications.show', compact('publication'));
+        return view('seeker::publications.show', compact('publication', 'contactConversation'));
     }
 
     public function mine(Request $request): View
@@ -112,10 +120,17 @@ class PublicationController extends Controller
 
         try {
             DB::transaction(function () use ($request, $publication, &$storedPaths, &$removedPaths) {
-                $publication->update($request->safe()->only([
+                $publication->fill($request->safe()->only([
                     'type', 'title', 'description', 'portfolio_type', 'portfolio_url',
                     'is_guest_visible', 'pricing_type', 'price', 'price_basis',
                 ]));
+
+                if ($publication->conversations()->exists()
+                    && $publication->isDirty(['type', 'pricing_type', 'price', 'price_basis'])) {
+                    throw ValidationException::withMessages([
+                        'pricing_type' => trans('seeker::messages.validation.pricing_locked'),
+                    ]);
+                }
 
                 if ($publication->portfolio_type === Publication::PORTFOLIO_IMAGES) {
                     $publication->portfolio_url = null;
@@ -157,6 +172,11 @@ class PublicationController extends Controller
     public function destroy(Request $request, Publication $publication): RedirectResponse
     {
         $this->ensureOwner($publication);
+
+        if ($publication->conversations()->exists()) {
+            return back()->with('error', trans('seeker::messages.alerts.cannot_delete_with_conversations'));
+        }
+
         $publication->delete();
 
         return redirect()->route('seeker.publications.mine')
