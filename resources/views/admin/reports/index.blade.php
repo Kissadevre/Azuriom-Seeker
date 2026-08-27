@@ -39,7 +39,7 @@
         <div class="card seeker-admin-card">
             <div class="table-responsive">
                 <table class="table table-hover align-middle seeker-admin-table seeker-admin-table--actions seeker-admin-report-status-table mb-0">
-                    <thead><tr><th class="text-center"><i class="bi bi-tags" aria-hidden="true"></i><span class="visually-hidden">@lang('seeker::admin.reports.type')</span></th><th>@lang('seeker::admin.reports.target')</th><th>@lang('seeker::admin.reports.reporter')</th><th>@lang('seeker::admin.reports.reason')</th><th>@lang('seeker::admin.reports.details')</th><th>@lang('seeker::admin.created_at')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead>
+                    <thead><tr><th class="text-center"><i class="bi bi-tags" aria-hidden="true"></i><span class="visually-hidden">@lang('seeker::admin.reports.type')</span></th><th>@lang('seeker::admin.reports.target')</th><th>@lang('seeker::admin.reports.reporter')</th><th>@lang('seeker::admin.reports.reported')</th><th>@lang('seeker::admin.reports.reason')</th><th>@lang('seeker::admin.created_at')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead>
                     <tbody>
                         @forelse($reports as $item)
                             @php($report = $item->report)
@@ -56,17 +56,9 @@
                                         <a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.admin.conversations.show', $report->conversation) }}">@lang('seeker::admin.conversations.detail_title', ['id' => $report->conversation_id])</a><div class="small text-body-secondary mt-1">{{ $report->conversation->publication->title }}</div>
                                     @endif
                                 </td>
-                                <td><span class="fw-semibold">{{ $report->reporter->name }}</span><div class="small text-body-secondary">ID #{{ $report->reporter_id }}</div></td>
+                                <td><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $report->reporter) }}" target="_blank" rel="noopener">{{ $report->reporter->name }}</a></td>
+                                <td><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $reportedUser) }}" target="_blank" rel="noopener">{{ $reportedUser->name }}</a></td>
                                 <td>@lang($item->report_type === 'profile' ? 'seeker::messages.profile_reports.reasons.'.$report->reason : ($item->report_type === 'publication' ? 'seeker::messages.publication_reports.reasons.'.$report->reason : 'seeker::messages.reports.reasons.'.$report->reason))</td>
-                                <td style="min-width: 20rem"><div style="white-space: pre-wrap">{{ $report->details }}</div>
-                                    @if($item->report_type === 'publication')
-                                        <details class="small mt-2"><summary class="text-primary">@lang('seeker::admin.reports.publication_snapshot')</summary><div class="seeker-admin-detail-item mt-2"><strong class="d-block">{{ $report->reported_title }}</strong><div class="mt-1" style="white-space: pre-wrap">{{ $report->reported_description }}</div>@if(filled($report->reported_portfolio_url))<div class="small text-break mt-2">{{ $report->reported_portfolio_url }}</div>@endif</div></details>
-                                    @elseif($item->report_type === 'profile' && filled($report->reported_bio))
-                                        <details class="small mt-2"><summary class="text-primary">@lang('seeker::admin.reports.profile_snapshot')</summary><div class="seeker-admin-detail-item mt-2" style="white-space: pre-wrap">{{ $report->reported_bio }}</div></details>
-                                    @elseif($item->report_type === 'conversation')
-                                        <div class="small text-body-secondary mt-2">@lang('seeker::admin.reports.reported_user', ['user' => $report->reportedUser->name]) @if($report->reported_through_message_id)· @lang('seeker::admin.reports.through_message', ['id' => $report->reported_through_message_id])@endif</div>
-                                    @endif
-                                </td>
                                 <td class="text-nowrap text-body-secondary small">{{ format_date($report->created_at, true) }}</td>
                                 <td style="min-width: 13rem">
                                     <div class="d-flex justify-content-end gap-1 mb-2">
