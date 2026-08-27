@@ -7,6 +7,7 @@ use Azuriom\Notifications\AlertNotification;
 use Azuriom\Plugin\Seeker\Models\Conversation;
 use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Requests\ContactPublicationRequest;
+use Azuriom\Plugin\Seeker\Services\CommissionCompletionService;
 use Azuriom\Plugin\Seeker\Services\ConversationStarter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -75,7 +76,11 @@ class ConversationController extends Controller
                 : 'seeker::messages.contact.already_exists'));
     }
 
-    public function show(Request $request, Conversation $conversation): View
+    public function show(
+        Request $request,
+        Conversation $conversation,
+        CommissionCompletionService $completionService
+    ): View
     {
         $this->ensureParticipant($conversation, $request);
 
@@ -87,13 +92,27 @@ class ConversationController extends Controller
         $conversationReport = $conversation->reports()
             ->where('reporter_id', $request->user()->id)
             ->first();
+        $completionServicePoints = null;
+
+        if ($conversation->completion_status === Conversation::COMPLETION_PENDING
+            && $conversation->isPaidCommission()) {
+            $completionServicePoints = $completionService->calculateServicePoints(
+                $conversation,
+                $conversation->proposed_hours === null ? null : (float) $conversation->proposed_hours
+            );
+        }
 
         $conversation->messages()
             ->where('sender_id', '!=', $request->user()->id)
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
 
-        return view('seeker::conversations.show', compact('conversation', 'messages', 'conversationReport'));
+        return view('seeker::conversations.show', compact(
+            'conversation',
+            'messages',
+            'conversationReport',
+            'completionServicePoints'
+        ));
     }
 
     private function ensureContactable(Publication $publication, Request $request): void

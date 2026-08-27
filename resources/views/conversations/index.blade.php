@@ -25,6 +25,11 @@
                                 @if($conversation->last_message_at)<small class="text-muted text-nowrap">{{ format_date_compact($conversation->last_message_at) }}</small>@endif
                             </div>
                             <div class="small text-muted text-truncate">{{ $conversation->publication->title }}</div>
+                            @if($conversation->status === 'completed')
+                                <span class="badge text-bg-success mt-1">@lang('seeker::messages.completion.completed')</span>
+                            @elseif($conversation->completion_status === 'pending')
+                                <span class="badge text-bg-warning mt-1">@lang('seeker::messages.completion.pending')</span>
+                            @endif
                             @if($conversation->latestMessage)<div class="text-truncate mt-1">{{ $conversation->latestMessage->content }}</div>@endif
                         </div>
                         @if($conversation->unread_count > 0)<span class="badge rounded-pill text-bg-primary">{{ $conversation->unread_count }}</span>@endif

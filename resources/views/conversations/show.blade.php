@@ -37,6 +37,72 @@
             </div>
         @endif
 
+        @if($conversation->completion_status === 'accepted')
+            <div class="alert alert-success rounded-0 border-start-0 border-end-0 mb-0">
+                <div class="d-flex flex-wrap justify-content-between gap-2">
+                    <strong><i class="bi bi-check-circle me-2" aria-hidden="true"></i>@lang('seeker::messages.completion.completed')</strong>
+                    <span>@lang('seeker::messages.completion.paid_total', ['points' => format_money((float) $conversation->service_points + (float) $conversation->tip_points)])</span>
+                </div>
+                @if((float) $conversation->tip_points > 0)
+                    <div class="small mt-1">@lang('seeker::messages.completion.tip_included', ['points' => format_money((float) $conversation->tip_points)])</div>
+                @endif
+                @if($conversation->final_message)
+                    <div class="border-top mt-3 pt-3">{!! nl2br(e($conversation->final_message)) !!}</div>
+                @endif
+            </div>
+        @elseif($conversation->isPaidCommission())
+            @if($conversation->completion_status === 'rejected')
+                <div class="alert alert-danger rounded-0 border-start-0 border-end-0 mb-0">
+                    <i class="bi bi-x-circle me-2" aria-hidden="true"></i>@lang('seeker::messages.completion.rejected_notice')
+                </div>
+            @endif
+
+            @if(auth()->id() === $conversation->author_id)
+                <div class="border-bottom p-3">
+                    @if($conversation->completion_status === 'pending')
+                        <div class="text-muted"><i class="bi bi-hourglass-split me-2" aria-hidden="true"></i>@lang('seeker::messages.completion.awaiting_client')</div>
+                        @if($conversation->isHourlyCommission())
+                            <div class="small mt-1">@lang('seeker::messages.completion.proposed_summary', ['hours' => $conversation->proposed_hours, 'points' => format_money($completionServicePoints)])</div>
+                        @endif
+                    @else
+                        <form method="POST" action="{{ route('seeker.conversations.completion.request', $conversation) }}" class="d-flex flex-wrap align-items-end gap-2">
+                            @csrf
+                            @if($conversation->isHourlyCommission())
+                                <div>
+                                    <label class="form-label mb-1" for="completionHours">@lang('seeker::messages.completion.hours_worked')</label>
+                                    <input id="completionHours" type="number" name="hours" value="{{ old('hours', $conversation->proposed_hours) }}" min="0.01" max="999999.99" step="0.01" class="form-control @error('hours') is-invalid @enderror" required>
+                                    @error('hours')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+                            @endif
+                            <button class="btn btn-success" type="submit">
+                                <i class="bi bi-check2-circle me-1" aria-hidden="true"></i> @lang('seeker::messages.completion.request_action')
+                            </button>
+                        </form>
+                    @endif
+                </div>
+            @elseif($conversation->completion_status === 'pending')
+                <div class="border-bottom p-3">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div>
+                            <strong class="d-block">@lang('seeker::messages.completion.client_decision')</strong>
+                            @if($conversation->isHourlyCommission())
+                                <span class="small text-muted">@lang('seeker::messages.completion.proposed_summary', ['hours' => $conversation->proposed_hours, 'points' => format_money($completionServicePoints)])</span>
+                            @else
+                                <span class="small text-muted">@lang('seeker::messages.completion.fixed_summary', ['points' => format_money($completionServicePoints)])</span>
+                            @endif
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <form method="POST" action="{{ route('seeker.conversations.completion.reject', $conversation) }}" onsubmit="return confirm(@js(trans('seeker::messages.completion.reject_confirm')))">
+                                @csrf
+                                <button class="btn btn-outline-danger" type="submit">@lang('seeker::messages.completion.reject_action')</button>
+                            </form>
+                            <a class="btn btn-success" href="{{ route('seeker.conversations.completion.show', $conversation) }}">@lang('seeker::messages.completion.review_action')</a>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        @endif
+
         <div class="card-body seeker-chat-messages p-3 p-md-4">
             @if($messages->hasPages())<div class="d-flex justify-content-center mb-4">{{ $messages->links() }}</div>@endif
             @foreach($messages->getCollection()->reverse() as $message)
@@ -52,15 +118,19 @@
         </div>
 
         <div class="card-footer p-3">
-            <form method="POST" action="{{ route('seeker.conversations.messages.store', $conversation) }}">
-                @csrf
-                <label class="visually-hidden" for="conversationMessage">@lang('seeker::messages.conversations.reply')</label>
-                <div class="input-group">
-                    <textarea id="conversationMessage" name="content" rows="2" maxlength="2000" class="form-control @error('content') is-invalid @enderror" placeholder="@lang('seeker::messages.conversations.reply')" required>{{ old('content') }}</textarea>
-                    <button class="btn btn-primary px-4"><i class="bi bi-send" aria-hidden="true"></i><span class="visually-hidden">@lang('seeker::messages.conversations.send')</span></button>
-                    @error('content')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
-            </form>
+            @if($conversation->status === 'active')
+                <form method="POST" action="{{ route('seeker.conversations.messages.store', $conversation) }}">
+                    @csrf
+                    <label class="visually-hidden" for="conversationMessage">@lang('seeker::messages.conversations.reply')</label>
+                    <div class="input-group">
+                        <textarea id="conversationMessage" name="content" rows="2" maxlength="2000" class="form-control @error('content') is-invalid @enderror" placeholder="@lang('seeker::messages.conversations.reply')" required>{{ old('content') }}</textarea>
+                        <button class="btn btn-primary px-4"><i class="bi bi-send" aria-hidden="true"></i><span class="visually-hidden">@lang('seeker::messages.conversations.send')</span></button>
+                        @error('content')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </form>
+            @else
+                <div class="text-center text-muted py-2"><i class="bi bi-lock me-2" aria-hidden="true"></i>@lang('seeker::messages.completion.conversation_closed')</div>
+            @endif
         </div>
     </div>
 @endsection
