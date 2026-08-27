@@ -20,6 +20,8 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 - Transactional point holds for fixed-price services, with duplicate-contact protection and no early delivery to the author.
 - Author-requested completion for fixed and hourly point commissions, with persistent delivery-attempt counts, client approval, optional tips, final messages, and read-only completed conversations.
 - Mutual verified ratings and short experience comments after completion, aggregated as user reputation across every publication.
+- Public Seeker profiles with biographies, role-specific reputation, verified reviews, commission statistics, and active publications.
+- Private profile reporting with biography snapshots and an administrative moderation queue.
 - Participant-only conversation reports with categorized reasons, immutable message cutoffs, and duplicate-report protection.
 - Owner-controlled active and closed states.
 - Permission-based moderation with a protected hidden state.

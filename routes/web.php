@@ -7,10 +7,14 @@ use Azuriom\Plugin\Seeker\Controllers\MessageController;
 use Azuriom\Plugin\Seeker\Controllers\MessageImageController;
 use Azuriom\Plugin\Seeker\Controllers\PublicationController;
 use Azuriom\Plugin\Seeker\Controllers\PublicationImageController;
+use Azuriom\Plugin\Seeker\Controllers\ProfileController;
+use Azuriom\Plugin\Seeker\Controllers\ProfileReportController;
 use Azuriom\Plugin\Seeker\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicationController::class, 'index'])->name('index');
+
+Route::get('profiles/{user}', [ProfileController::class, 'show'])->name('profiles.show');
 
 Route::middleware(['auth', 'verified'])->prefix('publications')->name('publications.')->group(function () {
     Route::get('mine', [PublicationController::class, 'mine'])->name('mine');
@@ -23,6 +27,10 @@ Route::middleware(['auth', 'verified'])->prefix('publications')->name('publicati
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('profiles/{user}/edit', [ProfileController::class, 'edit'])->name('profiles.edit');
+    Route::put('profiles/{user}', [ProfileController::class, 'update'])->middleware('throttle:10,1')->name('profiles.update');
+    Route::get('profiles/{user}/report', [ProfileReportController::class, 'create'])->name('profiles.reports.create');
+    Route::post('profiles/{user}/report', [ProfileReportController::class, 'store'])->middleware('throttle:5,1')->name('profiles.reports.store');
     Route::get('publications/{publication}/contact', [ConversationController::class, 'create'])->name('conversations.create');
     Route::post('publications/{publication}/contact', [ConversationController::class, 'store'])->middleware('throttle:10,1')->name('conversations.store');
     Route::get('conversations', [ConversationController::class, 'index'])->name('conversations.index');

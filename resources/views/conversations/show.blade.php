@@ -13,8 +13,8 @@
     <div class="card seeker-chat">
         <div class="card-header p-3">
             <div class="d-flex flex-wrap align-items-center gap-3">
-                <img src="{{ $other->getAvatar(48) }}" width="48" height="48" class="rounded-circle" alt="">
-                <div class="flex-grow-1"><h1 class="h5 mb-0">{{ $other->name }}</h1><a class="small text-decoration-none" href="{{ route('seeker.publications.show', $conversation->publication) }}">{{ $conversation->publication->title }}</a></div>
+                <a href="{{ route('seeker.profiles.show', $other) }}"><img src="{{ $other->getAvatar(48) }}" width="48" height="48" class="rounded-circle" alt=""></a>
+                <div class="flex-grow-1"><h1 class="h5 mb-0"><a class="text-body text-decoration-none" href="{{ route('seeker.profiles.show', $other) }}">{{ $other->name }}</a></h1><a class="small text-decoration-none" href="{{ route('seeker.publications.show', $conversation->publication) }}">{{ $conversation->publication->title }}</a></div>
                 <div class="d-flex flex-wrap align-items-center gap-2">
                     <span class="badge text-bg-light">@include('seeker::publications._price', ['publication' => $conversation->publication])</span>
                     @if($conversationReport === null)

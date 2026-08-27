@@ -9,7 +9,7 @@
 @section('content')
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <h1 class="h2 mb-0">@lang('seeker::messages.my_publications')</h1>
-        <a class="btn btn-primary" href="{{ route('seeker.publications.create') }}"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i> @lang('seeker::messages.publish')</a>
+        <div class="d-flex gap-2"><a class="btn btn-outline-primary" href="{{ route('seeker.profiles.show', auth()->user()) }}"><i class="bi bi-person-badge me-1" aria-hidden="true"></i>@lang('seeker::messages.profiles.my_profile')</a><a class="btn btn-primary" href="{{ route('seeker.publications.create') }}"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i> @lang('seeker::messages.publish')</a></div>
     </div>
 
     @if($publications->isEmpty())

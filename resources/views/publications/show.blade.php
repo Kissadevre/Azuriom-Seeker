@@ -26,9 +26,9 @@
                     </div>
                     <h1 class="display-6 fw-bold">{{ $publication->title }}</h1>
                     <div class="d-flex align-items-center gap-3 text-muted mb-4">
-                        <img src="{{ $publication->user->getAvatar(42) }}" width="42" height="42" class="rounded-circle" alt="">
+                        <a href="{{ route('seeker.profiles.show', $publication->user) }}"><img src="{{ $publication->user->getAvatar(42) }}" width="42" height="42" class="rounded-circle" alt=""></a>
                         <div>
-                            <div>@lang('seeker::messages.published_by', ['user' => $publication->user->name])</div>
+                            <div><a class="text-reset text-decoration-none" href="{{ route('seeker.profiles.show', $publication->user) }}">@lang('seeker::messages.published_by', ['user' => $publication->user->name])</a></div>
                             <small>@lang('seeker::messages.published_on', ['date' => format_date_compact($publication->published_at ?? $publication->created_at)])</small>
                         </div>
                     </div>
@@ -64,9 +64,9 @@
             <div class="card position-sticky seeker-sidebar">
                 <div class="card-body">
                     <div class="d-flex align-items-center gap-3 mb-3">
-                        <img src="{{ $publication->user->getAvatar(64) }}" width="64" height="64" class="rounded-circle" alt="">
+                        <a href="{{ route('seeker.profiles.show', $publication->user) }}"><img src="{{ $publication->user->getAvatar(64) }}" width="64" height="64" class="rounded-circle" alt=""></a>
                         <div>
-                            <strong>{{ $publication->user->name }}</strong>
+                            <a class="fw-bold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $publication->user) }}">{{ $publication->user->name }}</a>
                             <div class="small text-muted">@lang('seeker::messages.types.'.$publication->type)</div>
                             <div class="small mt-1">@include('seeker::publications._reputation', ['rating' => $reputation->rating, 'count' => $reputation->reviews_count])</div>
                         </div>
@@ -127,7 +127,7 @@
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
                         <div class="d-flex align-items-center gap-2">
                             <img src="{{ $review->reviewer->getAvatar(32) }}" width="32" height="32" class="rounded-circle" alt="">
-                            <strong>{{ $review->reviewer->name }}</strong>
+                            <a class="fw-bold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $review->reviewer) }}">{{ $review->reviewer->name }}</a>
                             <span class="badge text-bg-success"><i class="bi bi-patch-check me-1" aria-hidden="true"></i>@lang('seeker::messages.reviews.verified')</span>
                         </div>
                         <div class="text-warning" aria-label="@lang('seeker::messages.reviews.rating_value', ['rating' => $review->rating])">

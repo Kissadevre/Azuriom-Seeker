@@ -17,6 +17,9 @@
                 </div>
                 <div class="col-lg-auto d-flex flex-wrap gap-2">
                     @auth
+                        <a class="btn btn-outline-primary" href="{{ route('seeker.profiles.show', auth()->user()) }}">
+                            <i class="bi bi-person-badge me-1" aria-hidden="true"></i> @lang('seeker::messages.profiles.my_profile')
+                        </a>
                         <a class="btn btn-outline-primary" href="{{ route('seeker.publications.mine') }}">
                             <i class="bi bi-briefcase me-1" aria-hidden="true"></i> @lang('seeker::messages.my_publications')
                         </a>
@@ -78,8 +81,8 @@
                             <p class="card-text text-muted flex-grow-1">{{ \Illuminate\Support\Str::limit($publication->description, 150) }}</p>
                             <div class="d-flex align-items-center gap-2 small text-muted mb-3">
                                 <img src="{{ $publication->user->getAvatar(32) }}" width="32" height="32" class="rounded-circle" alt="">
-                                <div>
-                                    <div>{{ $publication->user->name }}</div>
+                                <div class="position-relative z-2">
+                                    <div><a class="text-reset text-decoration-none" href="{{ route('seeker.profiles.show', $publication->user) }}">{{ $publication->user->name }}</a></div>
                                     <div>@include('seeker::publications._reputation', ['rating' => $publication->author_rating, 'count' => $publication->author_reviews_count])</div>
                                 </div>
                             </div>
