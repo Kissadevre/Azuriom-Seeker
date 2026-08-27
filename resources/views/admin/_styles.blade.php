@@ -506,6 +506,11 @@
                 background: rgba(var(--bs-primary-rgb), .045);
             }
 
+            .seeker-admin-message.is-moderated {
+                border-color: rgba(var(--bs-warning-rgb), .45);
+                background: rgba(var(--bs-warning-rgb), .08);
+            }
+
             @media (max-width: 767.98px) {
                 .seeker-admin-header {
                     align-items: flex-start;

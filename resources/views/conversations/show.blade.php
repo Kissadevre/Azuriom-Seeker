@@ -149,13 +149,17 @@
                 <div class="d-flex {{ $mine ? 'justify-content-end' : 'justify-content-start' }} mb-3">
                     <div class="seeker-message {{ $mine ? 'seeker-message-mine' : '' }}">
                         <div class="small fw-semibold mb-1">{{ $message->sender->name }}</div>
-                        @if($message->image_path)
-                            <a href="{{ route('seeker.messages.images.show', $message) }}" target="_blank" rel="noopener">
-                                <img class="seeker-message-image rounded" src="{{ route('seeker.messages.images.show', $message) }}" loading="lazy" alt="{{ $message->image_original_name }}">
-                            </a>
-                        @endif
-                        @if(filled($message->content))
-                            <div class="seeker-message-content {{ $message->image_path ? 'mt-2' : '' }}">{!! nl2br(e($message->content)) !!}</div>
+                        @if($message->isHidden())
+                            <div class="seeker-message-moderated"><i class="bi bi-eye-slash me-1" aria-hidden="true"></i>@lang('seeker::messages.conversations.hidden_by_moderation')</div>
+                        @else
+                            @if($message->image_path)
+                                <a href="{{ route('seeker.messages.images.show', $message) }}" target="_blank" rel="noopener">
+                                    <img class="seeker-message-image rounded" src="{{ route('seeker.messages.images.show', $message) }}" loading="lazy" alt="{{ $message->image_original_name }}">
+                                </a>
+                            @endif
+                            @if(filled($message->content))
+                                <div class="seeker-message-content {{ $message->image_path ? 'mt-2' : '' }}">{!! nl2br(e($message->content)) !!}</div>
+                            @endif
                         @endif
                         <div class="small {{ $mine ? 'text-white-50' : 'text-muted' }} text-end mt-1">{{ format_date($message->created_at, true) }}</div>
                     </div>

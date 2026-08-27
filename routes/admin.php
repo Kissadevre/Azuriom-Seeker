@@ -18,6 +18,8 @@ Route::get('conversations', [ConversationController::class, 'index'])->name('con
 Route::get('conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
 Route::patch('conversations/{conversation}/close', [ConversationController::class, 'close'])->name('conversations.close');
 Route::patch('conversations/{conversation}/reopen', [ConversationController::class, 'reopen'])->name('conversations.reopen');
+Route::patch('messages/{message}/hide', [ConversationController::class, 'hideMessage'])->name('messages.hide');
+Route::patch('messages/{message}/restore', [ConversationController::class, 'restoreMessage'])->name('messages.restore');
 Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
 Route::patch('reports/{type}/{report}', [ReportController::class, 'update'])
     ->where('type', 'publication|profile|conversation')

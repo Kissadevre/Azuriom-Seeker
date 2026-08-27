@@ -142,6 +142,8 @@ return [
         'reply' => 'Write a message',
         'send' => 'Send message',
         'message_sent' => 'Your message has been sent.',
+        'hidden_by_moderation' => 'This content was hidden by moderation.',
+        'hidden_by_moderation_short' => 'Content hidden by moderation',
         'image' => 'Attach an image',
         'image_help' => 'One JPG, PNG, or WebP image per message, up to 5 MB. Text is optional when an image is attached.',
         'image_message' => 'Image',

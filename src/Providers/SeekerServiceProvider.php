@@ -7,6 +7,7 @@ use Azuriom\Models\ActionLog;
 use Azuriom\Models\Permission;
 use Azuriom\Models\User;
 use Azuriom\Plugin\Seeker\Models\Conversation;
+use Azuriom\Plugin\Seeker\Models\Message;
 use Azuriom\Plugin\Seeker\Models\UserRestriction;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -47,6 +48,21 @@ class SeekerServiceProvider extends BasePluginServiceProvider
             'color' => 'success',
             'message' => 'seeker::admin.logs.conversation_reopened',
             'model' => Conversation::class,
+        ]);
+
+        ActionLog::registerLogs([
+            'seeker.messages.hidden' => [
+                'icon' => 'eye-slash',
+                'color' => 'warning',
+                'message' => 'seeker::admin.logs.message_hidden',
+                'model' => Message::class,
+            ],
+            'seeker.messages.restored' => [
+                'icon' => 'eye',
+                'color' => 'success',
+                'message' => 'seeker::admin.logs.message_restored',
+                'model' => Message::class,
+            ],
         ]);
 
         ActionLog::registerLogs('seeker.reports.updated', [

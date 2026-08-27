@@ -34,8 +34,12 @@
                             @endif
                             @if($conversation->latestMessage)
                                 <div class="text-truncate mt-1">
-                                    @if($conversation->latestMessage->image_path)<i class="bi bi-image me-1" aria-hidden="true"></i>@endif
-                                    {{ filled($conversation->latestMessage->content) ? $conversation->latestMessage->content : trans('seeker::messages.conversations.image_message') }}
+                                    @if($conversation->latestMessage->isHidden())
+                                        <i class="bi bi-eye-slash me-1" aria-hidden="true"></i>@lang('seeker::messages.conversations.hidden_by_moderation_short')
+                                    @else
+                                        @if($conversation->latestMessage->image_path)<i class="bi bi-image me-1" aria-hidden="true"></i>@endif
+                                        {{ filled($conversation->latestMessage->content) ? $conversation->latestMessage->content : trans('seeker::messages.conversations.image_message') }}
+                                    @endif
                                 </div>
                             @endif
                         </div>

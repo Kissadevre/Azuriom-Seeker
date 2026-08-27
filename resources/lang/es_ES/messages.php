@@ -142,6 +142,8 @@ return [
         'reply' => 'Escribe un mensaje',
         'send' => 'Enviar mensaje',
         'message_sent' => 'Tu mensaje fue enviado.',
+        'hidden_by_moderation' => 'Este contenido fue ocultado por moderación.',
+        'hidden_by_moderation_short' => 'Contenido ocultado por moderación',
         'image' => 'Adjuntar una imagen',
         'image_help' => 'Una imagen JPG, PNG o WebP por mensaje, de hasta 5 MB. El texto es opcional cuando adjuntas una imagen.',
         'image_message' => 'Imagen',

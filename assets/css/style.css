@@ -128,6 +128,20 @@
     background: var(--bs-primary);
 }
 
+.seeker-message-moderated {
+    padding: .55rem .7rem;
+    border-radius: .65rem;
+    color: var(--bs-secondary-color);
+    background: var(--bs-tertiary-bg);
+    font-size: .875rem;
+    font-style: italic;
+}
+
+.seeker-message-mine .seeker-message-moderated {
+    color: rgba(255, 255, 255, .85);
+    background: rgba(255, 255, 255, .14);
+}
+
 .seeker-message-image {
     display: block;
     width: auto;

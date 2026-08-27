@@ -144,8 +144,15 @@
             @if($messages->hasPages())<div class="d-flex justify-content-center mb-4">{{ $messages->links() }}</div>@endif
             @forelse($messages->getCollection()->reverse() as $message)
                 <div class="d-flex {{ $message->sender_id === $conversation->client_id ? 'justify-content-end' : 'justify-content-start' }} mb-3">
-                    <div class="seeker-admin-message {{ $message->sender_id === $conversation->client_id ? 'is-client' : '' }}">
-                        <div class="small fw-semibold mb-2">{{ $message->sender->name }} <span class="fw-normal text-muted">· @lang($message->sender_id === $conversation->author_id ? 'seeker::admin.conversations.author' : 'seeker::admin.conversations.client')</span></div>
+                    <div class="seeker-admin-message {{ $message->sender_id === $conversation->client_id ? 'is-client' : '' }} {{ $message->isHidden() ? 'is-moderated' : '' }}">
+                        <div class="d-flex align-items-start justify-content-between gap-3 mb-2">
+                            <div class="small fw-semibold">{{ $message->sender->name }} <span class="fw-normal text-muted">· @lang($message->sender_id === $conversation->author_id ? 'seeker::admin.conversations.author' : 'seeker::admin.conversations.client')</span>@if($message->isHidden())<span class="badge text-bg-warning ms-2"><i class="bi bi-eye-slash me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.hidden_message')</span>@endif</div>
+                            @if($message->isHidden())
+                                <form method="POST" action="{{ route('seeker.admin.messages.restore', $message) }}">@csrf @method('PATCH')<button class="btn btn-sm btn-outline-success" title="@lang('seeker::admin.conversations.restore_message')" aria-label="@lang('seeker::admin.conversations.restore_message')" data-bs-toggle="tooltip"><i class="bi bi-eye" aria-hidden="true"></i></button></form>
+                            @else
+                                <form method="POST" action="{{ route('seeker.admin.messages.hide', $message) }}">@csrf @method('PATCH')<button class="btn btn-sm btn-outline-warning" title="@lang('seeker::admin.conversations.hide_message')" aria-label="@lang('seeker::admin.conversations.hide_message')" data-bs-toggle="tooltip"><i class="bi bi-eye-slash" aria-hidden="true"></i></button></form>
+                            @endif
+                        </div>
                         @if($message->image_path)
                             <a href="{{ route('seeker.messages.images.show', $message) }}" target="_blank" rel="noopener"><img src="{{ route('seeker.messages.images.show', $message) }}" class="img-fluid rounded" style="max-height: 24rem" loading="lazy" alt="{{ $message->image_original_name }}"></a>
                         @endif
