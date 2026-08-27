@@ -174,7 +174,9 @@ return [
     ],
     'completion' => [
         'request_action' => 'Mark commission as finished',
+        'request_again_action' => 'Submit a new delivery review',
         'requested' => 'The client was asked to confirm that the commission is finished.',
+        'attempt_count' => 'Delivery attempt #:count',
         'pending' => 'Completion pending',
         'awaiting_client' => 'Waiting for the client to review the completion request.',
         'hours_worked' => 'Hours worked',

@@ -29,6 +29,7 @@ class CommissionCompletionService
 
             $lockedConversation->update([
                 'completion_status' => Conversation::COMPLETION_PENDING,
+                'delivery_attempts' => $lockedConversation->delivery_attempts + 1,
                 'proposed_hours' => $proposedHours,
                 'service_points' => null,
                 'tip_points' => 0,

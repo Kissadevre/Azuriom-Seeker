@@ -41,7 +41,10 @@
             <div class="alert alert-success rounded-0 border-start-0 border-end-0 mb-0">
                 <div class="d-flex flex-wrap justify-content-between gap-2">
                     <strong><i class="bi bi-check-circle me-2" aria-hidden="true"></i>@lang('seeker::messages.completion.completed')</strong>
-                    <span>@lang('seeker::messages.completion.paid_total', ['points' => format_money((float) $conversation->service_points + (float) $conversation->tip_points)])</span>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge text-bg-light">@lang('seeker::messages.completion.attempt_count', ['count' => $conversation->delivery_attempts])</span>
+                        <span>@lang('seeker::messages.completion.paid_total', ['points' => format_money((float) $conversation->service_points + (float) $conversation->tip_points)])</span>
+                    </div>
                 </div>
                 @if((float) $conversation->tip_points > 0)
                     <div class="small mt-1">@lang('seeker::messages.completion.tip_included', ['points' => format_money((float) $conversation->tip_points)])</div>
@@ -54,6 +57,7 @@
             @if($conversation->completion_status === 'rejected')
                 <div class="alert alert-danger rounded-0 border-start-0 border-end-0 mb-0">
                     <i class="bi bi-x-circle me-2" aria-hidden="true"></i>@lang('seeker::messages.completion.rejected_notice')
+                    <span class="badge text-bg-light ms-2">@lang('seeker::messages.completion.attempt_count', ['count' => $conversation->delivery_attempts])</span>
                 </div>
             @endif
 
@@ -61,6 +65,7 @@
                 <div class="border-bottom p-3">
                     @if($conversation->completion_status === 'pending')
                         <div class="text-muted"><i class="bi bi-hourglass-split me-2" aria-hidden="true"></i>@lang('seeker::messages.completion.awaiting_client')</div>
+                        <div class="small mt-1">@lang('seeker::messages.completion.attempt_count', ['count' => $conversation->delivery_attempts])</div>
                         @if($conversation->isHourlyCommission())
                             <div class="small mt-1">@lang('seeker::messages.completion.proposed_summary', ['hours' => $conversation->proposed_hours, 'points' => format_money($completionServicePoints)])</div>
                         @endif
@@ -75,7 +80,10 @@
                                 </div>
                             @endif
                             <button class="btn btn-success" type="submit">
-                                <i class="bi bi-check2-circle me-1" aria-hidden="true"></i> @lang('seeker::messages.completion.request_action')
+                                <i class="bi bi-check2-circle me-1" aria-hidden="true"></i>
+                                @lang($conversation->completion_status === 'rejected'
+                                    ? 'seeker::messages.completion.request_again_action'
+                                    : 'seeker::messages.completion.request_action')
                             </button>
                         </form>
                     @endif
@@ -85,6 +93,7 @@
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                         <div>
                             <strong class="d-block">@lang('seeker::messages.completion.client_decision')</strong>
+                            <span class="badge text-bg-light mb-1">@lang('seeker::messages.completion.attempt_count', ['count' => $conversation->delivery_attempts])</span>
                             @if($conversation->isHourlyCommission())
                                 <span class="small text-muted">@lang('seeker::messages.completion.proposed_summary', ['hours' => $conversation->proposed_hours, 'points' => format_money($completionServicePoints)])</span>
                             @else

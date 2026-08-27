@@ -39,6 +39,7 @@ class Conversation extends Model
         'author_id',
         'status',
         'completion_status',
+        'delivery_attempts',
         'escrow_status',
         'held_points',
         'proposed_hours',
@@ -52,6 +53,7 @@ class Conversation extends Model
     ];
 
     protected $casts = [
+        'delivery_attempts' => 'integer',
         'held_points' => 'decimal:2',
         'proposed_hours' => 'decimal:2',
         'service_points' => 'decimal:2',

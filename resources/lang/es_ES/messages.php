@@ -174,7 +174,9 @@ return [
     ],
     'completion' => [
         'request_action' => 'Marcar comisión como finalizada',
+        'request_again_action' => 'Enviar una nueva revisión de entrega',
         'requested' => 'Se solicitó al interesado confirmar que la comisión está finalizada.',
+        'attempt_count' => 'Intento de entrega n.º :count',
         'pending' => 'Finalización pendiente',
         'awaiting_client' => 'Esperando que el interesado revise la solicitud de finalización.',
         'hours_worked' => 'Horas trabajadas',

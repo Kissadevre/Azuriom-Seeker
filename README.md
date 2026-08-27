@@ -17,7 +17,7 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 - Informational service pricing as fixed or hourly Zibuu points, free, or to be agreed between interested users.
 - Private one-to-one conversations between publication authors and interested members.
 - Transactional point holds for fixed-price services, with duplicate-contact protection and no early delivery to the author.
-- Author-requested completion for fixed and hourly point commissions, with client approval, optional tips, final messages, and read-only completed conversations.
+- Author-requested completion for fixed and hourly point commissions, with persistent delivery-attempt counts, client approval, optional tips, final messages, and read-only completed conversations.
 - Participant-only conversation reports with categorized reasons, immutable message cutoffs, and duplicate-report protection.
 - Owner-controlled active and closed states.
 - Permission-based moderation with a protected hidden state.

@@ -19,6 +19,7 @@
                 <div class="card-body p-4 p-md-5">
                     <h1 class="h3 mb-2">@lang('seeker::messages.completion.confirm_title')</h1>
                     <p class="text-muted">@lang('seeker::messages.completion.confirm_description', ['author' => $conversation->author->name])</p>
+                    <span class="badge text-bg-warning mb-4">@lang('seeker::messages.completion.attempt_count', ['count' => $conversation->delivery_attempts])</span>
 
                     <div class="card bg-body-tertiary mb-4">
                         <div class="card-body">
