@@ -71,4 +71,27 @@ class ConversationController extends Controller
             ? 'seeker::admin.conversations.closed'
             : 'seeker::admin.conversations.already_read_only'));
     }
+
+    public function reopen(Conversation $conversation): RedirectResponse
+    {
+        $reopened = DB::transaction(function () use ($conversation) {
+            $lockedConversation = Conversation::query()->lockForUpdate()->findOrFail($conversation->id);
+
+            if ($lockedConversation->status !== Conversation::STATUS_CLOSED) {
+                return false;
+            }
+
+            $lockedConversation->update(['status' => Conversation::STATUS_ACTIVE]);
+
+            return true;
+        }, 3);
+
+        if ($reopened) {
+            ActionLog::log('seeker.conversations.reopened', $conversation);
+        }
+
+        return back()->with($reopened ? 'success' : 'warning', trans($reopened
+            ? 'seeker::admin.conversations.reopened'
+            : 'seeker::admin.conversations.cannot_reopen'));
+    }
 }

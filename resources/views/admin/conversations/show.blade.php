@@ -22,6 +22,11 @@
                 <button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#forceCloseConversationModal"><i class="bi bi-lock me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.force_close')</button>
                 <div class="small text-muted mt-1">@lang('seeker::admin.conversations.close_help')</div>
             </div>
+        @elseif($conversation->status === 'closed')
+            <div class="seeker-admin-header-actions text-end">
+                <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#reopenConversationModal"><i class="bi bi-unlock me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.reopen')</button>
+                <div class="small text-muted mt-1">@lang('seeker::admin.conversations.reopen_help')</div>
+            </div>
         @endif
     </div>
 
@@ -41,6 +46,27 @@
                         <form method="POST" action="{{ route('seeker.admin.conversations.close', $conversation) }}">
                             @csrf @method('PATCH')
                             <button class="btn btn-danger"><i class="bi bi-lock me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.force_close')</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if($conversation->status === 'closed')
+        <div class="modal fade" id="reopenConversationModal" tabindex="-1" aria-labelledby="reopenConversationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="reopenConversationModalLabel"><i class="bi bi-unlock text-success me-2" aria-hidden="true"></i>@lang('seeker::admin.conversations.reopen')</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@lang('messages.actions.close')"></button>
+                    </div>
+                    <div class="modal-body"><p class="mb-0">@lang('seeker::admin.conversations.reopen_confirm')</p></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@lang('messages.actions.cancel')</button>
+                        <form method="POST" action="{{ route('seeker.admin.conversations.reopen', $conversation) }}">
+                            @csrf @method('PATCH')
+                            <button class="btn btn-success"><i class="bi bi-unlock me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.reopen')</button>
                         </form>
                     </div>
                 </div>

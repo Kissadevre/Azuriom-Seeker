@@ -42,6 +42,13 @@ class SeekerServiceProvider extends BasePluginServiceProvider
             'model' => Conversation::class,
         ]);
 
+        ActionLog::registerLogs('seeker.conversations.reopened', [
+            'icon' => 'unlock',
+            'color' => 'success',
+            'message' => 'seeker::admin.logs.conversation_reopened',
+            'model' => Conversation::class,
+        ]);
+
         ActionLog::registerLogs('seeker.reports.updated', [
             'icon' => 'flag',
             'color' => 'warning',

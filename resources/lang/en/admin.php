@@ -79,6 +79,7 @@ return [
     'logs' => [
         'settings_updated' => 'Updated the Seeker settings',
         'conversation_closed' => 'Force-closed Seeker conversation #:id',
+        'conversation_reopened' => 'Reopened Seeker conversation #:id',
         'report_updated' => 'Updated :type Seeker report #:id',
         'restriction_created' => 'Applied the :type restriction to :user',
         'restriction_revoked' => 'Lifted the :type restriction from :user',
@@ -169,6 +170,11 @@ return [
         'close_confirm' => 'Force this conversation closed? Participants will no longer be able to send messages or continue the completion flow.',
         'closed' => 'The conversation was force-closed and is now read-only.',
         'already_read_only' => 'The conversation was already read-only and was not changed.',
+        'reopen' => 'Reopen conversation',
+        'reopen_help' => 'Allows both participants to resume the conversation.',
+        'reopen_confirm' => 'Reopen this conversation? Participants will be able to send messages and continue the completion flow again.',
+        'reopened' => 'The conversation was reopened and is active again.',
+        'cannot_reopen' => 'The conversation is no longer closed and was not changed.',
         'closed_notice' => 'Moderation force-closed this conversation. Its history remains available, but no new messages or completion actions are allowed.',
         'escrow_notice' => ':points remain held. Closing the conversation does not release, refund, or transfer points.',
         'statuses' => [

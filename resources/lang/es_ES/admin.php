@@ -79,6 +79,7 @@ return [
     'logs' => [
         'settings_updated' => 'Actualizó los ajustes de Seeker',
         'conversation_closed' => 'Forzó el cierre de la conversación de Seeker n.º :id',
+        'conversation_reopened' => 'Reabrió la conversación de Seeker n.º :id',
         'report_updated' => 'Actualizó el reporte de Seeker de tipo :type n.º :id',
         'restriction_created' => 'Aplicó la restricción :type a :user',
         'restriction_revoked' => 'Levantó la restricción :type de :user',
@@ -169,6 +170,11 @@ return [
         'close_confirm' => '¿Quieres forzar el cierre de esta conversación? Los participantes ya no podrán enviar mensajes ni continuar el flujo de finalización.',
         'closed' => 'La conversación fue cerrada por moderación y ahora es de solo lectura.',
         'already_read_only' => 'La conversación ya era de solo lectura y no fue modificada.',
+        'reopen' => 'Reactivar conversación',
+        'reopen_help' => 'Permite que ambos participantes retomen la conversación.',
+        'reopen_confirm' => '¿Quieres reactivar esta conversación? Los participantes podrán volver a enviar mensajes y continuar el flujo de finalización.',
+        'reopened' => 'La conversación fue reactivada y vuelve a estar activa.',
+        'cannot_reopen' => 'La conversación ya no está cerrada y no fue modificada.',
         'closed_notice' => 'Moderación forzó el cierre de esta conversación. Su historial permanece disponible, pero no se permiten mensajes nuevos ni acciones de finalización.',
         'escrow_notice' => ':points permanecen retenidos. Cerrar la conversación no libera, reembolsa ni transfiere puntos.',
         'statuses' => [

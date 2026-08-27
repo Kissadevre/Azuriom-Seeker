@@ -17,6 +17,7 @@ Route::patch('publications/{publication}/status', [PublicationController::class,
 Route::get('conversations', [ConversationController::class, 'index'])->name('conversations.index');
 Route::get('conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
 Route::patch('conversations/{conversation}/close', [ConversationController::class, 'close'])->name('conversations.close');
+Route::patch('conversations/{conversation}/reopen', [ConversationController::class, 'reopen'])->name('conversations.reopen');
 Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
 Route::patch('reports/{type}/{report}', [ReportController::class, 'update'])
     ->where('type', 'publication|profile|conversation')
