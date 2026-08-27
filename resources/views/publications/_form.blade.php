@@ -25,14 +25,17 @@
 </div>
 
 @php
+    $availablePortfolioTypes ??= app(\Azuriom\Plugin\Seeker\Services\SeekerSettings::class)->enabledPortfolioTypes();
+    $portfolioTypeDisabled ??= false;
     $selectedPortfolioType = old(
         'portfolio_type',
-        $publication->portfolio_type ?? \Azuriom\Plugin\Seeker\Models\Publication::PORTFOLIO_EXTERNAL
+        $publication->portfolio_type ?? ($availablePortfolioTypes[0] ?? null)
     );
     $serverUploadLimit = \Illuminate\Http\UploadedFile::getMaxFilesize();
+    $currentPortfolioType = $publication->portfolio_type ?? null;
 @endphp
 
-@if($serverUploadLimit < 10 * 1024 * 1024)
+@if($serverUploadLimit < 10 * 1024 * 1024 && array_intersect($availablePortfolioTypes, \Azuriom\Plugin\Seeker\Models\Publication::uploadedPortfolioTypes()))
     <div class="alert alert-warning d-flex gap-2 align-items-start mb-4" role="alert">
         <i class="bi bi-exclamation-triangle flex-shrink-0" aria-hidden="true"></i>
         <div>@lang('seeker::messages.help.server_upload_limit', ['size' => number_format($serverUploadLimit / 1048576, 0).' MB'])</div>
@@ -43,12 +46,15 @@
     <legend class="form-label fw-semibold">@lang('seeker::messages.fields.portfolio_type')</legend>
     <p class="form-text mt-0">@lang('seeker::messages.help.portfolio_type')</p>
     <div class="row g-3">
-        @foreach(\Azuriom\Plugin\Seeker\Models\Publication::portfolioTypes() as $portfolioType)
+        @foreach($availablePortfolioTypes as $portfolioType)
+            @php
+                $isDisabledCurrentType = $portfolioTypeDisabled && $portfolioType === $currentPortfolioType;
+            @endphp
             <div class="col-md-6">
                 <label class="seeker-choice-card card h-100 p-3">
                     <span class="d-flex gap-3">
                         <input class="form-check-input mt-1" type="radio" name="portfolio_type" value="{{ $portfolioType }}" @checked($selectedPortfolioType === $portfolioType) required>
-                        <span><strong class="d-block"><i class="bi bi-{{ ['external' => 'box-arrow-up-right', 'images' => 'images', 'video' => 'camera-video', 'audio' => 'soundwave'][$portfolioType] }} me-1" aria-hidden="true"></i>@lang('seeker::messages.portfolio_types.'.$portfolioType)</strong><small class="text-muted">@lang('seeker::messages.help.portfolio_'.$portfolioType)</small></span>
+                        <span><strong class="d-flex flex-wrap align-items-center gap-2"><span><i class="bi bi-{{ ['external' => 'box-arrow-up-right', 'images' => 'images', 'video' => 'camera-video', 'audio' => 'soundwave'][$portfolioType] }} me-1" aria-hidden="true"></i>@lang('seeker::messages.portfolio_types.'.$portfolioType)</span>@if($isDisabledCurrentType)<span class="badge text-bg-warning">@lang('seeker::messages.portfolio_types.current_disabled')</span>@endif</strong><small class="text-muted">@lang($isDisabledCurrentType ? 'seeker::messages.help.disabled_current_portfolio' : 'seeker::messages.help.portfolio_'.$portfolioType)</small></span>
                     </span>
                 </label>
             </div>
@@ -57,13 +63,16 @@
     @error('portfolio_type')<div class="text-danger small mt-2">{{ $message }}</div>@enderror
 </fieldset>
 
-<div class="mb-4" data-portfolio-panel="external">
-    <label class="form-label fw-semibold" for="publicationPortfolio">@lang('seeker::messages.fields.portfolio_url')</label>
-    <input id="publicationPortfolio" type="url" name="portfolio_url" class="form-control @error('portfolio_url') is-invalid @enderror" value="{{ old('portfolio_url', $publication->portfolio_url ?? '') }}" maxlength="2048" placeholder="https://">
-    @error('portfolio_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
-    <div class="form-text">@lang('seeker::messages.help.portfolio_url')</div>
-</div>
+@if(in_array(\Azuriom\Plugin\Seeker\Models\Publication::PORTFOLIO_EXTERNAL, $availablePortfolioTypes, true))
+    <div class="mb-4" data-portfolio-panel="external">
+        <label class="form-label fw-semibold" for="publicationPortfolio">@lang('seeker::messages.fields.portfolio_url')</label>
+        <input id="publicationPortfolio" type="url" name="portfolio_url" class="form-control @error('portfolio_url') is-invalid @enderror" value="{{ old('portfolio_url', $publication->portfolio_url ?? '') }}" maxlength="2048" placeholder="https://" @readonly($portfolioTypeDisabled && $currentPortfolioType === 'external')>
+        @error('portfolio_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        <div class="form-text">@lang($portfolioTypeDisabled && $currentPortfolioType === 'external' ? 'seeker::messages.help.disabled_current_portfolio' : 'seeker::messages.help.portfolio_url')</div>
+    </div>
+@endif
 
+@if(in_array(\Azuriom\Plugin\Seeker\Models\Publication::PORTFOLIO_IMAGES, $availablePortfolioTypes, true))
 <div class="mb-4" data-portfolio-panel="images" data-has-existing="{{ isset($publication) && $publication->images->isNotEmpty() ? 'true' : 'false' }}">
     @isset($publication)
         @if($publication->images->isNotEmpty())
@@ -87,14 +96,19 @@
         @endif
     @endisset
 
-    <label class="form-label fw-semibold" for="publicationImages">@lang('seeker::messages.fields.images')</label>
-    <input id="publicationImages" type="file" name="images[]" class="form-control @error('images') is-invalid @enderror @error('images.*') is-invalid @enderror" accept="image/jpeg,image/png,image/webp" multiple>
-    @error('images')<div class="invalid-feedback">{{ $message }}</div>@enderror
-    @error('images.*')<div class="invalid-feedback">{{ $message }}</div>@enderror
-    <div class="form-text">@lang('seeker::messages.help.images')</div>
+    @unless($portfolioTypeDisabled && $currentPortfolioType === 'images')
+        <label class="form-label fw-semibold" for="publicationImages">@lang('seeker::messages.fields.images')</label>
+        <input id="publicationImages" type="file" name="images[]" class="form-control @error('images') is-invalid @enderror @error('images.*') is-invalid @enderror" accept="image/jpeg,image/png,image/webp" multiple>
+        @error('images')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        @error('images.*')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        <div class="form-text">@lang('seeker::messages.help.images')</div>
+    @else
+        <div class="alert alert-warning py-2 mb-0"><i class="bi bi-lock me-1" aria-hidden="true"></i>@lang('seeker::messages.help.disabled_current_portfolio')</div>
+    @endunless
 </div>
+@endif
 
-@foreach(\Azuriom\Plugin\Seeker\Models\Publication::uploadedPortfolioTypes() as $mediaType)
+@foreach(array_intersect(\Azuriom\Plugin\Seeker\Models\Publication::uploadedPortfolioTypes(), $availablePortfolioTypes) as $mediaType)
     @php
         $currentMedia = isset($publication) ? $publication->media->firstWhere('type', $mediaType) : null;
     @endphp
@@ -107,10 +121,14 @@
                 </div>
             </div>
         @endif
-        <label class="form-label fw-semibold" for="publication{{ ucfirst($mediaType) }}">@lang('seeker::messages.fields.'.$mediaType)</label>
-        <input id="publication{{ ucfirst($mediaType) }}" type="file" name="{{ $mediaType }}" class="form-control @error($mediaType) is-invalid @enderror" accept="{{ $mediaType === 'video' ? 'video/mp4,video/webm,.mp4,.webm' : 'audio/mpeg,audio/wav,audio/ogg,audio/mp4,.mp3,.wav,.ogg,.m4a' }}">
-        @error($mediaType)<div class="invalid-feedback">{{ $message }}</div>@enderror
-        <div class="form-text">@lang('seeker::messages.help.'.$mediaType)</div>
+        @unless($portfolioTypeDisabled && $currentPortfolioType === $mediaType)
+            <label class="form-label fw-semibold" for="publication{{ ucfirst($mediaType) }}">@lang('seeker::messages.fields.'.$mediaType)</label>
+            <input id="publication{{ ucfirst($mediaType) }}" type="file" name="{{ $mediaType }}" class="form-control @error($mediaType) is-invalid @enderror" accept="{{ $mediaType === 'video' ? 'video/mp4,video/webm,.mp4,.webm' : 'audio/mpeg,audio/wav,audio/ogg,audio/mp4,.mp3,.wav,.ogg,.m4a' }}">
+            @error($mediaType)<div class="invalid-feedback">{{ $message }}</div>@enderror
+            <div class="form-text">@lang('seeker::messages.help.'.$mediaType)</div>
+        @else
+            <div class="alert alert-warning py-2 mb-0"><i class="bi bi-lock me-1" aria-hidden="true"></i>@lang('seeker::messages.help.disabled_current_portfolio')</div>
+        @endunless
     </div>
 @endforeach
 

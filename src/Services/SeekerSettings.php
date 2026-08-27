@@ -2,6 +2,8 @@
 
 namespace Azuriom\Plugin\Seeker\Services;
 
+use Azuriom\Plugin\Seeker\Models\Publication;
+
 class SeekerSettings
 {
     public const ENABLED_KEY = 'seeker.enabled';
@@ -13,6 +15,13 @@ class SeekerSettings
     public const BIOGRAPHIES_ENABLED_KEY = 'seeker.biographies_enabled';
 
     public const MESSAGE_IMAGES_ENABLED_KEY = 'seeker.message_images_enabled';
+
+    public const PORTFOLIO_TYPE_KEYS = [
+        Publication::PORTFOLIO_EXTERNAL => 'seeker.portfolio_types.external_enabled',
+        Publication::PORTFOLIO_IMAGES => 'seeker.portfolio_types.images_enabled',
+        Publication::PORTFOLIO_VIDEO => 'seeker.portfolio_types.video_enabled',
+        Publication::PORTFOLIO_AUDIO => 'seeker.portfolio_types.audio_enabled',
+    ];
 
     public const RATE_LIMITS = [
         'create_user_short' => [
@@ -88,6 +97,23 @@ class SeekerSettings
     public function messageImagesEnabled(): bool
     {
         return $this->boolean(self::MESSAGE_IMAGES_ENABLED_KEY, true);
+    }
+
+    public function portfolioTypes(): array
+    {
+        return collect(self::PORTFOLIO_TYPE_KEYS)
+            ->mapWithKeys(fn (string $key, string $type) => [$type => $this->boolean($key, true)])
+            ->all();
+    }
+
+    public function enabledPortfolioTypes(): array
+    {
+        return array_keys(array_filter($this->portfolioTypes()));
+    }
+
+    public function portfolioTypeEnabled(string $type): bool
+    {
+        return $this->portfolioTypes()[$type] ?? false;
     }
 
     public function rateLimits(string $action): array

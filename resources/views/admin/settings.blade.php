@@ -42,6 +42,23 @@
                 </div>
             </div>
 
+            <div class="card seeker-admin-card mb-4" data-portfolio-settings data-portfolio-settings-message="@lang('seeker::admin.settings.portfolio_types.at_least_one')">
+                <div class="card-header d-flex align-items-start gap-2"><i class="bi bi-collection-play text-primary mt-1" aria-hidden="true"></i><div><h2>@lang('seeker::admin.settings.portfolio_types.title')</h2><p class="small text-body-secondary mb-0 mt-1">@lang('seeker::admin.settings.portfolio_types.subtitle')</p></div></div>
+                <div class="card-body p-0">
+                    @foreach(\Azuriom\Plugin\Seeker\Models\Publication::portfolioTypes() as $portfolioType)
+                        <div class="seeker-admin-switch-row">
+                            <label for="portfolio_type_{{ $portfolioType }}" class="mb-0"><span class="d-block fw-semibold">@lang('seeker::admin.settings.portfolio_types.'.$portfolioType)</span><small class="text-body-secondary">@lang('seeker::admin.settings.portfolio_types.'.$portfolioType.'_help')</small></label>
+                            <div><div class="form-check form-switch"><input type="hidden" name="portfolio_types[{{ $portfolioType }}]" value="0"><input class="form-check-input" type="checkbox" role="switch" id="portfolio_type_{{ $portfolioType }}" name="portfolio_types[{{ $portfolioType }}]" value="1" data-portfolio-setting @checked(old('portfolio_types.'.$portfolioType, $portfolioTypes[$portfolioType]))></div>@error('portfolio_types.'.$portfolioType)<div class="text-danger small mt-1">{{ $message }}</div>@enderror</div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="card-footer bg-body">
+                    @error('portfolio_types')<div class="text-danger small"><i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>{{ $message }}</div>@enderror
+                    <div class="text-danger small d-none" data-portfolio-settings-client-error><i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.portfolio_types.at_least_one')</div>
+                    <div class="small text-body-secondary mt-1"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.portfolio_types.existing_help')</div>
+                </div>
+            </div>
+
             <div class="card seeker-admin-card mb-4">
                 <div class="card-header d-flex align-items-start gap-2"><i class="bi bi-speedometer2 text-primary mt-1" aria-hidden="true"></i><div><h2>@lang('seeker::admin.settings.rate_limits.title')</h2><p class="small text-body-secondary mb-0 mt-1">@lang('seeker::admin.settings.rate_limits.subtitle')</p></div></div>
                 <div class="table-responsive">
@@ -65,3 +82,7 @@
         </form>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ plugin_asset('seeker', 'js/admin-settings.js') }}" defer></script>
+@endpush

@@ -32,7 +32,7 @@ return [
     ],
     'settings' => [
         'title' => 'Ajustes de Seeker',
-        'subtitle' => 'Controla la disponibilidad, los perfiles, los archivos adjuntos y los límites de publicaciones.',
+        'subtitle' => 'Controla la disponibilidad, los formatos de portafolio, los perfiles, los archivos adjuntos y los límites de publicaciones.',
         'updated' => 'Los ajustes de Seeker fueron actualizados.',
         'global' => [
             'title' => 'Disponibilidad global',
@@ -52,6 +52,20 @@ return [
             'biographies_enabled_help' => 'Al desactivarlo, los usuarios no pueden editar biografías y todas las existentes quedan ocultas sin eliminarse.',
             'message_images_enabled' => 'Permitir imágenes adjuntas en conversaciones',
             'message_images_enabled_help' => 'Al desactivarlo, no pueden adjuntarse imágenes nuevas. Las imágenes ya enviadas permanecen visibles para los participantes.',
+        ],
+        'portfolio_types' => [
+            'title' => 'Disponibilidad de portafolios',
+            'subtitle' => 'Elige qué formatos de portafolio pueden seleccionar los usuarios para contenido nuevo.',
+            'external' => 'Permitir portafolios externos',
+            'external_help' => 'Los usuarios pueden enlazar un portafolio alojado en un sitio HTTP o HTTPS.',
+            'images' => 'Permitir galerías de imágenes',
+            'images_help' => 'Los usuarios pueden subir imágenes de referencia almacenadas de forma privada.',
+            'video' => 'Permitir videos de portafolio',
+            'video_help' => 'Los usuarios pueden subir un video MP4 o WebM almacenado de forma privada.',
+            'audio' => 'Permitir audios de portafolio',
+            'audio_help' => 'Los usuarios pueden subir un archivo MP3, WAV, OGG o M4A almacenado de forma privada.',
+            'at_least_one' => 'Al menos un formato de portafolio debe permanecer habilitado.',
+            'existing_help' => 'Las publicaciones existentes siguen mostrando su portafolio. Un formato actual deshabilitado puede conservarse al editar, pero no se le pueden agregar archivos ni destinos nuevos.',
         ],
         'rate_limits' => [
             'title' => 'Límites de publicaciones',

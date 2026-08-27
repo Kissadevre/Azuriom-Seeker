@@ -75,6 +75,7 @@ return [
         'images' => 'Subir imágenes',
         'video' => 'Subir un video',
         'audio' => 'Subir audio',
+        'current_disabled' => 'Formato existente',
     ],
     'pricing_types' => [
         'points' => 'Puntos de Zibuu',
@@ -133,6 +134,7 @@ return [
         'video' => 'Un video MP4 o WebM de hasta 10 MB.',
         'audio' => 'Un archivo de audio MP3, WAV, OGG o M4A de hasta 10 MB.',
         'server_upload_limit' => 'Este servidor actualmente acepta archivos de hasta :size. Un administrador debe aumentar el límite de carga de PHP para utilizar los 10 MB permitidos por Seeker.',
+        'disabled_current_portfolio' => 'Este formato de portafolio está deshabilitado actualmente. Puedes conservar su contenido existente o cambiar a un formato habilitado.',
         'remove_images' => 'Si eliminas todas las imágenes, debes subir al menos un reemplazo.',
         'guest_visibility' => 'Al desactivarlo, solamente los miembros autenticados de Zibuu podrán encontrar y ver la publicación.',
         'pricing_type' => 'Indica si el servicio tiene un precio fijo en puntos, es gratuito o se acordará con los interesados.',
@@ -161,6 +163,8 @@ return [
         'max_images' => 'Una publicación puede tener hasta 6 imágenes de referencia.',
         'media_required' => 'Sube un archivo para :type o elige otra opción de portafolio.',
         'invalid_media' => 'El archivo multimedia subido no corresponde a un formato permitido.',
+        'portfolio_type_unavailable' => 'El formato de portafolio seleccionado no está disponible actualmente.',
+        'disabled_portfolio_locked' => 'No se puede agregar contenido nuevo a este formato de portafolio porque está deshabilitado.',
         'pricing_locked' => 'El tipo de publicación y el precio no pueden cambiar después de iniciar una conversación.',
     ],
     'contact' => [

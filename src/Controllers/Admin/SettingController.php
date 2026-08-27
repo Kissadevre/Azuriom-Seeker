@@ -5,6 +5,7 @@ namespace Azuriom\Plugin\Seeker\Controllers\Admin;
 use Azuriom\Http\Controllers\Controller;
 use Azuriom\Models\ActionLog;
 use Azuriom\Models\Setting;
+use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -20,6 +21,7 @@ class SettingController extends Controller
             'newConversationsEnabled' => $settings->newConversationsEnabled(),
             'biographiesEnabled' => $settings->biographiesEnabled(),
             'messageImagesEnabled' => $settings->messageImagesEnabled(),
+            'portfolioTypes' => $settings->portfolioTypes(),
             'rateLimits' => $settings->allRateLimits(),
         ]);
     }
@@ -32,8 +34,24 @@ class SettingController extends Controller
             'new_conversations_enabled' => ['required', 'boolean'],
             'biographies_enabled' => ['required', 'boolean'],
             'message_images_enabled' => ['required', 'boolean'],
+            'portfolio_types' => [
+                'required',
+                'array:'.implode(',', Publication::portfolioTypes()),
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    $hasEnabledType = collect(Publication::portfolioTypes())
+                        ->contains(fn (string $type) => filter_var($value[$type] ?? false, FILTER_VALIDATE_BOOL));
+
+                    if (! $hasEnabledType) {
+                        $fail(trans('seeker::admin.settings.portfolio_types.at_least_one'));
+                    }
+                },
+            ],
             'limits' => ['required', 'array'],
         ];
+
+        foreach (Publication::portfolioTypes() as $type) {
+            $rules['portfolio_types.'.$type] = ['required', 'boolean'];
+        }
 
         foreach (array_keys(SeekerSettings::RATE_LIMITS) as $name) {
             $rules['limits.'.$name.'.attempts'] = ['required', 'integer', 'min:0', 'max:10000'];
@@ -48,6 +66,10 @@ class SettingController extends Controller
             SeekerSettings::BIOGRAPHIES_ENABLED_KEY => (bool) $validated['biographies_enabled'],
             SeekerSettings::MESSAGE_IMAGES_ENABLED_KEY => (bool) $validated['message_images_enabled'],
         ];
+
+        foreach (SeekerSettings::PORTFOLIO_TYPE_KEYS as $type => $key) {
+            $values[$key] = (bool) $validated['portfolio_types'][$type];
+        }
 
         foreach (SeekerSettings::RATE_LIMITS as $name => $definition) {
             $values[$definition['attempts_key']] = (int) $validated['limits'][$name]['attempts'];

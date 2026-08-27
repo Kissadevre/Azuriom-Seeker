@@ -118,7 +118,9 @@ class PublicationController extends Controller
             return to_route('seeker.restrictions.show', UserRestriction::TYPE_PUBLISH);
         }
 
-        return view('seeker::publications.create');
+        return view('seeker::publications.create', [
+            'availablePortfolioTypes' => $settings->enabledPortfolioTypes(),
+        ]);
     }
 
     public function store(
@@ -172,12 +174,23 @@ class PublicationController extends Controller
             ->with('success', trans('seeker::messages.alerts.created'));
     }
 
-    public function edit(Publication $publication): View
+    public function edit(Publication $publication, SeekerSettings $settings): View
     {
         $this->ensureOwner($publication);
         $publication->load(['images', 'media']);
 
-        return view('seeker::publications.edit', compact('publication'));
+        $availablePortfolioTypes = $settings->enabledPortfolioTypes();
+        $portfolioTypeDisabled = ! in_array($publication->portfolio_type, $availablePortfolioTypes, true);
+
+        if ($portfolioTypeDisabled) {
+            $availablePortfolioTypes[] = $publication->portfolio_type;
+        }
+
+        return view('seeker::publications.edit', compact(
+            'publication',
+            'availablePortfolioTypes',
+            'portfolioTypeDisabled'
+        ));
     }
 
     public function update(UpdatePublicationRequest $request, Publication $publication): RedirectResponse

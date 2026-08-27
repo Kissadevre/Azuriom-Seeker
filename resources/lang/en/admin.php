@@ -32,7 +32,7 @@ return [
     ],
     'settings' => [
         'title' => 'Seeker settings',
-        'subtitle' => 'Control availability, profile features, attachments, and publication rate limits.',
+        'subtitle' => 'Control availability, portfolio formats, profile features, attachments, and publication rate limits.',
         'updated' => 'The Seeker settings have been updated.',
         'global' => [
             'title' => 'Global availability',
@@ -52,6 +52,20 @@ return [
             'biographies_enabled_help' => 'When disabled, users cannot edit biographies and all existing biographies are hidden without being deleted.',
             'message_images_enabled' => 'Allow image attachments in conversations',
             'message_images_enabled_help' => 'When disabled, new images cannot be attached. Images already sent remain visible to conversation participants.',
+        ],
+        'portfolio_types' => [
+            'title' => 'Portfolio availability',
+            'subtitle' => 'Choose which portfolio formats users can select for new content.',
+            'external' => 'Allow external portfolios',
+            'external_help' => 'Users can link to a portfolio hosted on an HTTP or HTTPS website.',
+            'images' => 'Allow image galleries',
+            'images_help' => 'Users can upload privately stored reference images.',
+            'video' => 'Allow portfolio videos',
+            'video_help' => 'Users can upload one privately stored MP4 or WebM video.',
+            'audio' => 'Allow portfolio audio',
+            'audio_help' => 'Users can upload one privately stored MP3, WAV, OGG, or M4A file.',
+            'at_least_one' => 'At least one portfolio format must remain enabled.',
+            'existing_help' => 'Existing publications keep displaying their portfolio. A disabled current format can be retained while editing, but no new file or destination can be added to it.',
         ],
         'rate_limits' => [
             'title' => 'Publication rate limits',

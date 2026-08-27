@@ -3,6 +3,7 @@
 namespace Azuriom\Plugin\Seeker\Requests;
 
 use Azuriom\Plugin\Seeker\Models\Publication;
+use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
@@ -49,6 +50,23 @@ class UpdatePublicationRequest extends StorePublicationRequest
                 }
 
                 $selectedType = $this->input('portfolio_type');
+                $portfolioTypeDisabled = ! app(SeekerSettings::class)
+                    ->portfolioTypeEnabled($publication->portfolio_type);
+
+                if ($portfolioTypeDisabled && $selectedType === $publication->portfolio_type) {
+                    $hasNewUpload = $selectedType === Publication::PORTFOLIO_IMAGES
+                        ? $this->hasFile('images')
+                        : (in_array($selectedType, Publication::uploadedPortfolioTypes(), true)
+                            && $this->hasFile($selectedType));
+                    $externalUrlChanged = $selectedType === Publication::PORTFOLIO_EXTERNAL
+                        && $this->input('portfolio_url') !== $publication->portfolio_url;
+
+                    if ($hasNewUpload || $externalUrlChanged) {
+                        $validator->errors()->add('portfolio_type', trans(
+                            'seeker::messages.validation.disabled_portfolio_locked'
+                        ));
+                    }
+                }
 
                 if (in_array($selectedType, Publication::uploadedPortfolioTypes(), true)
                     && ! $this->hasFile($selectedType)
@@ -59,5 +77,17 @@ class UpdatePublicationRequest extends StorePublicationRequest
                 }
             },
         ];
+    }
+
+    protected function allowedPortfolioTypes(): array
+    {
+        $publication = $this->route('publication');
+        $types = parent::allowedPortfolioTypes();
+
+        if ($publication instanceof Publication && ! in_array($publication->portfolio_type, $types, true)) {
+            $types[] = $publication->portfolio_type;
+        }
+
+        return $types;
     }
 }

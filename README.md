@@ -13,6 +13,7 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 - Authenticated creation and management of commission offers and talent searches.
 - Account and IP rate limits plus Azuriom-configured CAPTCHA verification for publication creation and editing.
 - Administrative settings for feature availability and fully configurable publication rate-limit attempts and windows.
+- Per-format portfolio availability controls with an enforced minimum of one enabled format; existing portfolio content remains visible when its format is disabled.
 - Global Seeker availability switch that blocks every public route and action while keeping the administrative panel available for recovery.
 - Consistent Zibuu-style administrative experience with contextual headers, responsive filter toolbars, accessible compact actions, polished tables, statistics, and empty states.
 - Publication moderation with creation and edit timestamps, linked conversation counts, and a complete administrative detail view.

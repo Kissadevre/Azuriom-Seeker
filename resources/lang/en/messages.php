@@ -75,6 +75,7 @@ return [
         'images' => 'Upload images',
         'video' => 'Upload a video',
         'audio' => 'Upload audio',
+        'current_disabled' => 'Existing format',
     ],
     'pricing_types' => [
         'points' => 'Zibuu points',
@@ -133,6 +134,7 @@ return [
         'video' => 'One MP4 or WebM video, up to 10 MB.',
         'audio' => 'One MP3, WAV, OGG, or M4A audio file, up to 10 MB.',
         'server_upload_limit' => 'This server currently accepts files up to :size. An administrator must raise the PHP upload limit to use the full 10 MB allowed by Seeker.',
+        'disabled_current_portfolio' => 'This portfolio format is currently disabled. You can retain its existing content or switch to an enabled format.',
         'remove_images' => 'If you remove every image, you must upload at least one replacement.',
         'guest_visibility' => 'When disabled, only authenticated Zibuu members can find and view the publication.',
         'pricing_type' => 'Indicate whether the service has a fixed point price, is free, or will be agreed with interested users.',
@@ -161,6 +163,8 @@ return [
         'max_images' => 'A publication can have at most 6 reference images.',
         'media_required' => 'Upload a file for :type or choose another portfolio option.',
         'invalid_media' => 'The uploaded media file does not match an allowed format.',
+        'portfolio_type_unavailable' => 'The selected portfolio format is not currently available.',
+        'disabled_portfolio_locked' => 'New content cannot be added to this portfolio format because it is disabled.',
         'pricing_locked' => 'The publication type and pricing cannot change after a conversation has started.',
     ],
     'contact' => [
