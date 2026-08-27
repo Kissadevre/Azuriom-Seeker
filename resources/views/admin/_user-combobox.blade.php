@@ -27,7 +27,7 @@
 
     <div data-user-combobox-search @if($comboboxUser !== null) hidden @endif>
         <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-person-search" aria-hidden="true"></i></span>
+            <span class="input-group-text"><i class="bi bi-person" aria-hidden="true"></i></span>
             <input id="{{ $comboboxId }}"
                    type="text"
                    class="form-control {{ $comboboxShowError && $errors->has('user_id') ? 'is-invalid' : '' }}"

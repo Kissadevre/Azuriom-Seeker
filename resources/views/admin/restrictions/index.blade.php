@@ -17,7 +17,7 @@
 
         <form method="GET" class="seeker-admin-toolbar mb-4">
             <div class="seeker-admin-toolbar-title"><i class="bi bi-search" aria-hidden="true"></i>@lang('seeker::admin.restrictions.search_title')</div>
-            <div class="row g-2 align-items-end">
+            <div class="row g-3 align-items-start">
                 <div class="col-md">
                     @include('seeker::admin._user-combobox', [
                         'comboboxId' => 'restrictionFilterUser',
@@ -25,7 +25,7 @@
                     ])
                 </div>
                 <div class="col-md"><label class="form-label small fw-semibold" for="restrictionFilterState">@lang('seeker::admin.restrictions.state')</label><select id="restrictionFilterState" name="state" class="form-select">@foreach(['active', 'history', 'all'] as $restrictionState)<option value="{{ $restrictionState }}" @selected($state === $restrictionState)>@lang('seeker::admin.restrictions.states.'.$restrictionState)</option>@endforeach</select></div>
-                <div class="col-md-auto seeker-admin-filter-actions">
+                <div class="col-md-auto seeker-admin-filter-actions seeker-admin-filter-submit">
                     <button class="btn btn-primary"><i class="bi bi-search me-1" aria-hidden="true"></i>@lang('seeker::admin.restrictions.filter')</button>
                     @if($selectedUser || $state !== 'active')
                         <a class="btn btn-outline-secondary" href="{{ route('seeker.admin.restrictions.index') }}"><i class="bi bi-x-lg me-1" aria-hidden="true"></i>@lang('seeker::admin.clear_filters')</a>

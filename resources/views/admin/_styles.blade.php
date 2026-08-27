@@ -137,6 +137,10 @@
                 gap: .5rem;
             }
 
+            .seeker-admin-filter-submit {
+                padding-top: 1.95rem;
+            }
+
             .seeker-admin-toolbar-title {
                 display: flex;
                 align-items: center;
@@ -429,6 +433,10 @@
                 .seeker-admin-filter-actions,
                 .seeker-admin-filter-actions > * {
                     width: 100%;
+                }
+
+                .seeker-admin-filter-submit {
+                    padding-top: 0;
                 }
 
                 .seeker-admin-switch-row {
