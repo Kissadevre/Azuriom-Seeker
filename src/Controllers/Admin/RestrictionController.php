@@ -33,11 +33,6 @@ class RestrictionController extends Controller
                 ->where('user_id', $selectedUser->id)
                 ->where('type', UserRestriction::TYPE_PROFILE)
                 ->exists();
-        $restrictionUserId = (int) $request->old('user_id', $selectedUser?->id);
-        $restrictionUser = $restrictionUserId > 0
-            ? User::query()->find($restrictionUserId)
-            : null;
-
         $restrictions = UserRestriction::query()
             ->with(['user', 'createdBy', 'revokedBy'])
             ->when($state === 'active', fn ($query) => $query->active())
@@ -54,8 +49,7 @@ class RestrictionController extends Controller
             'restrictions',
             'state',
             'selectedUser',
-            'selectedUserProfileRestricted',
-            'restrictionUser'
+            'selectedUserProfileRestricted'
         ));
     }
 

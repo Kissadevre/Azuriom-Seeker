@@ -22,6 +22,7 @@
                     @include('seeker::admin._user-combobox', [
                         'comboboxId' => 'restrictionFilterUser',
                         'comboboxUser' => $selectedUser,
+                        'comboboxAutoSubmit' => true,
                     ])
                 </div>
                 <div class="col-md"><label class="form-label small fw-semibold" for="restrictionFilterState">@lang('seeker::admin.restrictions.state')</label><select id="restrictionFilterState" name="state" class="form-select">@foreach(['active', 'history', 'all'] as $restrictionState)<option value="{{ $restrictionState }}" @selected($state === $restrictionState)>@lang('seeker::admin.restrictions.states.'.$restrictionState)</option>@endforeach</select></div>
@@ -35,25 +36,28 @@
         </form>
 
         @if($selectedUser)
-            <div class="card seeker-admin-card mb-4"><div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3"><div class="seeker-admin-user"><img src="{{ $selectedUser->getAvatar(48) }}" class="rounded-circle" alt=""><div><strong class="d-block">{{ $selectedUser->name }}</strong><span class="small text-body-secondary">@lang('seeker::admin.restrictions.selected_user', ['id' => $selectedUser->id])</span></div></div>@if($selectedUserProfileRestricted)<span class="badge text-bg-dark seeker-admin-status"><i class="bi bi-eye-slash" aria-hidden="true"></i>@lang('seeker::admin.restrictions.profile_hidden')</span>@else<a class="btn btn-sm btn-outline-primary" href="{{ route('seeker.profiles.show', $selectedUser) }}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>@lang('seeker::admin.restrictions.view_profile')</a>@endif</div></div>
-        @endif
-
-        <div class="card seeker-admin-card mb-4">
-            <div class="card-header d-flex align-items-center gap-2"><i class="bi bi-plus-circle text-primary" aria-hidden="true"></i><h2>@lang('seeker::admin.restrictions.apply_title')</h2></div>
-            <div class="card-body p-4">
+            <div class="card seeker-admin-card mb-4">
+                <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div class="seeker-admin-user">
+                        <img src="{{ $selectedUser->getAvatar(48) }}" class="rounded-circle" alt="">
+                        <div><h2 class="h5 mb-0">{{ $selectedUser->name }}</h2><span class="small text-body-secondary">@lang('seeker::admin.restrictions.workspace_subtitle')</span></div>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        @if($selectedUserProfileRestricted)
+                            <span class="badge text-bg-dark seeker-admin-status"><i class="bi bi-eye-slash" aria-hidden="true"></i>@lang('seeker::admin.restrictions.profile_hidden')</span>
+                        @else
+                            <a class="btn btn-sm btn-outline-primary" href="{{ route('seeker.profiles.show', $selectedUser) }}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>@lang('seeker::admin.restrictions.view_profile')</a>
+                        @endif
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center gap-2 mb-4"><i class="bi bi-plus-circle text-primary" aria-hidden="true"></i><h3 class="h5 mb-0">@lang('seeker::admin.restrictions.apply_title')</h3></div>
                 <form method="POST" action="{{ route('seeker.admin.restrictions.store') }}">
                     @csrf
+                    <input type="hidden" name="user_id" value="{{ $selectedUser->id }}">
                     <div class="row g-4">
-                        <div class="col-lg-4">
-                            @include('seeker::admin._user-combobox', [
-                                'comboboxId' => 'restrictionUser',
-                                'comboboxUser' => $restrictionUser,
-                                'comboboxRequired' => true,
-                                'comboboxShowError' => true,
-                            ])
-                        </div>
-                        <div class="col-lg-4"><label class="form-label fw-semibold" for="restrictionDuration">@lang('seeker::admin.restrictions.duration')</label><select id="restrictionDuration" name="duration" class="form-select" data-restriction-duration required><option value="indefinite" @selected(old('duration', 'indefinite') === 'indefinite')>@lang('seeker::admin.restrictions.indefinite')</option><option value="until" @selected(old('duration') === 'until')>@lang('seeker::admin.restrictions.until')</option></select></div>
-                        <div class="col-lg-4" data-restriction-expiration><label class="form-label fw-semibold" for="restrictionExpires">@lang('seeker::admin.restrictions.expires_at')</label><input id="restrictionExpires" type="datetime-local" name="expires_at" value="{{ old('expires_at') }}" min="{{ now()->addMinute()->format('Y-m-d\TH:i') }}" class="form-control @error('expires_at') is-invalid @enderror">@error('expires_at')<div class="invalid-feedback">{{ $message }}</div>@enderror<div class="form-text">@lang('seeker::admin.restrictions.expires_help')</div></div>
+                        <div class="col-lg-6"><label class="form-label fw-semibold" for="restrictionDuration">@lang('seeker::admin.restrictions.duration')</label><select id="restrictionDuration" name="duration" class="form-select" data-restriction-duration required><option value="indefinite" @selected(old('duration', 'indefinite') === 'indefinite')>@lang('seeker::admin.restrictions.indefinite')</option><option value="until" @selected(old('duration') === 'until')>@lang('seeker::admin.restrictions.until')</option></select></div>
+                        <div class="col-lg-6" data-restriction-expiration><label class="form-label fw-semibold" for="restrictionExpires">@lang('seeker::admin.restrictions.expires_at')</label><input id="restrictionExpires" type="datetime-local" name="expires_at" value="{{ old('expires_at') }}" min="{{ now()->addMinute()->format('Y-m-d\TH:i') }}" class="form-control @error('expires_at') is-invalid @enderror">@error('expires_at')<div class="invalid-feedback">{{ $message }}</div>@enderror<div class="form-text">@lang('seeker::admin.restrictions.expires_help')</div></div>
                         <div class="col-12">
                             <label class="form-label fw-semibold d-block">@lang('seeker::admin.restrictions.type')</label>
                             <div class="row g-2">
@@ -67,19 +71,25 @@
                     </div>
                     <button class="btn btn-warning mt-4"><i class="bi bi-person-lock me-1" aria-hidden="true"></i>@lang('seeker::admin.restrictions.apply')</button>
                 </form>
+                </div>
+                <div class="card-footer p-0 bg-transparent">
+                    <div class="accordion accordion-flush" id="restrictionPublicationActions">
+                        <div class="accordion-item bg-transparent">
+                            <h3 class="accordion-header"><button class="accordion-button collapsed text-danger bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#restrictionPublicationActionsBody" aria-expanded="false" aria-controls="restrictionPublicationActionsBody"><i class="bi bi-exclamation-octagon me-2" aria-hidden="true"></i>@lang('seeker::admin.restrictions.danger_title')</button></h3>
+                            <div id="restrictionPublicationActionsBody" class="accordion-collapse collapse" data-bs-parent="#restrictionPublicationActions"><div class="accordion-body"><p class="text-body-secondary">@lang('seeker::admin.restrictions.remove_publications_help', ['user' => $selectedUser->name])</p><form method="POST" action="{{ route('seeker.admin.restrictions.publications.remove', $selectedUser) }}" onsubmit="return confirm(@js(trans('seeker::admin.restrictions.remove_publications_confirm', ['user' => $selectedUser->name])))">@csrf @method('DELETE')<div class="form-check mb-3"><input class="form-check-input" type="checkbox" name="confirm" value="1" id="confirmRemovePublications" required><label class="form-check-label" for="confirmRemovePublications">@lang('seeker::admin.restrictions.remove_publications_acknowledge')</label></div><button class="btn btn-outline-danger"><i class="bi bi-trash me-1" aria-hidden="true"></i>@lang('seeker::admin.restrictions.remove_publications')</button></form></div></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        @if($selectedUser)
-            <div class="card seeker-admin-card border-danger mb-4">
-                <div class="card-header d-flex align-items-center gap-2"><i class="bi bi-exclamation-octagon text-danger" aria-hidden="true"></i><h2>@lang('seeker::admin.restrictions.danger_title')</h2></div>
-                <div class="card-body p-4"><p class="text-body-secondary">@lang('seeker::admin.restrictions.remove_publications_help', ['user' => $selectedUser->name])</p><form method="POST" action="{{ route('seeker.admin.restrictions.publications.remove', $selectedUser) }}" onsubmit="return confirm(@js(trans('seeker::admin.restrictions.remove_publications_confirm', ['user' => $selectedUser->name])))">@csrf @method('DELETE')<div class="form-check mb-3"><input class="form-check-input" type="checkbox" name="confirm" value="1" id="confirmRemovePublications" required><label class="form-check-label" for="confirmRemovePublications">@lang('seeker::admin.restrictions.remove_publications_acknowledge')</label></div><button class="btn btn-outline-danger"><i class="bi bi-trash me-1" aria-hidden="true"></i>@lang('seeker::admin.restrictions.remove_publications')</button></form></div>
+        @else
+            <div class="card seeker-admin-card mb-4">
+                <div class="card-body py-5 text-center"><span class="seeker-admin-empty-icon"><i class="bi bi-person-plus" aria-hidden="true"></i></span><h2 class="h5 mt-3">@lang('seeker::admin.restrictions.select_user_title')</h2><p class="text-body-secondary mb-0">@lang('seeker::admin.restrictions.select_user_help')</p></div>
             </div>
         @endif
 
         <div class="card seeker-admin-card">
             <div class="card-header d-flex justify-content-between align-items-center"><h2>@lang('seeker::admin.restrictions.history_title')</h2><span class="badge rounded-pill text-bg-secondary">{{ $restrictions->total() }}</span></div>
-            <div class="table-responsive"><table class="table table-hover align-middle seeker-admin-table seeker-admin-table--actions mb-0"><thead><tr><th>@lang('seeker::admin.restrictions.user')</th><th>@lang('seeker::admin.restrictions.type')</th><th>@lang('seeker::admin.restrictions.reason')</th><th>@lang('seeker::admin.restrictions.applied_by')</th><th>@lang('seeker::admin.restrictions.duration')</th><th>@lang('seeker::admin.status')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead><tbody>
+            <div class="table-responsive"><table class="table table-hover align-middle seeker-admin-table mb-0"><thead><tr><th>@lang('seeker::admin.restrictions.user')</th><th>@lang('seeker::admin.restrictions.type')</th><th>@lang('seeker::admin.restrictions.reason')</th><th>@lang('seeker::admin.restrictions.applied_by')</th><th>@lang('seeker::admin.restrictions.duration')</th><th>@lang('seeker::admin.status')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead><tbody>
                 @forelse($restrictions as $restriction)
                     <tr>
                         <td><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.admin.restrictions.index', ['user_id' => $restriction->user_id, 'state' => $state]) }}">{{ $restriction->user->name }}</a><div class="small text-body-secondary">ID #{{ $restriction->user_id }}</div></td>
@@ -116,6 +126,7 @@
                 const clear = combobox.querySelector('[data-user-combobox-clear]');
                 const form = combobox.closest('form');
                 const required = combobox.dataset.required === 'true';
+                const autoSubmit = combobox.dataset.autoSubmit === 'true';
                 let options = [];
                 let activeIndex = -1;
                 let debounceTimer;
@@ -149,6 +160,7 @@
                     selected.hidden = false;
                     search.hidden = true;
                     closeResults();
+                    if (autoSubmit) form?.requestSubmit();
                 };
 
                 const renderMessage = (message, isError = false) => {

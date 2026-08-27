@@ -1,12 +1,14 @@
 @php
     $comboboxRequired = $comboboxRequired ?? false;
     $comboboxShowError = $comboboxShowError ?? false;
+    $comboboxAutoSubmit = $comboboxAutoSubmit ?? false;
 @endphp
 
 <div class="seeker-admin-user-combobox"
      data-user-combobox
      data-search-url="{{ route('seeker.admin.restrictions.users.search') }}"
      data-required="{{ $comboboxRequired ? 'true' : 'false' }}"
+     data-auto-submit="{{ $comboboxAutoSubmit ? 'true' : 'false' }}"
      data-searching="@lang('seeker::admin.restrictions.user_searching')"
      data-no-results="@lang('seeker::admin.restrictions.user_no_results')"
      data-search-error="@lang('seeker::admin.restrictions.user_search_error')"
