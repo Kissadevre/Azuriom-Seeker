@@ -2,20 +2,19 @@
 
 @section('title', trans('seeker::messages.my_publications'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @section('content')
+    <div class="seeker-public-shell">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-        <h1 class="h2 mb-0">@lang('seeker::messages.my_publications')</h1>
+        @include('seeker::_page-header', ['pageIcon' => 'bi-briefcase', 'pageTitle' => trans('seeker::messages.my_publications'), 'pageSubtitle' => trans('seeker::messages.my_publications_subtitle'), 'pageHeaderClass' => 'mb-0'])
         <div class="d-flex gap-2"><a class="btn btn-outline-primary" href="{{ route('seeker.profiles.show', auth()->user()) }}"><i class="bi bi-person-badge me-1" aria-hidden="true"></i>@lang('seeker::messages.profiles.my_profile')</a>@if($publicationsEnabled)<a class="btn btn-primary" href="{{ route('seeker.publications.create') }}"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i> @lang('seeker::messages.publish')</a>@elseif($publishRestriction)<a class="btn btn-outline-warning" href="{{ route('seeker.restrictions.show', \Azuriom\Plugin\Seeker\Models\UserRestriction::TYPE_PUBLISH) }}"><i class="bi bi-shield-lock me-1" aria-hidden="true"></i>@lang('seeker::messages.restrictions.details.view')</a>@endif</div>
     </div>
 
     @if($publications->isEmpty())
-        <div class="card"><div class="card-body py-5 text-center"><p class="text-muted">@lang('seeker::messages.empty_mine')</p>@if($publicationsEnabled)<a class="btn btn-primary" href="{{ route('seeker.publications.create') }}">@lang('seeker::messages.publish')</a>@elseif($publishRestriction)<a class="btn btn-outline-warning" href="{{ route('seeker.restrictions.show', \Azuriom\Plugin\Seeker\Models\UserRestriction::TYPE_PUBLISH) }}">@lang('seeker::messages.restrictions.details.view')</a>@endif</div></div>
+        <div class="seeker-empty-state"><span class="seeker-empty-icon"><i class="bi bi-megaphone" aria-hidden="true"></i></span><h2>@lang('seeker::messages.empty_mine')</h2><div class="mt-3">@if($publicationsEnabled)<a class="btn btn-primary" href="{{ route('seeker.publications.create') }}"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>@lang('seeker::messages.publish')</a>@elseif($publishRestriction)<a class="btn btn-outline-warning" href="{{ route('seeker.restrictions.show', \Azuriom\Plugin\Seeker\Models\UserRestriction::TYPE_PUBLISH) }}">@lang('seeker::messages.restrictions.details.view')</a>@endif</div></div>
     @else
-        <div class="card">
+        <div class="card seeker-table-card overflow-hidden">
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
                     <thead><tr><th>@lang('seeker::messages.fields.title')</th><th>@lang('seeker::messages.fields.type')</th><th>@lang('seeker::messages.fields.status')</th><th class="text-end"></th></tr></thead>
@@ -42,4 +41,5 @@
         </div>
         @if($publications->hasPages())<div class="d-flex justify-content-center mt-4">{{ $publications->links() }}</div>@endif
     @endif
+    </div>
 @endsection

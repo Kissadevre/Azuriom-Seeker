@@ -1,5 +1,159 @@
+.seeker-public-shell {
+    --seeker-brand-pink: #ec6fa9;
+    --seeker-brand-lilac: #9b7cf7;
+    --seeker-brand-cyan: #45c9ed;
+    --seeker-brand-gradient: linear-gradient(135deg, var(--seeker-brand-pink), var(--seeker-brand-lilac) 52%, var(--seeker-brand-cyan));
+    --seeker-radius: 1.15rem;
+    --seeker-border: rgba(var(--bs-primary-rgb), .16);
+}
+
+.seeker-public-shell .card,
+.seeker-surface {
+    border-color: var(--seeker-border);
+    border-radius: var(--seeker-radius);
+    box-shadow: 0 .65rem 2rem rgba(26, 38, 77, .045);
+}
+
+.seeker-public-shell .card-header,
+.seeker-public-shell .card-footer {
+    border-color: rgba(var(--bs-secondary-rgb), .12);
+    background: rgba(var(--bs-primary-rgb), .025);
+}
+
+.seeker-public-shell .form-control,
+.seeker-public-shell .form-select,
+.seeker-public-shell .input-group-text,
+.seeker-public-shell .btn {
+    min-height: 2.75rem;
+    border-radius: .75rem;
+}
+
+.seeker-public-shell .input-group > :not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.seeker-public-shell .input-group > :not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.seeker-public-shell .form-label,
+.seeker-public-shell legend.form-label {
+    font-weight: 650;
+}
+
+.seeker-eyebrow {
+    display: block;
+    margin-bottom: .2rem;
+    color: var(--bs-primary);
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.seeker-page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.seeker-page-header h1 {
+    margin: 0;
+    font-size: clamp(1.65rem, 4vw, 2.25rem);
+    font-weight: 750;
+}
+
+.seeker-page-header p {
+    margin: .3rem 0 0;
+    color: var(--bs-secondary-color);
+}
+
+.seeker-page-icon,
+.seeker-title-icon {
+    display: inline-grid;
+    width: 3.75rem;
+    height: 3.75rem;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 1rem;
+    color: #fff;
+    background: var(--seeker-brand-gradient);
+    box-shadow: 0 .6rem 1.4rem rgba(155, 124, 247, .2);
+    font-size: 1.5rem;
+}
+
+.seeker-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    margin-bottom: 1.25rem;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.seeker-empty-state {
+    padding: clamp(2.5rem, 7vw, 4.5rem) 1.5rem;
+    border: 1px dashed rgba(var(--bs-primary-rgb), .28);
+    border-radius: var(--seeker-radius);
+    background: rgba(var(--bs-primary-rgb), .025);
+    text-align: center;
+}
+
+.seeker-empty-icon {
+    display: inline-grid;
+    width: 4rem;
+    height: 4rem;
+    place-items: center;
+    margin-bottom: 1rem;
+    border-radius: 1rem;
+    color: var(--bs-primary);
+    background: rgba(var(--bs-primary-rgb), .1);
+    font-size: 1.7rem;
+}
+
+.seeker-empty-state h2 {
+    margin-bottom: .5rem;
+    font-size: 1.2rem;
+}
+
+.seeker-empty-state p {
+    max-width: 34rem;
+    margin: 0 auto 1.25rem;
+    color: var(--bs-secondary-color);
+}
+
+.seeker-section-title {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+.seeker-section-title i {
+    color: var(--bs-primary);
+}
+
 .seeker-hero {
-    background: linear-gradient(135deg, rgba(var(--bs-primary-rgb), .16), rgba(var(--bs-info-rgb), .08));
+    position: relative;
+    isolation: isolate;
+    border: 1px solid rgba(var(--bs-primary-rgb), .16) !important;
+    background: linear-gradient(135deg, rgba(236, 111, 169, .1), rgba(155, 124, 247, .1) 52%, rgba(69, 201, 237, .12));
+}
+
+.seeker-hero::after {
+    position: absolute;
+    right: -5rem;
+    bottom: -7rem;
+    width: 18rem;
+    height: 18rem;
+    z-index: -1;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .18);
+    content: '';
 }
 
 .seeker-card {
@@ -9,6 +163,35 @@
 .seeker-card:hover {
     box-shadow: 0 .75rem 1.75rem rgba(0, 0, 0, .1);
     transform: translateY(-3px);
+}
+
+.seeker-filter-card {
+    background: rgba(var(--bs-body-bg-rgb), .82);
+    backdrop-filter: blur(.5rem);
+}
+
+.seeker-publication-card .card-body {
+    padding: 1.35rem;
+}
+
+.seeker-publication-card .card-title {
+    line-height: 1.35;
+}
+
+.seeker-publication-card .card-text {
+    line-height: 1.65;
+}
+
+.seeker-table-card .table > :not(caption) > * > * {
+    padding: 1rem 1.15rem;
+}
+
+.seeker-table-card thead th {
+    color: var(--bs-secondary-color);
+    background: rgba(var(--bs-primary-rgb), .025);
+    font-size: .75rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
 }
 
 .seeker-card-image,
@@ -24,17 +207,6 @@
     color: var(--bs-primary);
     font-size: 3rem;
     background: rgba(var(--bs-primary-rgb), .1);
-}
-
-.seeker-title-icon {
-    display: inline-grid;
-    width: 3.25rem;
-    height: 3.25rem;
-    place-items: center;
-    border-radius: .75rem;
-    color: #fff;
-    font-size: 1.4rem;
-    background: var(--bs-primary);
 }
 
 .seeker-description {
@@ -200,6 +372,18 @@
 }
 
 @media (max-width: 575.98px) {
+    .seeker-page-header {
+        align-items: flex-start;
+    }
+
+    .seeker-page-icon,
+    .seeker-title-icon {
+        width: 3.2rem;
+        height: 3.2rem;
+        border-radius: .85rem;
+        font-size: 1.25rem;
+    }
+
     .seeker-restriction-icon {
         width: 3.25rem;
         height: 3.25rem;

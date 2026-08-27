@@ -2,16 +2,15 @@
 
 @section('title', trans('seeker::messages.title'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @section('content')
+    <div class="seeker-public-shell">
     <div class="seeker-hero card border-0 mb-4 overflow-hidden">
         <div class="card-body p-4 p-lg-5">
             <div class="row align-items-center g-4">
                 <div class="col-lg">
-                    <span class="badge text-bg-primary mb-3">Seeker</span>
+                    <span class="seeker-eyebrow mb-2">Seeker by Zibuu</span>
                     <h1 class="display-6 fw-bold mb-2">@lang('seeker::messages.title')</h1>
                     <p class="lead mb-0">@lang('seeker::messages.subtitle')</p>
                 </div>
@@ -36,12 +35,12 @@
         </div>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-body">
+    <div class="card seeker-filter-card mb-4">
+        <div class="card-body p-3 p-lg-4">
             <form method="GET" class="row g-2" role="search">
                 <div class="col-lg">
                     <label class="visually-hidden" for="seekerSearch">@lang('seeker::messages.search')</label>
-                    <input id="seekerSearch" type="search" name="search" class="form-control" value="{{ $search }}" placeholder="@lang('seeker::messages.search')">
+                    <div class="input-group"><span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span><input id="seekerSearch" type="search" name="search" class="form-control" value="{{ $search }}" placeholder="@lang('seeker::messages.search')"></div>
                 </div>
                 <div class="col-lg-3">
                     <label class="visually-hidden" for="seekerType">@lang('seeker::messages.fields.type')</label>
@@ -60,12 +59,12 @@
     </div>
 
     @if($publications->isEmpty())
-        <div class="card"><div class="card-body py-5 text-center text-muted">@lang('seeker::messages.empty')</div></div>
+        @include('seeker::_empty-state', ['emptyIcon' => 'bi-search', 'emptyTitle' => trans('seeker::messages.empty')])
     @else
         <div class="row g-4">
             @foreach($publications as $publication)
                 <div class="col-md-6 col-xl-4">
-                    <article class="card seeker-card h-100 overflow-hidden">
+                    <article class="card seeker-card seeker-publication-card h-100 overflow-hidden">
                         @if($image = $publication->images->first())
                             <img class="seeker-card-image" src="{{ route('seeker.images.show', $image) }}" alt="">
                         @else
@@ -100,4 +99,5 @@
             <div class="d-flex justify-content-center mt-4">{{ $publications->links() }}</div>
         @endif
     @endif
+    </div>
 @endsection
