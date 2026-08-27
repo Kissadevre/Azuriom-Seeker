@@ -50,12 +50,16 @@ class Publication extends Model
         'price',
         'price_basis',
         'status',
+        'is_pinned',
+        'pinned_at',
         'published_at',
     ];
 
     protected $casts = [
         'is_guest_visible' => 'boolean',
+        'is_pinned' => 'boolean',
         'price' => 'decimal:2',
+        'pinned_at' => 'datetime',
         'published_at' => 'datetime',
         'author_rating' => 'float',
         'author_reviews_count' => 'integer',
@@ -114,6 +118,14 @@ class Publication extends Model
                 ->whereColumn('reviewed_user_id', 'seeker_publications.user_id')
                 ->where('is_visible', true),
         ]);
+    }
+
+    public function scopeForListing(Builder $query): Builder
+    {
+        return $query
+            ->orderByDesc('is_pinned')
+            ->orderByDesc('published_at')
+            ->orderByDesc('id');
     }
 
     public static function types(): array

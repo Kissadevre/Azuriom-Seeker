@@ -106,6 +106,9 @@
                         @endif
                         <div class="card-body d-flex flex-column">
                             <div class="d-flex flex-wrap gap-2 mb-2">
+                                @if($publication->is_pinned)
+                                    <span class="badge seeker-featured-badge"><i class="bi bi-pin-angle-fill me-1" aria-hidden="true"></i>@lang('seeker::messages.featured')</span>
+                                @endif
                                 <span class="badge {{ $publication->type === 'commission' ? 'text-bg-primary' : 'text-bg-info' }}">@lang('seeker::messages.types.'.$publication->type)</span>
                                 <span class="badge text-bg-light">
                                     @include('seeker::publications._price', ['publication' => $publication])

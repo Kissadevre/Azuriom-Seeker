@@ -13,6 +13,9 @@
             <article class="card seeker-publication-detail mb-4">
                 <div class="card-body p-4 p-lg-5">
                     <div class="d-flex flex-wrap gap-2 mb-3">
+                        @if($publication->is_pinned)
+                            <span class="badge seeker-featured-badge"><i class="bi bi-pin-angle-fill me-1" aria-hidden="true"></i>@lang('seeker::messages.featured')</span>
+                        @endif
                         <span class="badge {{ $publication->type === 'commission' ? 'text-bg-primary' : 'text-bg-info' }}">@lang('seeker::messages.types.'.$publication->type)</span>
                         @if($publication->status !== 'active')
                             <span class="badge text-bg-secondary">@lang('seeker::messages.statuses.'.$publication->status)</span>

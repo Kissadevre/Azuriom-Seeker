@@ -28,6 +28,7 @@ return [
     'set_status' => 'Update status',
     'alerts' => [
         'status_updated' => 'The publication status has been updated.',
+        'pin_updated' => 'The publication priority has been updated.',
     ],
     'settings' => [
         'title' => 'Seeker settings',
@@ -87,12 +88,17 @@ return [
         'restriction_revoked' => 'Lifted the :type restriction from :user',
         'publications_removed' => 'Removed :count Seeker publications belonging to :user',
         'biography_removed' => 'Removed the Seeker biography belonging to :user',
+        'publication_pinned' => 'Pinned Seeker publication #:id',
+        'publication_unpinned' => 'Unpinned Seeker publication #:id',
     ],
     'publications' => [
         'title' => 'Seeker publications',
         'subtitle' => 'Review every publication and its linked activity.',
         'filters' => 'Filter publications',
         'all_types' => 'All publication types',
+        'pinned' => 'Pinned',
+        'pin' => 'Pin publication',
+        'unpin' => 'Unpin publication',
         'report_filter' => 'Reports',
         'all_report_states' => 'All publications',
         'with_reports' => 'Publications with reports',

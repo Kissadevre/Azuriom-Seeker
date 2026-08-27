@@ -458,6 +458,12 @@
     border-color: rgba(var(--bs-secondary-rgb), .11);
 }
 
+.seeker-featured-badge {
+    color: #684b00;
+    border: 1px solid rgba(236, 174, 42, .3);
+    background: linear-gradient(135deg, #fff1b8, #ffd978);
+}
+
 .seeker-inbox-filters {
     display: flex;
     align-items: center;

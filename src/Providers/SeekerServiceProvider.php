@@ -8,6 +8,7 @@ use Azuriom\Models\Permission;
 use Azuriom\Models\User;
 use Azuriom\Plugin\Seeker\Models\Conversation;
 use Azuriom\Plugin\Seeker\Models\Message;
+use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Models\UserRestriction;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -62,6 +63,21 @@ class SeekerServiceProvider extends BasePluginServiceProvider
                 'color' => 'success',
                 'message' => 'seeker::admin.logs.message_restored',
                 'model' => Message::class,
+            ],
+        ]);
+
+        ActionLog::registerLogs([
+            'seeker.publications.pinned' => [
+                'icon' => 'pin-angle-fill',
+                'color' => 'warning',
+                'message' => 'seeker::admin.logs.publication_pinned',
+                'model' => Publication::class,
+            ],
+            'seeker.publications.unpinned' => [
+                'icon' => 'pin-angle',
+                'color' => 'secondary',
+                'message' => 'seeker::admin.logs.publication_unpinned',
+                'model' => Publication::class,
             ],
         ]);
 

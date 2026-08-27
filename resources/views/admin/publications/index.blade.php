@@ -57,7 +57,7 @@
                     <tbody>
                         @forelse($publications as $publication)
                             <tr @class(['seeker-admin-row-reported' => $publication->reports_count > 0])>
-                                <td style="min-width: 15rem">@if($publication->reports_count > 0)<span class="visually-hidden">@choice('seeker::admin.publications.report_count', $publication->reports_count, ['count' => $publication->reports_count]) </span>@endif<a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.admin.publications.show', $publication) }}">{{ $publication->title }}</a><div class="small text-body-secondary mt-1"><i class="bi bi-{{ $publication->type === 'commission' ? 'briefcase' : 'people' }} me-1" aria-hidden="true"></i>@lang('seeker::messages.types.'.$publication->type)</div></td>
+                                <td style="min-width: 15rem">@if($publication->reports_count > 0)<span class="visually-hidden">@choice('seeker::admin.publications.report_count', $publication->reports_count, ['count' => $publication->reports_count]) </span>@endif<div class="d-flex flex-wrap align-items-center gap-2"><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.admin.publications.show', $publication) }}">{{ $publication->title }}</a>@if($publication->is_pinned)<span class="badge text-bg-warning"><i class="bi bi-pin-angle-fill me-1" aria-hidden="true"></i>@lang('seeker::admin.publications.pinned')</span>@endif</div><div class="small text-body-secondary mt-1"><i class="bi bi-{{ $publication->type === 'commission' ? 'briefcase' : 'people' }} me-1" aria-hidden="true"></i>@lang('seeker::messages.types.'.$publication->type)</div></td>
                                 <td><div class="seeker-admin-user"><img src="{{ $publication->user->getAvatar(38) }}" class="rounded-circle" alt=""><div><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $publication->user) }}" target="_blank" rel="noopener">{{ $publication->user->name }}</a><div class="small text-body-secondary">ID #{{ $publication->user_id }}</div></div></div></td>
                                 <td>
                                     @if($publication->trashed())
@@ -100,7 +100,16 @@
                                 </td>
                                 <td class="text-center"><a class="badge rounded-pill text-bg-primary text-decoration-none" href="{{ route('seeker.admin.publications.show', $publication) }}#conversations">{{ $publication->conversations_count }}</a></td>
                                 <td class="text-end text-nowrap">
-                                    <div class="seeker-admin-action-group"><a class="btn btn-sm btn-outline-primary" href="{{ route('seeker.admin.publications.show', $publication) }}" title="@lang('seeker::admin.details')" aria-label="@lang('seeker::admin.details')" data-bs-toggle="tooltip"><i class="bi bi-eye" aria-hidden="true"></i></a></div>
+                                    <div class="seeker-admin-action-group">
+                                        @unless($publication->trashed())
+                                            <form method="POST" action="{{ route('seeker.admin.publications.status', $publication) }}">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="pinned" value="{{ $publication->is_pinned ? 0 : 1 }}">
+                                                <button class="btn btn-sm {{ $publication->is_pinned ? 'btn-warning' : 'btn-outline-warning' }}" title="@lang($publication->is_pinned ? 'seeker::admin.publications.unpin' : 'seeker::admin.publications.pin')" aria-label="@lang($publication->is_pinned ? 'seeker::admin.publications.unpin' : 'seeker::admin.publications.pin')" data-bs-toggle="tooltip"><i class="bi bi-pin-angle{{ $publication->is_pinned ? '-fill' : '' }}" aria-hidden="true"></i></button>
+                                            </form>
+                                        @endunless
+                                        <a class="btn btn-sm btn-outline-primary" href="{{ route('seeker.admin.publications.show', $publication) }}" title="@lang('seeker::admin.details')" aria-label="@lang('seeker::admin.details')" data-bs-toggle="tooltip"><i class="bi bi-eye" aria-hidden="true"></i></a>
+                                    </div>
                                 </td>
                             </tr>
                         @empty

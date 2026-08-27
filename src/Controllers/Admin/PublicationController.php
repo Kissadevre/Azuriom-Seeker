@@ -3,11 +3,12 @@
 namespace Azuriom\Plugin\Seeker\Controllers\Admin;
 
 use Azuriom\Http\Controllers\Controller;
+use Azuriom\Models\ActionLog;
 use Azuriom\Plugin\Seeker\Models\ConversationReport;
 use Azuriom\Plugin\Seeker\Models\Publication;
-use Azuriom\Plugin\Seeker\Requests\PublicationStatusRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class PublicationController extends Controller
@@ -29,7 +30,7 @@ class PublicationController extends Controller
             ->when($status, fn ($query) => $query->where('status', $status))
             ->when($type, fn ($query) => $query->where('type', $type))
             ->when($reported, fn ($query) => $query->whereHas('reports'))
-            ->latest()
+            ->forListing()
             ->paginate(20)
             ->withQueryString();
 
@@ -59,13 +60,42 @@ class PublicationController extends Controller
         return view('seeker::admin.publications.show', compact('publication', 'reports', 'conversations'));
     }
 
-    public function updateStatus(PublicationStatusRequest $request, Publication $publication): RedirectResponse
+    public function updateStatus(Request $request, Publication $publication): RedirectResponse
     {
         abort_if($publication->trashed(), 409);
-        $publication->status = $request->validated('status');
+
+        if ($request->has('pinned')) {
+            return $this->updatePin($request, $publication);
+        }
+
+        $validated = $request->validate([
+            'status' => ['required', Rule::in(Publication::statuses())],
+        ]);
+        $publication->status = $validated['status'];
         $publication->published_at ??= now();
         $publication->save();
 
         return back()->with('success', trans('seeker::admin.alerts.status_updated'));
+    }
+
+    private function updatePin(Request $request, Publication $publication): RedirectResponse
+    {
+        abort_if($publication->trashed(), 409);
+
+        $validated = $request->validate([
+            'pinned' => ['required', 'boolean'],
+        ]);
+        $pinned = (bool) $validated['pinned'];
+
+        if ($publication->is_pinned !== $pinned) {
+            $publication->forceFill([
+                'is_pinned' => $pinned,
+                'pinned_at' => $pinned ? now() : null,
+            ])->save();
+
+            ActionLog::log($pinned ? 'seeker.publications.pinned' : 'seeker.publications.unpinned', $publication);
+        }
+
+        return back()->with('success', trans('seeker::admin.alerts.pin_updated'));
     }
 }

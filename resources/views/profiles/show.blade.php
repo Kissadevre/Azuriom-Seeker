@@ -168,7 +168,7 @@
             <h2 class="seeker-section-title"><i class="bi bi-megaphone" aria-hidden="true"></i>@lang('seeker::messages.profiles.publications')</h2>
             <div class="row g-3">
                 @foreach($publications as $publication)
-                    <div class="col-md-6 col-xl-4"><a class="card seeker-profile-publication h-100 text-decoration-none" href="{{ route('seeker.publications.show', $publication) }}"><div class="card-body"><span class="badge text-bg-light mb-2">@lang('seeker::messages.types.'.$publication->type)</span><h3 class="h6 text-body">{{ $publication->title }}</h3><span class="small text-muted">@include('seeker::publications._price', ['publication' => $publication])</span></div></a></div>
+                    <div class="col-md-6 col-xl-4"><a class="card seeker-profile-publication h-100 text-decoration-none" href="{{ route('seeker.publications.show', $publication) }}"><div class="card-body"><div class="d-flex flex-wrap gap-1 mb-2">@if($publication->is_pinned)<span class="badge seeker-featured-badge"><i class="bi bi-pin-angle-fill me-1" aria-hidden="true"></i>@lang('seeker::messages.featured')</span>@endif<span class="badge text-bg-light">@lang('seeker::messages.types.'.$publication->type)</span></div><h3 class="h6 text-body">{{ $publication->title }}</h3><span class="small text-muted">@include('seeker::publications._price', ['publication' => $publication])</span></div></a></div>
                 @endforeach
             </div>
         </section>

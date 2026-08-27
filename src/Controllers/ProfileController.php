@@ -71,7 +71,7 @@ class ProfileController extends Controller
             ->visible()
             ->when($request->user() === null, fn ($query) => $query->where('is_guest_visible', true))
             ->with('images')
-            ->latest('published_at')
+            ->forListing()
             ->limit(6)
             ->get();
 

@@ -20,6 +20,7 @@ return [
     'search' => 'Buscar por título o descripción',
     'all_types' => 'Todos los tipos de publicación',
     'results_count' => ':count publicación|:count publicaciones',
+    'featured' => 'Destacada',
     'categories' => [
         'label' => 'Explorar Seeker',
         'all' => 'Todas las publicaciones',

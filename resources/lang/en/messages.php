@@ -20,6 +20,7 @@ return [
     'search' => 'Search by title or description',
     'all_types' => 'All publication types',
     'results_count' => ':count publication|:count publications',
+    'featured' => 'Featured',
     'categories' => [
         'label' => 'Explore Seeker',
         'all' => 'All publications',

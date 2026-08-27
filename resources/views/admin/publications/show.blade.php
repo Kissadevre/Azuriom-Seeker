@@ -48,12 +48,20 @@
                         </ul>
                     </div>
                 @endif
+                @if($publication->is_pinned)
+                    <span class="badge text-bg-warning seeker-admin-status"><i class="bi bi-pin-angle-fill" aria-hidden="true"></i>@lang('seeker::admin.publications.pinned')</span>
+                @endif
                 <span class="badge text-bg-light">@lang('seeker::messages.types.'.$publication->type)</span>
             </div>
         </div>
         </div>
         <div class="seeker-admin-header-actions d-flex flex-wrap gap-2">
             @unless($publication->trashed())
+            <form method="POST" action="{{ route('seeker.admin.publications.status', $publication) }}">
+                @csrf @method('PATCH')
+                <input type="hidden" name="pinned" value="{{ $publication->is_pinned ? 0 : 1 }}">
+                <button class="btn {{ $publication->is_pinned ? 'btn-warning' : 'btn-outline-warning' }}"><i class="bi bi-pin-angle{{ $publication->is_pinned ? '-fill' : '' }} me-1" aria-hidden="true"></i>@lang($publication->is_pinned ? 'seeker::admin.publications.unpin' : 'seeker::admin.publications.pin')</button>
+            </form>
             <a class="btn btn-outline-primary" href="{{ route('seeker.publications.show', $publication) }}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>@lang('seeker::admin.publications.public_view')</a>
             @endunless
         </div>

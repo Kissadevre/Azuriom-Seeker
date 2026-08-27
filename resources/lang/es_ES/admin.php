@@ -28,6 +28,7 @@ return [
     'set_status' => 'Actualizar estado',
     'alerts' => [
         'status_updated' => 'El estado de la publicación fue actualizado.',
+        'pin_updated' => 'La prioridad de la publicación fue actualizada.',
     ],
     'settings' => [
         'title' => 'Ajustes de Seeker',
@@ -87,12 +88,17 @@ return [
         'restriction_revoked' => 'Levantó la restricción :type de :user',
         'publications_removed' => 'Eliminó :count publicaciones de Seeker de :user',
         'biography_removed' => 'Eliminó la biografía de Seeker de :user',
+        'publication_pinned' => 'Fijó la publicación de Seeker n.º :id',
+        'publication_unpinned' => 'Desfijó la publicación de Seeker n.º :id',
     ],
     'publications' => [
         'title' => 'Publicaciones de Seeker',
         'subtitle' => 'Revisa todas las publicaciones y su actividad relacionada.',
         'filters' => 'Filtrar publicaciones',
         'all_types' => 'Todos los tipos de publicación',
+        'pinned' => 'Fijada',
+        'pin' => 'Fijar publicación',
+        'unpin' => 'Desfijar publicación',
         'report_filter' => 'Reportes',
         'all_report_states' => 'Todas las publicaciones',
         'with_reports' => 'Publicaciones con reportes',

@@ -25,6 +25,7 @@
                                     <a class="fw-semibold text-decoration-none" href="{{ route('seeker.publications.show', $publication) }}">{{ $publication->title }}</a>
                                     <div class="small text-muted">{{ format_date_compact($publication->created_at) }}</div>
                                     <div class="d-flex flex-wrap gap-1 mt-1">
+                                        @if($publication->is_pinned)<span class="badge seeker-featured-badge"><i class="bi bi-pin-angle-fill me-1" aria-hidden="true"></i>@lang('seeker::messages.featured')</span>@endif
                                         <span class="badge text-bg-light">@include('seeker::publications._price', ['publication' => $publication])</span>
                                         <span class="badge {{ $publication->is_guest_visible ? 'text-bg-light' : 'text-bg-secondary' }}">@lang($publication->is_guest_visible ? 'seeker::messages.visibility.public' : 'seeker::messages.visibility.members')</span>
                                         <span class="badge text-bg-light">@include('seeker::publications._reputation', ['rating' => $publication->author_rating, 'count' => $publication->author_reviews_count])</span>

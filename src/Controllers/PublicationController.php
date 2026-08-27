@@ -39,7 +39,7 @@ class PublicationController extends Controller
                 $query->where('title', 'like', '%'.$search.'%')
                     ->orWhere('description', 'like', '%'.$search.'%');
             }))
-            ->latest('published_at')
+            ->forListing()
             ->paginate(12)
             ->withQueryString();
 
@@ -96,7 +96,7 @@ class PublicationController extends Controller
             ->where('user_id', $request->user()->id)
             ->withAuthorReputation()
             ->with('images')
-            ->latest()
+            ->forListing()
             ->paginate(12);
 
         $publishRestriction = $restrictions->active($request->user(), UserRestriction::TYPE_PUBLISH);
