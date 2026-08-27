@@ -39,7 +39,7 @@
 
     <div class="row g-4 mb-4">
         <div class="col-xl-8">
-            <div class="card seeker-admin-card h-100">
+            <div class="card seeker-admin-card">
                 <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::admin.publications.content')</h2></div>
                 <div class="card-body">
                     <div style="white-space: pre-wrap">{{ $publication->description }}</div>
@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="col-xl-4">
-            <div class="card seeker-admin-card h-100">
+            <div class="card seeker-admin-card mb-4">
                 <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::admin.publications.author')</h2></div>
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
@@ -64,6 +64,24 @@
                     </dl>
                 </div>
             </div>
+
+            <div class="card seeker-admin-card">
+                <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::admin.publications.portfolio')</h2></div>
+                <div class="card-body">
+                    @if($publication->portfolio_type === 'external' && filled($publication->portfolio_url))
+                        <div class="small text-muted mb-1">@lang('seeker::admin.publications.external_portfolio')</div>
+                        <a href="{{ $publication->portfolio_url }}" target="_blank" rel="noopener noreferrer nofollow" class="text-break">{{ $publication->portfolio_url }}</a>
+                    @elseif($publication->portfolio_type === 'images' && $publication->images->isNotEmpty())
+                        <div class="row g-3">
+                            @foreach($publication->images as $image)
+                                <div class="col-6"><a href="{{ route('seeker.images.show', $image) }}" target="_blank" rel="noopener" class="text-decoration-none"><img src="{{ route('seeker.images.show', $image) }}" class="img-fluid rounded border" alt="{{ $image->original_name }}"><div class="small text-body-secondary text-truncate mt-1">{{ $image->original_name }}</div></a></div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-muted mb-0">@lang('seeker::admin.publications.no_portfolio')</p>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 
@@ -74,24 +92,6 @@
         'contextId' => $publication->id,
         'contextLabel' => $publication->title,
     ])
-
-    <div class="card seeker-admin-card mb-4">
-        <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::admin.publications.portfolio')</h2></div>
-        <div class="card-body">
-            @if($publication->portfolio_type === 'external' && filled($publication->portfolio_url))
-                <div class="small text-muted mb-1">@lang('seeker::admin.publications.external_portfolio')</div>
-                <a href="{{ $publication->portfolio_url }}" target="_blank" rel="noopener noreferrer nofollow" class="text-break">{{ $publication->portfolio_url }}</a>
-            @elseif($publication->portfolio_type === 'images' && $publication->images->isNotEmpty())
-                <div class="row g-3">
-                    @foreach($publication->images as $image)
-                        <div class="col-sm-6 col-xl-3"><a href="{{ route('seeker.images.show', $image) }}" target="_blank" rel="noopener" class="text-decoration-none"><img src="{{ route('seeker.images.show', $image) }}" class="img-fluid rounded border" alt="{{ $image->original_name }}"><div class="small text-body-secondary text-truncate mt-1">{{ $image->original_name }}</div></a></div>
-                    @endforeach
-                </div>
-            @else
-                <p class="text-muted mb-0">@lang('seeker::admin.publications.no_portfolio')</p>
-            @endif
-        </div>
-    </div>
 
     @if($reports->isNotEmpty())
         <div class="card seeker-admin-card mb-4">
