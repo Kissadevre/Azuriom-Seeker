@@ -14,17 +14,40 @@
             <div class="d-flex flex-wrap align-items-center gap-3">
                 <a href="{{ route('seeker.profiles.show', $other) }}"><img src="{{ $other->getAvatar(48) }}" width="48" height="48" class="rounded-circle seeker-conversation-avatar" alt=""></a>
                 <div class="flex-grow-1"><h1 class="h5 mb-0"><a class="text-body text-decoration-none" href="{{ route('seeker.profiles.show', $other) }}">{{ $other->name }}</a></h1>@if($conversation->publication->trashed())<span class="small text-muted">{{ $conversation->publication->title }} · @lang('seeker::messages.publications.removed')</span>@else<a class="small text-decoration-none" href="{{ route('seeker.publications.show', $conversation->publication) }}">{{ $conversation->publication->title }}</a>@endif</div>
-                <div class="d-flex flex-wrap align-items-center gap-2">
+                <div class="d-flex flex-wrap align-items-center gap-2 seeker-chat-header-actions">
                     <span class="badge text-bg-light">@include('seeker::publications._price', ['publication' => $conversation->publication])</span>
-                    @if($conversationReport === null)
-                        <a class="btn btn-sm btn-outline-danger" href="{{ route('seeker.conversations.reports.create', $conversation) }}">
-                            <i class="bi bi-flag me-1" aria-hidden="true"></i> @lang('seeker::messages.reports.action')
-                        </a>
-                    @else
+                    @if($conversationReport !== null)
                         <span class="badge text-bg-warning">
                             <i class="bi bi-flag me-1" aria-hidden="true"></i> @lang('seeker::messages.reports.statuses.'.$conversationReport->status)
                         </span>
                     @endif
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary seeker-icon-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="@lang('seeker::messages.conversations.actions')">
+                            <i class="bi bi-three-dots" aria-hidden="true"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('seeker.profiles.show', $other) }}">
+                                    <i class="bi bi-person me-2" aria-hidden="true"></i>@lang('seeker::messages.conversations.view_profile')
+                                </a>
+                            </li>
+                            @unless($conversation->publication->trashed())
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('seeker.publications.show', $conversation->publication) }}">
+                                        <i class="bi bi-box-arrow-up-right me-2" aria-hidden="true"></i>@lang('seeker::messages.conversations.view_publication')
+                                    </a>
+                                </li>
+                            @endunless
+                            @if($conversationReport === null)
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{{ route('seeker.conversations.reports.create', $conversation) }}">
+                                        <i class="bi bi-flag me-2" aria-hidden="true"></i>@lang('seeker::messages.reports.action')
+                                    </a>
+                                </li>
+                            @endif
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -141,11 +164,14 @@
             </div>
         @endif
 
-        <div class="card-body seeker-chat-messages p-3 p-md-4">
+        <div class="card-body seeker-chat-messages p-3 p-md-4" data-seeker-message-history>
             @if($messages->hasPages())<div class="d-flex justify-content-center mb-4">{{ $messages->links() }}</div>@endif
             @foreach($messages->getCollection()->reverse() as $message)
                 @php($mine = $message->sender_id === auth()->id())
-                <div class="d-flex {{ $mine ? 'justify-content-end' : 'justify-content-start' }} mb-3">
+                <div class="d-flex align-items-end gap-2 {{ $mine ? 'justify-content-end' : 'justify-content-start' }} mb-3">
+                    @unless($mine)
+                        <img src="{{ $message->sender->getAvatar(32) }}" width="32" height="32" class="rounded-circle seeker-message-avatar" alt="">
+                    @endunless
                     <div class="seeker-message {{ $mine ? 'seeker-message-mine' : '' }}">
                         <div class="small fw-semibold mb-1">{{ $message->sender->name }}</div>
                         @if($message->isHidden())
@@ -168,22 +194,30 @@
 
         <div class="card-footer seeker-chat-composer p-3">
             @if($conversation->status === 'active')
-                <form method="POST" action="{{ route('seeker.conversations.messages.store', $conversation) }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('seeker.conversations.messages.store', $conversation) }}" enctype="multipart/form-data" class="seeker-message-form">
                     @csrf
                     <label class="visually-hidden" for="conversationMessage">@lang('seeker::messages.conversations.reply')</label>
-                    <div class="input-group">
+                    @if($messageImagesEnabled)
+                        <input id="conversationImage" type="file" name="image" accept="image/jpeg,image/png,image/webp" class="visually-hidden" data-seeker-attachment-input>
+                    @endif
+                    <div class="seeker-composer-main">
+                        @if($messageImagesEnabled)
+                            <label class="btn btn-outline-secondary seeker-attachment-button" for="conversationImage" title="@lang('seeker::messages.conversations.image')">
+                                <i class="bi bi-image" aria-hidden="true"></i><span class="d-none d-sm-inline ms-2">@lang('seeker::messages.conversations.image_short')</span>
+                            </label>
+                        @endif
                         <textarea id="conversationMessage" name="content" rows="2" maxlength="2000" class="form-control @error('content') is-invalid @enderror" placeholder="@lang('seeker::messages.conversations.reply')">{{ old('content') }}</textarea>
-                        <button class="btn btn-primary px-4"><i class="bi bi-send" aria-hidden="true"></i><span class="visually-hidden">@lang('seeker::messages.conversations.send')</span></button>
-                        @error('content')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <button class="btn btn-primary seeker-send-button" type="submit"><i class="bi bi-send" aria-hidden="true"></i><span class="d-none d-sm-inline ms-2">@lang('seeker::messages.conversations.send_short')</span></button>
                     </div>
                     @if($messageImagesEnabled)
-                        <div class="mt-2">
-                            <label class="form-label small mb-1" for="conversationImage"><i class="bi bi-image me-1" aria-hidden="true"></i>@lang('seeker::messages.conversations.image')</label>
-                            <input id="conversationImage" type="file" name="image" accept="image/jpeg,image/png,image/webp" class="form-control form-control-sm @error('image') is-invalid @enderror">
-                            <div class="form-text">@lang('seeker::messages.conversations.image_help')</div>
-                            @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <div class="d-flex flex-wrap align-items-center gap-2 mt-2 small text-muted">
+                            <span data-seeker-attachment-name data-empty-label="@lang('seeker::messages.conversations.no_image_selected')">@lang('seeker::messages.conversations.no_image_selected')</span>
+                            <span aria-hidden="true">·</span>
+                            <span>@lang('seeker::messages.conversations.image_help')</span>
                         </div>
+                        @error('image')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                     @endif
+                    @error('content')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </form>
             @else
                 <div class="text-center text-muted py-2"><i class="bi bi-lock me-2" aria-hidden="true"></i>@lang($conversation->status === 'closed' ? 'seeker::messages.conversations.closed_by_moderation_short' : 'seeker::messages.completion.conversation_closed')</div>
@@ -192,3 +226,7 @@
     </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ plugin_asset('seeker', 'js/conversation.js') }}" defer></script>
+@endpush
