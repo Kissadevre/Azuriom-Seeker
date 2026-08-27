@@ -17,10 +17,11 @@
         <form method="GET" class="seeker-admin-toolbar mb-4">
             <div class="seeker-admin-toolbar-title"><i class="bi bi-funnel" aria-hidden="true"></i>@lang('seeker::admin.conversations.filters')</div>
             <div class="row g-2 align-items-end">
-                <div class="col-md-5"><label class="form-label small fw-semibold" for="conversationStatus">@lang('seeker::admin.status')</label><select id="conversationStatus" name="status" class="form-select"><option value="">@lang('seeker::admin.conversations.all_statuses')</option>@foreach(\Azuriom\Plugin\Seeker\Models\Conversation::statuses() as $conversationStatus)<option value="{{ $conversationStatus }}" @selected($status === $conversationStatus)>@lang('seeker::admin.conversations.statuses.'.$conversationStatus)</option>@endforeach</select></div>
+                <div class="col-md"><label class="form-label small fw-semibold" for="conversationStatus">@lang('seeker::admin.status')</label><select id="conversationStatus" name="status" class="form-select"><option value="">@lang('seeker::admin.conversations.all_statuses')</option>@foreach(\Azuriom\Plugin\Seeker\Models\Conversation::statuses() as $conversationStatus)<option value="{{ $conversationStatus }}" @selected($status === $conversationStatus)>@lang('seeker::admin.conversations.statuses.'.$conversationStatus)</option>@endforeach</select></div>
+                <div class="col-md"><label class="form-label small fw-semibold" for="conversationReports">@lang('seeker::admin.conversations.report_filter')</label><select id="conversationReports" name="reports" class="form-select"><option value="">@lang('seeker::admin.conversations.all_report_states')</option><option value="with" @selected($reports === 'with')>@lang('seeker::admin.conversations.with_reports')</option><option value="without" @selected($reports === 'without')>@lang('seeker::admin.conversations.without_reports')</option></select></div>
                 <div class="col-md-auto seeker-admin-filter-actions">
                     <button class="btn btn-primary"><i class="bi bi-funnel me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.apply_filters')</button>
-                    @if(filled($status))
+                    @if(filled($status) || filled($reports))
                         <a class="btn btn-outline-secondary" href="{{ route('seeker.admin.conversations.index') }}"><i class="bi bi-x-lg me-1" aria-hidden="true"></i>@lang('seeker::admin.clear_filters')</a>
                     @endif
                 </div>
@@ -29,8 +30,8 @@
 
         <div class="card seeker-admin-card">
             <div class="table-responsive">
-                <table class="table table-hover align-middle seeker-admin-table seeker-admin-table--actions mb-0">
-                    <thead><tr><th>@lang('seeker::admin.conversations.publication')</th><th>@lang('seeker::admin.conversations.participants')</th><th>@lang('seeker::admin.status')</th><th class="text-center">@lang('seeker::admin.conversations.messages')</th><th class="text-center">@lang('seeker::admin.conversations.reports')</th><th>@lang('seeker::admin.created_at')</th><th>@lang('seeker::admin.conversations.last_activity')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead>
+                <table class="table table-hover align-middle seeker-admin-table mb-0">
+                    <thead><tr><th>@lang('seeker::admin.conversations.publication')</th><th>@lang('seeker::admin.conversations.participants')</th><th>@lang('seeker::admin.status')</th><th class="text-center">@lang('seeker::admin.conversations.messages')</th><th class="text-center">@lang('seeker::admin.conversations.reports')</th><th>@lang('seeker::admin.conversations.dates')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead>
                     <tbody>
                         @forelse($conversations as $conversation)
                             <tr>
@@ -39,12 +40,11 @@
                                 <td><span class="badge text-bg-{{ $conversation->status === 'active' ? 'primary' : ($conversation->status === 'completed' ? 'success' : 'danger') }} seeker-admin-status">@lang('seeker::admin.conversations.statuses.'.$conversation->status)</span></td>
                                 <td class="text-center"><span class="badge rounded-pill text-bg-light">{{ $conversation->messages_count }}</span></td>
                                 <td class="text-center"><span class="badge rounded-pill {{ $conversation->reports_count > 0 ? 'text-bg-warning' : 'text-bg-light' }}">{{ $conversation->reports_count }}</span></td>
-                                <td class="text-nowrap text-body-secondary small">{{ format_date($conversation->created_at, true) }}</td>
-                                <td class="text-nowrap text-body-secondary small">{{ format_date($conversation->updated_at, true) }}</td>
+                                <td class="text-nowrap small"><div class="seeker-admin-date"><i class="bi bi-calendar-plus" aria-hidden="true"></i><span><span class="visually-hidden">@lang('seeker::admin.created_at'): </span>{{ format_date($conversation->created_at, true) }}</span></div><div class="seeker-admin-date text-body-secondary mt-1"><i class="bi bi-clock-history" aria-hidden="true"></i><span><span class="visually-hidden">@lang('seeker::admin.conversations.last_activity'): </span>{{ format_date($conversation->updated_at, true) }}</span></div></td>
                                 <td class="text-end"><div class="seeker-admin-action-group"><a class="btn btn-sm btn-outline-primary" href="{{ route('seeker.admin.conversations.show', $conversation) }}" title="@lang('seeker::admin.details')" aria-label="@lang('seeker::admin.details')" data-bs-toggle="tooltip"><i class="bi bi-eye" aria-hidden="true"></i></a></div></td>
                             </tr>
                         @empty
-                            <tr><td colspan="8" class="seeker-admin-empty"><span class="seeker-admin-empty-icon"><i class="bi bi-chat-dots" aria-hidden="true"></i></span><div class="fw-semibold">@lang('seeker::admin.conversations.empty')</div></td></tr>
+                            <tr><td colspan="7" class="seeker-admin-empty"><span class="seeker-admin-empty-icon"><i class="bi bi-chat-dots" aria-hidden="true"></i></span><div class="fw-semibold">@lang('seeker::admin.conversations.empty')</div></td></tr>
                         @endforelse
                     </tbody>
                 </table>

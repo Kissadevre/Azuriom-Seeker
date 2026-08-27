@@ -17,16 +17,21 @@ class ConversationController extends Controller
         $status = in_array($request->query('status'), Conversation::statuses(), true)
             ? $request->query('status')
             : null;
+        $reports = in_array($request->query('reports'), ['with', 'without'], true)
+            ? $request->query('reports')
+            : null;
 
         $conversations = Conversation::query()
             ->with(['publication', 'client', 'author'])
             ->withCount(['messages', 'reports'])
             ->when($status, fn ($query) => $query->where('status', $status))
+            ->when($reports === 'with', fn ($query) => $query->whereHas('reports'))
+            ->when($reports === 'without', fn ($query) => $query->whereDoesntHave('reports'))
             ->latest('updated_at')
             ->paginate(20)
             ->withQueryString();
 
-        return view('seeker::admin.conversations.index', compact('conversations', 'status'));
+        return view('seeker::admin.conversations.index', compact('conversations', 'status', 'reports'));
     }
 
     public function show(Conversation $conversation): View
