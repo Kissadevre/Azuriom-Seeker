@@ -286,6 +286,16 @@
                 line-height: 1.2;
             }
 
+            .seeker-admin-report-type-icon {
+                display: inline-flex;
+                width: 2.15rem;
+                height: 2.15rem;
+                align-items: center;
+                justify-content: center;
+                border-radius: .65rem;
+                font-size: 1rem;
+            }
+
             .seeker-admin-switch-row {
                 display: flex;
                 align-items: center;

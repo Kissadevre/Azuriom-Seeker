@@ -39,13 +39,14 @@
         <div class="card seeker-admin-card">
             <div class="table-responsive">
                 <table class="table table-hover align-middle seeker-admin-table seeker-admin-table--actions mb-0">
-                    <thead><tr><th>@lang('seeker::admin.reports.type')</th><th>@lang('seeker::admin.reports.target')</th><th>@lang('seeker::admin.reports.reporter')</th><th>@lang('seeker::admin.reports.reason')</th><th>@lang('seeker::admin.reports.details')</th><th>@lang('seeker::admin.created_at')</th><th>@lang('seeker::admin.status')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead>
+                    <thead><tr><th class="text-center"><i class="bi bi-tags" aria-hidden="true"></i><span class="visually-hidden">@lang('seeker::admin.reports.type')</span></th><th>@lang('seeker::admin.reports.target')</th><th>@lang('seeker::admin.reports.reporter')</th><th>@lang('seeker::admin.reports.reason')</th><th>@lang('seeker::admin.reports.details')</th><th>@lang('seeker::admin.created_at')</th><th>@lang('seeker::admin.status')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead>
                     <tbody>
                         @forelse($reports as $item)
                             @php($report = $item->report)
                             @php($reportedUser = $item->report_type === 'publication' ? $report->publication->user : ($item->report_type === 'profile' ? $report->profileUser : $report->reportedUser))
+                            @php($typeMeta = match($item->report_type) { 'publication' => ['bi-megaphone', 'primary'], 'profile' => ['bi-person-badge', 'info'], default => ['bi-chat-dots', 'secondary'] })
                             <tr>
-                                <td><span class="badge rounded-pill text-bg-{{ $item->report_type === 'publication' ? 'primary' : ($item->report_type === 'profile' ? 'info' : 'secondary') }}">@lang('seeker::admin.reports.types.'.$item->report_type)</span></td>
+                                <td class="text-center"><span class="seeker-admin-report-type-icon text-bg-{{ $typeMeta[1] }}" title="@lang('seeker::admin.reports.types.'.$item->report_type)" aria-label="@lang('seeker::admin.reports.types.'.$item->report_type)" role="img" data-bs-toggle="tooltip"><i class="bi {{ $typeMeta[0] }}" aria-hidden="true"></i></span></td>
                                 <td style="min-width: 14rem">
                                     @if($item->report_type === 'publication')
                                         <a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.admin.publications.show', $report->publication) }}">{{ $report->publication->title }}</a><div class="small text-body-secondary mt-1">@lang('seeker::admin.reports.by_user', ['user' => $report->publication->user->name])</div>
