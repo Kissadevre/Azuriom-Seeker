@@ -3,6 +3,7 @@
 namespace Azuriom\Plugin\Seeker\Controllers\Admin;
 
 use Azuriom\Http\Controllers\Controller;
+use Azuriom\Plugin\Seeker\Models\ConversationReport;
 use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Requests\PublicationStatusRequest;
 use Illuminate\Http\RedirectResponse;
@@ -40,7 +41,13 @@ class PublicationController extends Controller
         $publication->load(['user', 'images'])->loadCount('conversations');
         $conversations = $publication->conversations()
             ->with('client')
-            ->withCount(['messages', 'reports'])
+            ->withCount([
+                'messages',
+                'reports',
+                'reports as pending_reports_count' => fn ($query) => $query->where('status', ConversationReport::STATUS_PENDING),
+                'reports as reviewed_reports_count' => fn ($query) => $query->where('status', ConversationReport::STATUS_REVIEWED),
+                'reports as dismissed_reports_count' => fn ($query) => $query->where('status', ConversationReport::STATUS_DISMISSED),
+            ])
             ->latest()
             ->paginate(20);
 

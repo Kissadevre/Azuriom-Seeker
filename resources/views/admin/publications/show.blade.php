@@ -88,21 +88,20 @@
     <div class="card seeker-admin-card" id="conversations">
         <div class="card-header d-flex justify-content-between align-items-center gap-2"><h2 class="h5 mb-0">@lang('seeker::admin.publications.linked_conversations')</h2><span class="badge text-bg-primary">{{ $publication->conversations_count }}</span></div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle seeker-admin-table mb-0">
-                <thead><tr><th>@lang('seeker::admin.publications.client')</th><th>@lang('seeker::admin.status')</th><th>@lang('seeker::admin.publications.completion')</th><th class="text-center">@lang('seeker::admin.publications.messages')</th><th class="text-center">@lang('seeker::admin.publications.reports')</th><th>@lang('seeker::admin.created_at')</th><th>@lang('seeker::admin.publications.last_activity')</th></tr></thead>
+            <table class="table table-hover align-middle seeker-admin-table seeker-admin-report-status-table mb-0">
+                <thead><tr><th>@lang('seeker::admin.publications.client')</th><th>@lang('seeker::admin.status')</th><th>@lang('seeker::admin.publications.completion')</th><th class="text-center">@lang('seeker::admin.publications.messages')</th><th>@lang('seeker::admin.publications.dates')</th></tr></thead>
                 <tbody>
                     @forelse($conversations as $conversation)
-                        <tr>
-                            <td><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $conversation->client) }}" target="_blank" rel="noopener">{{ $conversation->client->name }}</a><div><a class="small text-decoration-none" href="{{ route('seeker.admin.conversations.show', $conversation) }}">@lang('seeker::admin.conversations.detail_title', ['id' => $conversation->id])</a></div></td>
+                        @php($reportStatus = $conversation->pending_reports_count > 0 ? 'pending' : ($conversation->reviewed_reports_count > 0 ? 'reviewed' : ($conversation->dismissed_reports_count > 0 ? 'dismissed' : null)))
+                        <tr @class(['seeker-admin-report-status-'.$reportStatus => $reportStatus !== null])>
+                            <td>@if($conversation->reports_count > 0)<span class="visually-hidden">@choice('seeker::admin.conversations.report_count', $conversation->reports_count, ['count' => $conversation->reports_count]) </span>@endif<a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $conversation->client) }}" target="_blank" rel="noopener">{{ $conversation->client->name }}</a><div><a class="small text-decoration-none" href="{{ route('seeker.admin.conversations.show', $conversation) }}">@lang('seeker::admin.conversations.detail_title', ['id' => $conversation->id])</a></div></td>
                             <td><span class="badge {{ $conversation->status === 'completed' ? 'text-bg-success' : ($conversation->status === 'closed' ? 'text-bg-danger' : 'text-bg-primary') }} seeker-admin-status">@lang('seeker::admin.publications.conversation_statuses.'.$conversation->status)</span></td>
                             <td>@lang('seeker::admin.publications.completion_statuses.'.$conversation->completion_status)</td>
                             <td class="text-center">{{ $conversation->messages_count }}</td>
-                            <td class="text-center"><span class="badge rounded-pill {{ $conversation->reports_count > 0 ? 'text-bg-warning' : 'text-bg-light' }}">{{ $conversation->reports_count }}</span></td>
-                            <td class="text-nowrap text-body-secondary small">{{ format_date($conversation->created_at, true) }}</td>
-                            <td class="text-nowrap text-body-secondary small">{{ format_date($conversation->updated_at, true) }}</td>
+                            <td class="text-nowrap small"><div class="seeker-admin-date"><i class="bi bi-calendar-plus" aria-hidden="true"></i><span><span class="visually-hidden">@lang('seeker::admin.created_at'): </span>{{ format_date($conversation->created_at, true) }}</span></div><div class="seeker-admin-date text-body-secondary mt-1"><i class="bi bi-clock-history" aria-hidden="true"></i><span><span class="visually-hidden">@lang('seeker::admin.publications.last_activity'): </span>{{ format_date($conversation->updated_at, true) }}</span></div></td>
                         </tr>
                     @empty
-                        <tr><td colspan="7" class="seeker-admin-empty"><span class="seeker-admin-empty-icon"><i class="bi bi-chat-dots" aria-hidden="true"></i></span><div class="fw-semibold">@lang('seeker::admin.publications.no_conversations')</div></td></tr>
+                        <tr><td colspan="5" class="seeker-admin-empty"><span class="seeker-admin-empty-icon"><i class="bi bi-chat-dots" aria-hidden="true"></i></span><div class="fw-semibold">@lang('seeker::admin.publications.no_conversations')</div></td></tr>
                     @endforelse
                 </tbody>
             </table>
