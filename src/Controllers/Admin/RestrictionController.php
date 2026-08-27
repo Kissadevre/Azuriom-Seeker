@@ -89,16 +89,21 @@ class RestrictionController extends Controller
             'duration' => ['required', Rule::in(['indefinite', 'until'])],
             'expires_at' => ['nullable', 'required_if:duration,until', 'date', 'after:now'],
             'reason' => ['required', 'string', 'min:5', 'max:1000'],
-            'conversation_id' => ['nullable', 'integer', Rule::exists(Conversation::class, 'id')],
+            'conversation_id' => ['nullable', 'integer', 'prohibits:publication_id', Rule::exists(Conversation::class, 'id')],
+            'publication_id' => ['nullable', 'integer', 'prohibits:conversation_id', Rule::exists(Publication::class, 'id')],
         ]);
 
         $user = User::query()->findOrFail($validated['user_id']);
         $conversation = filled($validated['conversation_id'] ?? null)
             ? Conversation::query()->findOrFail($validated['conversation_id'])
             : null;
+        $publication = filled($validated['publication_id'] ?? null)
+            ? Publication::query()->withTrashed()->findOrFail($validated['publication_id'])
+            : null;
 
         abort_if($conversation !== null
             && ! in_array($user->id, [$conversation->author_id, $conversation->client_id], true), 403);
+        abort_if($publication !== null && $publication->user_id !== $user->id, 403);
 
         $restriction = DB::transaction(function () use ($request, $user, $validated) {
             User::query()->lockForUpdate()->findOrFail($user->id);
@@ -128,12 +133,13 @@ class RestrictionController extends Controller
             'type' => $restriction->type,
         ]);
 
-        return to_route($conversation === null
-            ? 'seeker.admin.restrictions.index'
-            : 'seeker.admin.conversations.show', $conversation === null
-                ? ['user_id' => $user->id]
-                : $conversation)
-            ->with('success', trans('seeker::admin.restrictions.created'));
+        $redirect = match (true) {
+            $conversation !== null => to_route('seeker.admin.conversations.show', $conversation),
+            $publication !== null => to_route('seeker.admin.publications.show', $publication),
+            default => to_route('seeker.admin.restrictions.index', ['user_id' => $user->id]),
+        };
+
+        return $redirect->with('success', trans('seeker::admin.restrictions.created'));
     }
 
     public function revoke(

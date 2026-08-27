@@ -120,7 +120,13 @@
     </div>
 
     @foreach([$conversation->author, $conversation->client] as $restrictionUser)
-        @include('seeker::admin.conversations._restriction-modal', ['user' => $restrictionUser])
+        @include('seeker::admin._restriction-modal', [
+            'user' => $restrictionUser,
+            'modalId' => 'conversationRestriction'.$restrictionUser->id,
+            'contextName' => 'conversation_id',
+            'contextId' => $conversation->id,
+            'contextLabel' => trans('seeker::admin.conversations.detail_title', ['id' => $conversation->id]),
+        ])
     @endforeach
 
     @if($reports->isNotEmpty())
@@ -167,27 +173,3 @@
     </div>
     </div>
 @endsection
-
-@push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('[data-restriction-modal]').forEach((modal) => {
-                const duration = modal.querySelector('[data-restriction-duration]');
-                const expiration = modal.querySelector('[data-restriction-expiration]');
-                const input = expiration?.querySelector('input');
-                const updateExpiration = () => {
-                    const timed = duration?.value === 'until';
-                    expiration?.classList.toggle('d-none', ! timed);
-                    if (input) input.required = timed;
-                };
-                duration?.addEventListener('change', updateExpiration);
-                updateExpiration();
-            });
-
-            @if($errors->any() && (int) old('conversation_id') === $conversation->id && (int) old('user_id') > 0)
-                const invalidModal = document.getElementById('conversationRestriction{{ (int) old('user_id') }}');
-                if (invalidModal) bootstrap.Modal.getOrCreateInstance(invalidModal).show();
-            @endif
-        });
-    </script>
-@endpush

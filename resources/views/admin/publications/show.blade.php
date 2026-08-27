@@ -50,9 +50,9 @@
             <div class="card seeker-admin-card h-100">
                 <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::admin.publications.author')</h2></div>
                 <div class="card-body">
-                    <div class="d-flex align-items-center gap-3 mb-4">
-                        <img src="{{ $publication->user->getAvatar(64) }}" width="64" height="64" class="rounded-circle" alt="">
-                        <div><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $publication->user) }}" target="_blank" rel="noopener">{{ $publication->user->name }}</a><div class="small text-muted">ID #{{ $publication->user->id }}</div></div>
+                    <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
+                        <div class="d-flex align-items-center gap-3"><img src="{{ $publication->user->getAvatar(64) }}" width="64" height="64" class="rounded-circle" alt=""><div><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $publication->user) }}" target="_blank" rel="noopener">{{ $publication->user->name }}</a><div class="small text-muted">ID #{{ $publication->user->id }}</div></div></div>
+                        <button class="btn btn-sm btn-outline-warning flex-shrink-0" type="button" data-bs-toggle="modal" data-bs-target="#publicationRestriction{{ $publication->user->id }}" title="@lang('seeker::admin.restrictions.apply_to_user', ['user' => $publication->user->name])" aria-label="@lang('seeker::admin.restrictions.apply_to_user', ['user' => $publication->user->name])"><i class="bi bi-person-lock" aria-hidden="true"></i></button>
                     </div>
                     <dl class="row mb-0 small">
                         <dt class="col-6">@lang('seeker::admin.created_at')</dt><dd class="col-6 text-end">{{ format_date($publication->created_at, true) }}</dd>
@@ -66,6 +66,14 @@
             </div>
         </div>
     </div>
+
+    @include('seeker::admin._restriction-modal', [
+        'user' => $publication->user,
+        'modalId' => 'publicationRestriction'.$publication->user->id,
+        'contextName' => 'publication_id',
+        'contextId' => $publication->id,
+        'contextLabel' => $publication->title,
+    ])
 
     <div class="card seeker-admin-card mb-4">
         <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::admin.publications.portfolio')</h2></div>
