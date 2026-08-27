@@ -25,13 +25,6 @@
                         @endif
                     </div>
                     <h1 class="display-6 fw-bold">{{ $publication->title }}</h1>
-                    <div class="d-flex align-items-center gap-3 text-muted mb-4">
-                        <a href="{{ route('seeker.profiles.show', $publication->user) }}"><img src="{{ $publication->user->getAvatar(42) }}" width="42" height="42" class="rounded-circle" alt=""></a>
-                        <div>
-                            <div><a class="fw-semibold text-reset text-decoration-none" href="{{ route('seeker.profiles.show', $publication->user) }}">@lang('seeker::messages.published_by', ['user' => $publication->user->name])</a></div>
-                            <small>@lang('seeker::messages.published_on', ['date' => format_date_compact($publication->published_at ?? $publication->created_at)])</small>
-                        </div>
-                    </div>
                     <div class="seeker-description">{!! nl2br(e($publication->description)) !!}</div>
 
                     @if($publication->portfolio_type === 'external' && $publication->portfolio_url)
