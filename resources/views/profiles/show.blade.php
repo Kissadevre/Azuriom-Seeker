@@ -29,7 +29,7 @@
                                     <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#clearBiographyModal"><i class="bi bi-trash me-1" aria-hidden="true"></i>@lang('seeker::messages.profiles.moderation.clear_biography')</button>
                                 @endif
                             @elseif(auth()->id() === $user->id)
-                                @if($biographiesEnabled)
+                                @if($canEditBiography)
                                     <a class="btn btn-primary" href="{{ route('seeker.profiles.edit', $user) }}"><i class="bi bi-pencil me-1" aria-hidden="true"></i>@lang('seeker::messages.profiles.edit')</a>
                                 @endif
                             @elseif(auth()->check())

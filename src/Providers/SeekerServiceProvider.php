@@ -11,6 +11,7 @@ use Azuriom\Plugin\Seeker\Models\Message;
 use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Models\UserRestriction;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
+use Azuriom\Plugin\Seeker\Support\SeekerPermissions;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -28,7 +29,11 @@ class SeekerServiceProvider extends BasePluginServiceProvider
         $this->registerRateLimiters();
 
         Permission::registerPermissions([
-            'seeker.moderate' => 'seeker::admin.permissions.moderate',
+            SeekerPermissions::ACCESS => 'seeker::admin.permissions.access',
+            SeekerPermissions::CREATE_PUBLICATIONS => 'seeker::admin.permissions.publications_create',
+            SeekerPermissions::DELETE_OWN_PUBLICATIONS => 'seeker::admin.permissions.publications_delete',
+            SeekerPermissions::EDIT_OWN_BIOGRAPHY => 'seeker::admin.permissions.biography_edit',
+            SeekerPermissions::MODERATE => 'seeker::admin.permissions.moderate',
         ]);
 
         ActionLog::registerLogs('seeker.settings.updated', [
@@ -196,11 +201,13 @@ class SeekerServiceProvider extends BasePluginServiceProvider
                 'name' => trans('seeker::messages.my_publications'),
                 'icon' => 'bi bi-briefcase',
                 'route' => 'seeker.publications.mine',
+                'permission' => SeekerPermissions::ACCESS,
             ],
             'seeker-messages' => [
                 'name' => trans('seeker::messages.conversations.title'),
                 'icon' => 'bi bi-chat-dots',
                 'route' => 'seeker.conversations.index',
+                'permission' => SeekerPermissions::ACCESS,
             ],
         ];
     }

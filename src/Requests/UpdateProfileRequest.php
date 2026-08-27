@@ -3,6 +3,7 @@
 namespace Azuriom\Plugin\Seeker\Requests;
 
 use Azuriom\Models\User;
+use Azuriom\Plugin\Seeker\Support\SeekerPermissions;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProfileRequest extends FormRequest
@@ -13,7 +14,8 @@ class UpdateProfileRequest extends FormRequest
 
         return $user instanceof User
             && $this->user() !== null
-            && $user->id === $this->user()->id;
+            && $user->id === $this->user()->id
+            && $this->user()->can(SeekerPermissions::EDIT_OWN_BIOGRAPHY);
     }
 
     public function rules(): array

@@ -11,6 +11,7 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 
 - Public catalog with text search and publication-type filters.
 - Authenticated creation and management of commission offers and talent searches.
+- Role permissions for general Seeker access, creating publications, deleting owned publications, and editing an owned profile biography.
 - Minimal TinyMCE rich-text descriptions with a server-enforced HTML allowlist and no embedded image, video, audio, iframe, or file uploads.
 - Account and IP rate limits plus Azuriom-configured CAPTCHA verification for publication creation and editing.
 - Administrative settings for feature availability and fully configurable publication rate-limit attempts and windows.
@@ -48,7 +49,9 @@ Place this repository at `plugins/seeker`, then enable **Seeker** from the Azuri
 
 Video and audio uploads require PHP's `upload_max_filesize` to be at least `10M` and `post_max_size` to be greater than `10M` (for example, `12M`) so multipart request overhead does not reduce Seeker's effective limit.
 
-Grant `Moderate Seeker publications` only to roles that should be able to hide or restore publications.
+Grant `Access Seeker` to every authenticated role that should use the portal, then assign the create, owned-publication deletion, and biography-editing permissions independently. Anonymous visitors remain governed by each publication's guest visibility setting.
+
+Grant `Moderate Seeker content` only to roles that should access the administrative moderation tools.
 
 ## Data and files
 

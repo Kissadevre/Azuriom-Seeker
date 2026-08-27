@@ -14,6 +14,7 @@ use Azuriom\Plugin\Seeker\Requests\StorePublicationRequest;
 use Azuriom\Plugin\Seeker\Requests\UpdatePublicationRequest;
 use Azuriom\Plugin\Seeker\Services\RestrictionService;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
+use Azuriom\Plugin\Seeker\Support\SeekerPermissions;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -46,7 +47,9 @@ class PublicationController extends Controller
             ->withQueryString();
 
         $publishRestriction = $restrictions->active($request->user(), UserRestriction::TYPE_PUBLISH);
-        $publicationsEnabled = $settings->publicationsEnabled() && $publishRestriction === null;
+        $publicationsEnabled = $request->user()?->can(SeekerPermissions::CREATE_PUBLICATIONS) === true
+            && $settings->publicationsEnabled()
+            && $publishRestriction === null;
 
         return view('seeker::publications.index', compact('publications', 'type', 'search', 'publicationsEnabled', 'publishRestriction'));
     }
@@ -102,7 +105,9 @@ class PublicationController extends Controller
             ->paginate(12);
 
         $publishRestriction = $restrictions->active($request->user(), UserRestriction::TYPE_PUBLISH);
-        $publicationsEnabled = $settings->publicationsEnabled() && $publishRestriction === null;
+        $publicationsEnabled = $request->user()->can(SeekerPermissions::CREATE_PUBLICATIONS)
+            && $settings->publicationsEnabled()
+            && $publishRestriction === null;
 
         return view('seeker::publications.mine', compact('publications', 'publicationsEnabled', 'publishRestriction'));
     }
@@ -267,6 +272,7 @@ class PublicationController extends Controller
 
     public function destroy(Request $request, Publication $publication): RedirectResponse
     {
+        abort_unless($request->user()->can(SeekerPermissions::DELETE_OWN_PUBLICATIONS), 403);
         $this->ensureOwner($publication);
 
         if ($publication->conversations()->exists() || $publication->reports()->exists()) {

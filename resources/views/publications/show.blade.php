@@ -128,10 +128,12 @@
                                     <button class="btn btn-outline-secondary w-100"><i class="bi bi-{{ $publication->status === 'active' ? 'pause' : 'play' }} me-1" aria-hidden="true"></i> @lang($publication->status === 'active' ? 'seeker::messages.close' : 'seeker::messages.reopen')</button>
                                 </form>
                             @endif
-                            <form method="POST" action="{{ route('seeker.publications.destroy', $publication) }}" onsubmit="return confirm(@js(trans('seeker::messages.delete_confirm')))">
-                                @csrf @method('DELETE')
-                                <button class="btn btn-outline-danger w-100"><i class="bi bi-trash me-1" aria-hidden="true"></i> @lang('seeker::messages.delete')</button>
-                            </form>
+                            @can(\Azuriom\Plugin\Seeker\Support\SeekerPermissions::DELETE_OWN_PUBLICATIONS)
+                                <form method="POST" action="{{ route('seeker.publications.destroy', $publication) }}" onsubmit="return confirm(@js(trans('seeker::messages.delete_confirm')))">
+                                    @csrf @method('DELETE')
+                                    <button class="btn btn-outline-danger w-100"><i class="bi bi-trash me-1" aria-hidden="true"></i> @lang('seeker::messages.delete')</button>
+                                </form>
+                            @endcan
                         </div>
                     @endif
                 </div>

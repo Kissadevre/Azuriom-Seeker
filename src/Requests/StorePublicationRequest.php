@@ -6,6 +6,7 @@ use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Models\PublicationMedia;
 use Azuriom\Plugin\Seeker\Services\PublicationRichText;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
+use Azuriom\Plugin\Seeker\Support\SeekerPermissions;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,7 +25,7 @@ class StorePublicationRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return $this->user() !== null;
+        return $this->user()?->can(SeekerPermissions::CREATE_PUBLICATIONS) === true;
     }
 
     public function rules(): array

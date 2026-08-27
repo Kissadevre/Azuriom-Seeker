@@ -11,8 +11,9 @@ use Azuriom\Plugin\Seeker\Controllers\PublicationController;
 use Azuriom\Plugin\Seeker\Controllers\PublicationImageController;
 use Azuriom\Plugin\Seeker\Controllers\PublicationMediaController;
 use Azuriom\Plugin\Seeker\Controllers\PublicationReportController;
-use Azuriom\Plugin\Seeker\Controllers\ReviewController;
 use Azuriom\Plugin\Seeker\Controllers\RestrictionController;
+use Azuriom\Plugin\Seeker\Controllers\ReviewController;
+use Azuriom\Plugin\Seeker\Support\SeekerPermissions;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicationController::class, 'index'])->name('index');
@@ -21,20 +22,20 @@ Route::get('profiles/{user}', [ProfileController::class, 'show'])->name('profile
 
 Route::middleware(['auth', 'verified'])->prefix('publications')->name('publications.')->group(function () {
     Route::get('mine', [PublicationController::class, 'mine'])->name('mine');
-    Route::get('create', [PublicationController::class, 'create'])->name('create');
-    Route::post('/', [PublicationController::class, 'store'])->middleware(['throttle:seeker.publications.create', 'captcha'])->name('store');
+    Route::get('create', [PublicationController::class, 'create'])->middleware('can:'.SeekerPermissions::CREATE_PUBLICATIONS)->name('create');
+    Route::post('/', [PublicationController::class, 'store'])->middleware(['can:'.SeekerPermissions::CREATE_PUBLICATIONS, 'throttle:seeker.publications.create', 'captcha'])->name('store');
     Route::get('{publication}/edit', [PublicationController::class, 'edit'])->name('edit');
     Route::put('{publication}', [PublicationController::class, 'update'])->middleware(['throttle:seeker.publications.edit', 'captcha'])->name('update');
     Route::patch('{publication}/status', [PublicationController::class, 'updateStatus'])->name('status');
-    Route::delete('{publication}', [PublicationController::class, 'destroy'])->name('destroy');
+    Route::delete('{publication}', [PublicationController::class, 'destroy'])->middleware('can:'.SeekerPermissions::DELETE_OWN_PUBLICATIONS)->name('destroy');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('restrictions/{type}', [RestrictionController::class, 'show'])
         ->whereIn('type', \Azuriom\Plugin\Seeker\Models\UserRestriction::types())
         ->name('restrictions.show');
-    Route::get('profiles/{user}/edit', [ProfileController::class, 'edit'])->name('profiles.edit');
-    Route::put('profiles/{user}', [ProfileController::class, 'update'])->middleware('throttle:10,1')->name('profiles.update');
+    Route::get('profiles/{user}/edit', [ProfileController::class, 'edit'])->middleware('can:'.SeekerPermissions::EDIT_OWN_BIOGRAPHY)->name('profiles.edit');
+    Route::put('profiles/{user}', [ProfileController::class, 'update'])->middleware(['can:'.SeekerPermissions::EDIT_OWN_BIOGRAPHY, 'throttle:10,1'])->name('profiles.update');
     Route::get('profiles/{user}/report', [ProfileReportController::class, 'create'])->name('profiles.reports.create');
     Route::post('profiles/{user}/report', [ProfileReportController::class, 'store'])->middleware('throttle:5,1')->name('profiles.reports.store');
     Route::get('publications/{publication}/report', [PublicationReportController::class, 'create'])->name('publications.reports.create');

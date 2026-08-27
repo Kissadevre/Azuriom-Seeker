@@ -349,6 +349,10 @@ return [
         ],
     ],
     'permissions' => [
+        'access' => 'Acceder a Seeker',
+        'publications_create' => 'Crear publicaciones en Seeker',
+        'publications_delete' => 'Eliminar publicaciones propias de Seeker',
+        'biography_edit' => 'Editar la biografía propia del perfil de Seeker',
         'moderate' => 'Moderar contenido de Seeker',
     ],
     'profile_reports' => [

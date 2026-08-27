@@ -13,6 +13,7 @@ use Azuriom\Plugin\Seeker\Models\UserRestriction;
 use Azuriom\Plugin\Seeker\Requests\UpdateProfileRequest;
 use Azuriom\Plugin\Seeker\Services\RestrictionService;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
+use Azuriom\Plugin\Seeker\Support\SeekerPermissions;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -82,6 +83,9 @@ class ProfileController extends Controller
                 ->first()
             : null;
         $biographiesEnabled = $settings->biographiesEnabled();
+        $canEditBiography = $biographiesEnabled
+            && $request->user()?->id === $user->id
+            && $request->user()->can(SeekerPermissions::EDIT_OWN_BIOGRAPHY);
         $canModerateProfile = $request->user()?->id !== $user->id
             && $request->user()?->can('seeker.moderate') === true;
 
@@ -94,6 +98,7 @@ class ProfileController extends Controller
             'publications',
             'profileReport',
             'biographiesEnabled',
+            'canEditBiography',
             'canModerateProfile'
         ));
     }
@@ -105,6 +110,7 @@ class ProfileController extends Controller
         RestrictionService $restrictions
     ): View|RedirectResponse {
         abort_unless($request->user()->id === $user->id, 403);
+        abort_unless($request->user()->can(SeekerPermissions::EDIT_OWN_BIOGRAPHY), 403);
 
         if ($restrictions->restricted($user, UserRestriction::TYPE_PROFILE)) {
             return to_route('seeker.restrictions.show', UserRestriction::TYPE_PROFILE);
