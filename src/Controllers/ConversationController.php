@@ -21,16 +21,33 @@ class ConversationController extends Controller
     public function index(Request $request): View
     {
         $user = $request->user();
-        $conversations = Conversation::query()
-            ->forUser($user)
+        $state = in_array($request->query('state'), ['all', 'unread', 'active', 'completed'], true)
+            ? $request->query('state')
+            : 'all';
+        $baseQuery = Conversation::query()->forUser($user);
+        $unreadConstraint = fn ($query) => $query->whereHas('messages', fn ($messages) => $messages
+            ->where('sender_id', '!=', $user->id)
+            ->whereNull('read_at'));
+        $conversationCounts = [
+            'all' => (clone $baseQuery)->count(),
+            'unread' => $unreadConstraint(clone $baseQuery)->count(),
+            'active' => (clone $baseQuery)->where('status', Conversation::STATUS_ACTIVE)->count(),
+            'completed' => (clone $baseQuery)->where('status', Conversation::STATUS_COMPLETED)->count(),
+        ];
+
+        $conversations = (clone $baseQuery)
+            ->when($state === 'unread', $unreadConstraint)
+            ->when($state === 'active', fn ($query) => $query->where('status', Conversation::STATUS_ACTIVE))
+            ->when($state === 'completed', fn ($query) => $query->where('status', Conversation::STATUS_COMPLETED))
             ->with(['publication', 'client', 'author', 'latestMessage'])
             ->withCount(['messages as unread_count' => fn ($query) => $query
                 ->where('sender_id', '!=', $user->id)
                 ->whereNull('read_at')])
             ->orderByDesc('last_message_at')
-            ->paginate(20);
+            ->paginate(20)
+            ->withQueryString();
 
-        return view('seeker::conversations.index', compact('conversations', 'user'));
+        return view('seeker::conversations.index', compact('conversations', 'user', 'state', 'conversationCounts'));
     }
 
     public function create(
