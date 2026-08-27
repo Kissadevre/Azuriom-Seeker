@@ -2,27 +2,26 @@
 
 @section('title', trans('seeker::messages.reviews.title'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @section('content')
-    <div class="mb-4">
-        <a class="text-decoration-none" href="{{ route('seeker.conversations.show', $conversation) }}">
-            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> @lang('seeker::messages.reviews.back')
-        </a>
-    </div>
-
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <form method="POST" action="{{ route('seeker.conversations.reviews.store', $conversation) }}" class="card">
+    <div class="seeker-public-shell">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                @include('seeker::_page-header', [
+                    'pageIcon' => 'bi-star',
+                    'pageTitle' => trans('seeker::messages.reviews.title'),
+                    'pageSubtitle' => trans('seeker::messages.reviews.reviewing', ['user' => $reviewedUser->name]),
+                    'backUrl' => route('seeker.conversations.show', $conversation),
+                    'backLabel' => trans('seeker::messages.reviews.back'),
+                ])
+            <form method="POST" action="{{ route('seeker.conversations.reviews.store', $conversation) }}" class="card seeker-form-card">
                 @csrf
                 <div class="card-body p-4 p-md-5">
-                    <div class="d-flex align-items-center gap-3 mb-4">
-                        <img src="{{ $reviewedUser->getAvatar(56) }}" width="56" height="56" class="rounded-circle" alt="">
+                    <div class="seeker-author-summary d-flex align-items-center gap-3 mb-4">
+                        <img src="{{ $reviewedUser->getAvatar(56) }}" width="56" height="56" class="rounded-circle seeker-profile-avatar" alt="">
                         <div>
-                            <h1 class="h3 mb-1">@lang('seeker::messages.reviews.title')</h1>
-                            <div class="text-muted">@lang('seeker::messages.reviews.reviewing', ['user' => $reviewedUser->name])</div>
+                            <strong>{{ $reviewedUser->name }}</strong>
                             <div class="small text-muted">{{ $conversation->publication->title }}</div>
                         </div>
                     </div>
@@ -30,7 +29,7 @@
                     <div class="mb-4">
                         <fieldset>
                             <legend class="form-label fw-semibold">@lang('seeker::messages.reviews.rating')</legend>
-                            <div class="d-flex flex-wrap gap-2">
+                            <div class="seeker-review-rating d-flex flex-wrap gap-2">
                                 @foreach(range(1, 5) as $rating)
                                     <input class="btn-check" type="radio" name="rating" id="reviewRating{{ $rating }}" value="{{ $rating }}" @checked((int) old('rating') === $rating) required>
                                     <label class="btn btn-outline-warning" for="reviewRating{{ $rating }}">
@@ -59,6 +58,7 @@
                     </div>
                 </div>
             </form>
+            </div>
         </div>
     </div>
 @endsection

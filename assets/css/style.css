@@ -250,6 +250,48 @@
     border-top: .25rem solid var(--bs-danger);
 }
 
+.seeker-conversation-list .list-group-item {
+    border-color: rgba(var(--bs-secondary-rgb), .11);
+}
+
+.seeker-conversation-item {
+    transition: background-color .15s ease, padding-left .15s ease;
+}
+
+.seeker-conversation-item:hover,
+.seeker-conversation-item:focus-visible {
+    padding-left: 1.75rem !important;
+    background: rgba(var(--bs-primary-rgb), .045);
+}
+
+.seeker-conversation-avatar {
+    object-fit: cover;
+    box-shadow: 0 0 0 .22rem rgba(var(--bs-primary-rgb), .08);
+}
+
+.seeker-conversation-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .4rem;
+}
+
+.seeker-chat > .card-header {
+    background: linear-gradient(135deg, rgba(236, 111, 169, .045), rgba(69, 201, 237, .055));
+}
+
+.seeker-chat-composer {
+    background: var(--bs-body-bg) !important;
+}
+
+.seeker-flow-summary {
+    border-left: .25rem solid var(--bs-primary);
+}
+
+.seeker-review-rating .btn {
+    min-width: 3.35rem;
+}
+
 .seeker-table-card .table > :not(caption) > * > * {
     padding: 1rem 1.15rem;
 }
@@ -476,12 +518,15 @@
 
 @media (prefers-reduced-motion: reduce) {
     .seeker-card,
-    .seeker-choice-card {
+    .seeker-choice-card,
+    .seeker-conversation-item,
+    .seeker-profile-publication {
         transition: none;
     }
 
     .seeker-card:hover,
-    .seeker-choice-card:hover {
+    .seeker-choice-card:hover,
+    .seeker-profile-publication:hover {
         transform: none;
     }
 }

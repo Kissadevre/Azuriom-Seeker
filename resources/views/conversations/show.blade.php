@@ -2,18 +2,17 @@
 
 @section('title', trans('seeker::messages.conversations.title'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @section('content')
     @php($other = $conversation->otherParticipant(auth()->user()))
-    <div class="mb-4"><a class="text-decoration-none" href="{{ route('seeker.conversations.index') }}"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i> @lang('seeker::messages.conversations.back')</a></div>
+    <div class="seeker-public-shell">
+    <a class="seeker-back-link" href="{{ route('seeker.conversations.index') }}"><i class="bi bi-arrow-left" aria-hidden="true"></i>@lang('seeker::messages.conversations.back')</a>
 
-    <div class="card seeker-chat">
+    <div class="card seeker-chat overflow-hidden">
         <div class="card-header p-3">
             <div class="d-flex flex-wrap align-items-center gap-3">
-                <a href="{{ route('seeker.profiles.show', $other) }}"><img src="{{ $other->getAvatar(48) }}" width="48" height="48" class="rounded-circle" alt=""></a>
+                <a href="{{ route('seeker.profiles.show', $other) }}"><img src="{{ $other->getAvatar(48) }}" width="48" height="48" class="rounded-circle seeker-conversation-avatar" alt=""></a>
                 <div class="flex-grow-1"><h1 class="h5 mb-0"><a class="text-body text-decoration-none" href="{{ route('seeker.profiles.show', $other) }}">{{ $other->name }}</a></h1>@if($conversation->publication->trashed())<span class="small text-muted">{{ $conversation->publication->title }} · @lang('seeker::messages.publications.removed')</span>@else<a class="small text-decoration-none" href="{{ route('seeker.publications.show', $conversation->publication) }}">{{ $conversation->publication->title }}</a>@endif</div>
                 <div class="d-flex flex-wrap align-items-center gap-2">
                     <span class="badge text-bg-light">@include('seeker::publications._price', ['publication' => $conversation->publication])</span>
@@ -167,7 +166,7 @@
             @endforeach
         </div>
 
-        <div class="card-footer p-3">
+        <div class="card-footer seeker-chat-composer p-3">
             @if($conversation->status === 'active')
                 <form method="POST" action="{{ route('seeker.conversations.messages.store', $conversation) }}" enctype="multipart/form-data">
                     @csrf
@@ -190,5 +189,6 @@
                 <div class="text-center text-muted py-2"><i class="bi bi-lock me-2" aria-hidden="true"></i>@lang($conversation->status === 'closed' ? 'seeker::messages.conversations.closed_by_moderation_short' : 'seeker::messages.completion.conversation_closed')</div>
             @endif
         </div>
+    </div>
     </div>
 @endsection

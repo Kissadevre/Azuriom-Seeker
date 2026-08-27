@@ -2,24 +2,27 @@
 
 @section('title', trans('seeker::messages.contact.title_'.$publication->type))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @section('content')
-    <div class="row justify-content-center">
-        <div class="col-xl-8">
-            <div class="mb-4">
-                <a class="text-decoration-none" href="{{ route('seeker.publications.show', $publication) }}"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i> {{ $publication->title }}</a>
-            </div>
+    <div class="seeker-public-shell">
+        <div class="row justify-content-center">
+            <div class="col-xl-8">
+                @include('seeker::_page-header', [
+                    'pageIcon' => 'bi-chat-dots',
+                    'pageTitle' => trans('seeker::messages.contact.title_'.$publication->type),
+                    'pageSubtitle' => $publication->user->name.' · '.$publication->title,
+                    'backUrl' => route('seeker.publications.show', $publication),
+                    'backLabel' => $publication->title,
+                ])
 
-            <div class="card mb-4">
+            <div class="card seeker-flow-summary mb-4">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center gap-3">
-                        <img src="{{ $publication->user->getAvatar(56) }}" width="56" height="56" class="rounded-circle" alt="">
+                        <img src="{{ $publication->user->getAvatar(56) }}" width="56" height="56" class="rounded-circle seeker-profile-avatar" alt="">
                         <div class="flex-grow-1">
-                            <h1 class="h4 mb-1">@lang('seeker::messages.contact.title_'.$publication->type)</h1>
-                            <div class="text-muted">{{ $publication->user->name }} · {{ $publication->title }}</div>
+                            <strong class="d-block">{{ $publication->title }}</strong>
+                            <div class="text-muted">{{ $publication->user->name }}</div>
                         </div>
                         <strong>@include('seeker::publications._price', ['publication' => $publication])</strong>
                     </div>
@@ -41,7 +44,7 @@
                 <div class="alert alert-info"><i class="bi bi-info-circle me-2" aria-hidden="true"></i>@lang('seeker::messages.escrow.hourly_notice')</div>
             @endif
 
-            <form method="POST" action="{{ route('seeker.conversations.store', $publication) }}" class="card">
+            <form method="POST" action="{{ route('seeker.conversations.store', $publication) }}" class="card seeker-form-card">
                 @csrf
                 <div class="card-body p-4">
                     <label class="form-label fw-semibold" for="contactMessage">@lang('seeker::messages.contact.message_'.$publication->type)</label>
@@ -55,6 +58,7 @@
                     <button class="btn btn-primary"><i class="bi bi-send me-1" aria-hidden="true"></i> @lang('seeker::messages.contact.send_'.$publication->type)</button>
                 </div>
             </form>
+            </div>
         </div>
     </div>
 @endsection

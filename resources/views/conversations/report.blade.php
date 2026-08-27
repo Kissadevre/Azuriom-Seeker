@@ -2,26 +2,25 @@
 
 @section('title', trans('seeker::messages.reports.title'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @section('content')
-    <div class="mb-4">
-        <a class="text-decoration-none" href="{{ route('seeker.conversations.show', $conversation) }}">
-            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> @lang('seeker::messages.reports.back')
-        </a>
-    </div>
-
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card">
+    <div class="seeker-public-shell">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                @include('seeker::_page-header', [
+                    'pageIcon' => 'bi-flag',
+                    'pageTitle' => trans('seeker::messages.reports.title'),
+                    'pageSubtitle' => trans('seeker::messages.reports.reported_user', ['user' => $reportedUser->name]),
+                    'backUrl' => route('seeker.conversations.show', $conversation),
+                    'backLabel' => trans('seeker::messages.reports.back'),
+                ])
+            <div class="card seeker-form-card seeker-report-card">
                 <div class="card-body p-4 p-md-5">
-                    <div class="d-flex align-items-center gap-3 mb-4">
-                        <img src="{{ $reportedUser->getAvatar(56) }}" width="56" height="56" class="rounded-circle" alt="">
+                    <div class="seeker-author-summary d-flex align-items-center gap-3 mb-4">
+                        <img src="{{ $reportedUser->getAvatar(56) }}" width="56" height="56" class="rounded-circle seeker-profile-avatar" alt="">
                         <div>
-                            <h1 class="h3 mb-1">@lang('seeker::messages.reports.title')</h1>
-                            <div class="text-muted">@lang('seeker::messages.reports.reported_user', ['user' => $reportedUser->name])</div>
+                            <strong>{{ $reportedUser->name }}</strong>
                             <div class="small text-muted">{{ $conversation->publication->title }}</div>
                         </div>
                     </div>
@@ -62,6 +61,7 @@
                         </div>
                     </form>
                 </div>
+            </div>
             </div>
         </div>
     </div>

@@ -2,23 +2,19 @@
 
 @section('title', trans('seeker::messages.conversations.title'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @section('content')
-    <div class="d-flex align-items-center gap-3 mb-4">
-        <span class="seeker-title-icon"><i class="bi bi-chat-dots" aria-hidden="true"></i></span>
-        <div><h1 class="h2 mb-0">@lang('seeker::messages.conversations.title')</h1><p class="text-muted mb-0">@lang('seeker::messages.conversations.subtitle')</p></div>
-    </div>
+    <div class="seeker-public-shell">
+    @include('seeker::_page-header', ['pageIcon' => 'bi-chat-dots', 'pageTitle' => trans('seeker::messages.conversations.title'), 'pageSubtitle' => trans('seeker::messages.conversations.subtitle')])
 
-    <div class="card overflow-hidden">
+    <div class="card seeker-conversation-list overflow-hidden">
         <div class="list-group list-group-flush">
             @forelse($conversations as $conversation)
                 @php($other = $conversation->otherParticipant($user))
-                <a class="list-group-item list-group-item-action p-3 p-md-4" href="{{ route('seeker.conversations.show', $conversation) }}">
+                <a class="list-group-item list-group-item-action seeker-conversation-item p-3 p-md-4" href="{{ route('seeker.conversations.show', $conversation) }}">
                     <div class="d-flex gap-3 align-items-center">
-                        <img src="{{ $other->getAvatar(52) }}" width="52" height="52" class="rounded-circle flex-shrink-0" alt="">
+                        <img src="{{ $other->getAvatar(52) }}" width="52" height="52" class="rounded-circle seeker-conversation-avatar flex-shrink-0" alt="">
                         <div class="flex-grow-1 overflow-hidden">
                             <div class="d-flex justify-content-between gap-3">
                                 <strong>{{ $other->name }}</strong>
@@ -47,9 +43,10 @@
                     </div>
                 </a>
             @empty
-                <div class="p-5 text-center text-muted">@lang('seeker::messages.conversations.empty')</div>
+                @include('seeker::_empty-state', ['emptyIcon' => 'bi-chat-square-text', 'emptyTitle' => trans('seeker::messages.conversations.empty')])
             @endforelse
         </div>
     </div>
     @if($conversations->hasPages())<div class="d-flex justify-content-center mt-4">{{ $conversations->links() }}</div>@endif
+    </div>
 @endsection

@@ -2,23 +2,21 @@
 
 @section('title', trans('seeker::messages.completion.confirm_title'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @section('content')
-    <div class="mb-4">
-        <a class="text-decoration-none" href="{{ route('seeker.conversations.show', $conversation) }}">
-            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> @lang('seeker::messages.completion.back')
-        </a>
-    </div>
-
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card">
+    <div class="seeker-public-shell">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                @include('seeker::_page-header', [
+                    'pageIcon' => 'bi-check2-circle',
+                    'pageTitle' => trans('seeker::messages.completion.confirm_title'),
+                    'pageSubtitle' => trans('seeker::messages.completion.confirm_description', ['author' => $conversation->author->name]),
+                    'backUrl' => route('seeker.conversations.show', $conversation),
+                    'backLabel' => trans('seeker::messages.completion.back'),
+                ])
+            <div class="card seeker-form-card">
                 <div class="card-body p-4 p-md-5">
-                    <h1 class="h3 mb-2">@lang('seeker::messages.completion.confirm_title')</h1>
-                    <p class="text-muted">@lang('seeker::messages.completion.confirm_description', ['author' => $conversation->author->name])</p>
                     <span class="badge text-bg-warning mb-4">@lang('seeker::messages.completion.attempt_count', ['count' => $conversation->delivery_attempts])</span>
 
                     <div class="card bg-body-tertiary mb-4">
@@ -81,6 +79,7 @@
                         </div>
                     </form>
                 </div>
+            </div>
             </div>
         </div>
     </div>

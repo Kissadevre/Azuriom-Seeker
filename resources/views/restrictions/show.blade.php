@@ -2,9 +2,7 @@
 
 @section('title', trans('seeker::messages.restrictions.details.title'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ plugin_asset('seeker', 'css/style.css') }}">
-@endpush
+@include('seeker::_assets')
 
 @section('content')
     @php($restrictionIcon = match($restriction->type) {
@@ -13,6 +11,7 @@
         \Azuriom\Plugin\Seeker\Models\UserRestriction::TYPE_PROFILE => 'bi-person-badge',
         default => 'bi-shield-x',
     })
+    <div class="seeker-public-shell">
     <div class="row justify-content-center py-4 py-lg-5">
         <div class="col-lg-9 col-xl-8">
             <div class="card seeker-restriction-card overflow-hidden">
@@ -56,5 +55,6 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 @endsection
