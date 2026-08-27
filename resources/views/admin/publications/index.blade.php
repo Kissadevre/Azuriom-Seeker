@@ -52,12 +52,12 @@
 
         <div class="card seeker-admin-card">
             <div class="table-responsive">
-                <table class="table table-hover align-middle seeker-admin-table mb-0">
+                <table class="table table-hover align-middle seeker-admin-table seeker-admin-report-indicator-table mb-0">
                     <thead><tr><th>@lang('seeker::admin.publication')</th><th>@lang('seeker::admin.author')</th><th>@lang('seeker::admin.status')</th><th>@lang('seeker::admin.publications.dates')</th><th class="text-center">@lang('seeker::admin.conversation_count')</th><th><span class="visually-hidden">@lang('seeker::admin.actions')</span></th></tr></thead>
                     <tbody>
                         @forelse($publications as $publication)
-                            <tr>
-                                <td style="min-width: 15rem"><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.admin.publications.show', $publication) }}">{{ $publication->title }}</a><div class="small text-body-secondary mt-1"><i class="bi bi-{{ $publication->type === 'commission' ? 'briefcase' : 'people' }} me-1" aria-hidden="true"></i>@lang('seeker::messages.types.'.$publication->type)</div></td>
+                            <tr @class(['seeker-admin-row-reported' => $publication->reports_count > 0])>
+                                <td style="min-width: 15rem">@if($publication->reports_count > 0)<span class="visually-hidden">@choice('seeker::admin.publications.report_count', $publication->reports_count, ['count' => $publication->reports_count]) </span>@endif<a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.admin.publications.show', $publication) }}">{{ $publication->title }}</a><div class="small text-body-secondary mt-1"><i class="bi bi-{{ $publication->type === 'commission' ? 'briefcase' : 'people' }} me-1" aria-hidden="true"></i>@lang('seeker::messages.types.'.$publication->type)</div></td>
                                 <td><div class="seeker-admin-user"><img src="{{ $publication->user->getAvatar(38) }}" class="rounded-circle" alt=""><div><a class="fw-semibold text-body text-decoration-none" href="{{ route('seeker.profiles.show', $publication->user) }}" target="_blank" rel="noopener">{{ $publication->user->name }}</a><div class="small text-body-secondary">ID #{{ $publication->user_id }}</div></div></div></td>
                                 <td>
                                     @if($publication->trashed())

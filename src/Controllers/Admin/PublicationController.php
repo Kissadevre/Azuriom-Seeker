@@ -24,7 +24,7 @@ class PublicationController extends Controller
         $publications = Publication::query()
             ->withTrashed()
             ->with('user')
-            ->withCount('conversations')
+            ->withCount(['conversations', 'reports'])
             ->when($status, fn ($query) => $query->where('status', $status))
             ->when($type, fn ($query) => $query->where('type', $type))
             ->when($reported, fn ($query) => $query->whereHas('reports'))

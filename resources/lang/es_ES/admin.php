@@ -92,6 +92,7 @@ return [
         'report_filter' => 'Reportes',
         'all_report_states' => 'Todas las publicaciones',
         'with_reports' => 'Publicaciones con reportes',
+        'report_count' => '{1} :count reporte.|[2,*] :count reportes.',
         'dates' => 'Fechas',
         'change_status' => 'Cambiar estado a :status',
         'back' => 'Volver a publicaciones',
