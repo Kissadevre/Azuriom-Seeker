@@ -194,6 +194,7 @@ return [
         'subtitle' => 'Review reports against publications, profiles, and private conversations.',
         'filters' => 'Filter reports',
         'pending_count' => ':count pending',
+        'total' => 'All reports',
         'type' => 'Report type',
         'target' => 'Reported content',
         'reporter' => 'Reporter',

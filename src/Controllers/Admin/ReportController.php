@@ -49,6 +49,7 @@ class ReportController extends Controller
                 + ProfileReport::query()->where('status', ProfileReport::STATUS_PENDING)->count()
                 + ConversationReport::query()->where('status', ConversationReport::STATUS_PENDING)->count(),
         ];
+        $counts['total'] = $counts['publication'] + $counts['profile'] + $counts['conversation'];
 
         return view('seeker::admin.reports.index', compact('reports', 'type', 'status', 'counts'));
     }

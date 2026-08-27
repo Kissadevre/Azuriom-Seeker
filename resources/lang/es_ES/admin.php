@@ -194,6 +194,7 @@ return [
         'subtitle' => 'Revisa reportes contra publicaciones, perfiles y conversaciones privadas.',
         'filters' => 'Filtrar reportes',
         'pending_count' => ':count pendientes',
+        'total' => 'Todos los reportes',
         'type' => 'Tipo de reporte',
         'target' => 'Contenido reportado',
         'reporter' => 'Reportado por',

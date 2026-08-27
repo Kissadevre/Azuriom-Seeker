@@ -16,8 +16,9 @@
         ])
 
         <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-xl-3"><a class="seeker-admin-stat d-flex align-items-center gap-3 text-body text-decoration-none {{ $type === null ? 'border-primary' : '' }}" href="{{ route('seeker.admin.reports.index', ['status' => $status]) }}"><span class="seeker-admin-stat-icon"><i class="bi bi-flag" aria-hidden="true"></i></span><div><div class="seeker-admin-stat-value">{{ $counts['total'] }}</div><div class="small text-body-secondary">@lang('seeker::admin.reports.total')</div></div></a></div>
             @foreach(['publication' => 'bi-megaphone', 'profile' => 'bi-person-badge', 'conversation' => 'bi-chat-dots'] as $reportType => $icon)
-                <div class="col-md-4"><a class="seeker-admin-stat d-flex align-items-center gap-3 text-body text-decoration-none {{ $type === $reportType ? 'border-primary' : '' }}" href="{{ route('seeker.admin.reports.index', ['type' => $reportType, 'status' => $status]) }}"><span class="seeker-admin-stat-icon"><i class="bi {{ $icon }}" aria-hidden="true"></i></span><div><div class="seeker-admin-stat-value">{{ $counts[$reportType] }}</div><div class="small text-body-secondary">@lang('seeker::admin.reports.types.'.$reportType)</div></div></a></div>
+                <div class="col-sm-6 col-xl-3"><a class="seeker-admin-stat d-flex align-items-center gap-3 text-body text-decoration-none {{ $type === $reportType ? 'border-primary' : '' }}" href="{{ route('seeker.admin.reports.index', ['type' => $reportType, 'status' => $status]) }}"><span class="seeker-admin-stat-icon"><i class="bi {{ $icon }}" aria-hidden="true"></i></span><div><div class="seeker-admin-stat-value">{{ $counts[$reportType] }}</div><div class="small text-body-secondary">@lang('seeker::admin.reports.types.'.$reportType)</div></div></a></div>
             @endforeach
         </div>
 
