@@ -5,6 +5,12 @@ return [
     'subtitle' => 'Find creative talent, freelance services, and collaborators for your next project.',
     'my_publications' => 'My publications',
     'my_publications_subtitle' => 'Manage your offers, talent searches, visibility, and publication status.',
+    'quick_menu' => [
+        'label' => 'My Seeker',
+        'profile_description' => 'View your public profile and reputation.',
+        'publications_description' => 'Manage everything you have published.',
+        'messages_description' => 'Continue your private conversations.',
+    ],
     'publish' => 'Create publication',
     'publish_description' => 'Share a clear offer or talent request so the right people can find you.',
     'edit' => 'Edit publication',

@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="seeker-public-shell">
-    <div class="seeker-hero card border-0 mb-4 overflow-hidden">
+    <div class="seeker-hero card border-0 mb-4">
         <div class="card-body p-4 p-lg-5">
             <div class="row align-items-center g-4">
                 <div class="col-lg">
@@ -14,24 +14,42 @@
                     <h1 class="display-6 fw-bold mb-2">@lang('seeker::messages.title')</h1>
                     <p class="lead mb-0">@lang('seeker::messages.subtitle')</p>
                 </div>
-                <div class="col-lg-auto d-flex flex-wrap gap-2">
+                <div class="col-lg-auto">
                     @auth
-                        <a class="btn btn-outline-primary" href="{{ route('seeker.profiles.show', auth()->user()) }}">
-                            <i class="bi bi-person-badge me-1" aria-hidden="true"></i> @lang('seeker::messages.profiles.my_profile')
-                        </a>
-                        <a class="btn btn-outline-primary" href="{{ route('seeker.publications.mine') }}">
-                            <i class="bi bi-briefcase me-1" aria-hidden="true"></i> @lang('seeker::messages.my_publications')
-                        </a>
-                        <a class="btn btn-outline-primary" href="{{ route('seeker.conversations.index') }}">
-                            <i class="bi bi-chat-dots me-1" aria-hidden="true"></i> @lang('seeker::messages.conversations.title')
-                        </a>
-                        @if($publicationsEnabled)
-                            <a class="btn btn-primary" href="{{ route('seeker.publications.create') }}">
-                                <i class="bi bi-plus-lg me-1" aria-hidden="true"></i> @lang('seeker::messages.publish')
-                            </a>
-                        @elseif($publishRestriction)
-                            <a class="btn btn-outline-warning" href="{{ route('seeker.restrictions.show', \Azuriom\Plugin\Seeker\Models\UserRestriction::TYPE_PUBLISH) }}"><i class="bi bi-shield-lock me-1" aria-hidden="true"></i>@lang('seeker::messages.restrictions.details.view')</a>
-                        @endif
+                        <div class="seeker-hero-actions">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-grid me-1" aria-hidden="true"></i>@lang('seeker::messages.quick_menu.label')
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end seeker-quick-menu">
+                                    <li>
+                                        <a class="dropdown-item seeker-quick-menu-item" href="{{ route('seeker.profiles.show', auth()->user()) }}">
+                                            <span class="seeker-quick-menu-icon"><i class="bi bi-person-badge" aria-hidden="true"></i></span>
+                                            <span><strong>@lang('seeker::messages.profiles.my_profile')</strong><small>@lang('seeker::messages.quick_menu.profile_description')</small></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item seeker-quick-menu-item" href="{{ route('seeker.publications.mine') }}">
+                                            <span class="seeker-quick-menu-icon"><i class="bi bi-briefcase" aria-hidden="true"></i></span>
+                                            <span><strong>@lang('seeker::messages.my_publications')</strong><small>@lang('seeker::messages.quick_menu.publications_description')</small></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item seeker-quick-menu-item" href="{{ route('seeker.conversations.index') }}">
+                                            <span class="seeker-quick-menu-icon"><i class="bi bi-chat-dots" aria-hidden="true"></i></span>
+                                            <span><strong>@lang('seeker::messages.conversations.title')</strong><small>@lang('seeker::messages.quick_menu.messages_description')</small></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            @if($publicationsEnabled)
+                                <a class="btn btn-primary" href="{{ route('seeker.publications.create') }}">
+                                    <i class="bi bi-plus-lg me-1" aria-hidden="true"></i> @lang('seeker::messages.publish')
+                                </a>
+                            @elseif($publishRestriction)
+                                <a class="btn btn-outline-warning" href="{{ route('seeker.restrictions.show', \Azuriom\Plugin\Seeker\Models\UserRestriction::TYPE_PUBLISH) }}"><i class="bi bi-shield-lock me-1" aria-hidden="true"></i>@lang('seeker::messages.restrictions.details.view')</a>
+                            @endif
+                        </div>
                     @endauth
                 </div>
             </div>

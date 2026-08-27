@@ -5,6 +5,12 @@ return [
     'subtitle' => 'Encuentra talento creativo, servicios independientes y colaboradores para tu próximo proyecto.',
     'my_publications' => 'Mis publicaciones',
     'my_publications_subtitle' => 'Administra tus ofertas, búsquedas de talento, visibilidad y estado de publicación.',
+    'quick_menu' => [
+        'label' => 'Mi Seeker',
+        'profile_description' => 'Consulta tu perfil público y reputación.',
+        'publications_description' => 'Administra todo lo que has publicado.',
+        'messages_description' => 'Continúa tus conversaciones privadas.',
+    ],
     'publish' => 'Crear publicación',
     'publish_description' => 'Comparte una oferta o búsqueda de talento clara para conectar con las personas indicadas.',
     'edit' => 'Editar publicación',
