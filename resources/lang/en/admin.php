@@ -207,8 +207,6 @@ return [
         'update_status' => 'Update report status',
         'status_updated' => 'The report status was updated.',
         'by_user' => 'Created by :user',
-        'restrict_reporter' => 'Restrict reporter',
-        'restrict_reported' => 'Restrict reported user',
         'types' => [
             'publication' => 'Publication reports',
             'profile' => 'Profile reports',

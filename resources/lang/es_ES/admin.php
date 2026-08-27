@@ -207,8 +207,6 @@ return [
         'update_status' => 'Actualizar estado del reporte',
         'status_updated' => 'El estado del reporte fue actualizado.',
         'by_user' => 'Creada por :user',
-        'restrict_reporter' => 'Restringir denunciante',
-        'restrict_reported' => 'Restringir reportado',
         'types' => [
             'publication' => 'Reportes de publicaciones',
             'profile' => 'Reportes de perfiles',
