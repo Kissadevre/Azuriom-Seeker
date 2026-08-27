@@ -18,13 +18,35 @@
         </div>
         </div>
         @if($conversation->status === 'active')
-            <form method="POST" action="{{ route('seeker.admin.conversations.close', $conversation) }}" onsubmit="return confirm(@js(trans('seeker::admin.conversations.close_confirm')))" class="seeker-admin-header-actions text-end">
-                @csrf @method('PATCH')
-                <button class="btn btn-danger"><i class="bi bi-lock me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.force_close')</button>
+            <div class="seeker-admin-header-actions text-end">
+                <button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#forceCloseConversationModal"><i class="bi bi-lock me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.force_close')</button>
                 <div class="small text-muted mt-1">@lang('seeker::admin.conversations.close_help')</div>
-            </form>
+            </div>
         @endif
     </div>
+
+    @if($conversation->status === 'active')
+        <div class="modal fade" id="forceCloseConversationModal" tabindex="-1" aria-labelledby="forceCloseConversationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="forceCloseConversationModalLabel"><i class="bi bi-shield-lock text-danger me-2" aria-hidden="true"></i>@lang('seeker::admin.conversations.force_close')</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@lang('messages.actions.close')"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-0">@lang('seeker::admin.conversations.close_confirm')</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@lang('messages.actions.cancel')</button>
+                        <form method="POST" action="{{ route('seeker.admin.conversations.close', $conversation) }}">
+                            @csrf @method('PATCH')
+                            <button class="btn btn-danger"><i class="bi bi-lock me-1" aria-hidden="true"></i>@lang('seeker::admin.conversations.force_close')</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     @if($conversation->status === 'closed')
         <div class="alert alert-danger"><i class="bi bi-shield-lock me-2" aria-hidden="true"></i>@lang('seeker::admin.conversations.closed_notice')</div>
