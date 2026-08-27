@@ -4,6 +4,8 @@ namespace Azuriom\Plugin\Seeker\Services;
 
 class SeekerSettings
 {
+    public const ENABLED_KEY = 'seeker.enabled';
+
     public const PUBLICATIONS_ENABLED_KEY = 'seeker.publications_enabled';
 
     public const NEW_CONVERSATIONS_ENABLED_KEY = 'seeker.new_conversations_enabled';
@@ -62,6 +64,11 @@ class SeekerSettings
             'by_user' => true,
         ],
     ];
+
+    public function enabled(): bool
+    {
+        return $this->boolean(self::ENABLED_KEY, true);
+    }
 
     public function publicationsEnabled(): bool
     {

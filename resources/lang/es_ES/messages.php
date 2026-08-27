@@ -319,6 +319,7 @@ return [
         'rate_limited' => 'Demasiados cambios de publicaciones en Seeker. Inténtalo de nuevo en :seconds segundos.',
     ],
     'features' => [
+        'seeker_disabled' => 'Seeker no está disponible temporalmente.',
         'publications_disabled' => 'Las nuevas publicaciones de Seeker están temporalmente desactivadas. Las publicaciones existentes todavía pueden administrarse.',
         'new_conversations_disabled' => 'Iniciar nuevas comisiones y aplicaciones de talento está temporalmente desactivado. Las conversaciones existentes no se verán afectadas.',
         'new_conversations_disabled_short' => 'Nuevos contactos pausados',

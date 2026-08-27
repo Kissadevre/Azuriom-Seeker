@@ -32,6 +32,12 @@ return [
         'title' => 'Ajustes de Seeker',
         'subtitle' => 'Controla la disponibilidad, los perfiles, los archivos adjuntos y los límites de publicaciones.',
         'updated' => 'Los ajustes de Seeker fueron actualizados.',
+        'global' => [
+            'title' => 'Disponibilidad global',
+            'enabled' => 'Habilitar el acceso a Seeker',
+            'enabled_help' => 'Al desactivarlo, todas las rutas y acciones públicas de Seeker dejan de estar disponibles. El panel administrativo permanece accesible para gestionar y volver a habilitar Seeker.',
+            'disabled_notice' => 'Seeker no está disponible actualmente para ningún usuario del sitio.',
+        ],
         'features' => [
             'title' => 'Disponibilidad de funciones',
             'publications_enabled' => 'Permitir nuevas publicaciones',

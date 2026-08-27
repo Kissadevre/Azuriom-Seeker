@@ -12,6 +12,20 @@
 
     <form method="POST" action="{{ route('seeker.admin.settings.save') }}">
         @csrf
+        @php($globalEnabled = (bool) old('seeker_enabled', $seekerEnabled))
+
+        <div class="card border-{{ $globalEnabled ? 'success' : 'danger' }} mb-4">
+            <div class="card-header text-bg-{{ $globalEnabled ? 'success' : 'danger' }}"><h2 class="h5 mb-0">@lang('seeker::admin.settings.global.title')</h2></div>
+            <div class="card-body">
+                <div class="form-check form-switch">
+                    <input type="hidden" name="seeker_enabled" value="0">
+                    <input class="form-check-input" type="checkbox" role="switch" id="seeker_enabled" name="seeker_enabled" value="1" @checked($globalEnabled)>
+                    <label class="form-check-label fw-semibold" for="seeker_enabled">@lang('seeker::admin.settings.global.enabled')</label>
+                    <div class="form-text">@lang('seeker::admin.settings.global.enabled_help')</div>
+                </div>
+                @unless($globalEnabled)<div class="alert alert-danger mt-3 mb-0"><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>@lang('seeker::admin.settings.global.disabled_notice')</div>@endunless
+            </div>
+        </div>
 
         <div class="card mb-4">
             <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::admin.settings.features.title')</h2></div>

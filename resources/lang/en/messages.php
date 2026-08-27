@@ -319,6 +319,7 @@ return [
         'rate_limited' => 'Too many Seeker publication changes. Try again in :seconds seconds.',
     ],
     'features' => [
+        'seeker_disabled' => 'Seeker is temporarily unavailable.',
         'publications_disabled' => 'New Seeker publications are temporarily disabled. Existing publications can still be managed.',
         'new_conversations_disabled' => 'Starting new commissions and talent applications is temporarily disabled. Existing conversations are unaffected.',
         'new_conversations_disabled_short' => 'New contacts paused',

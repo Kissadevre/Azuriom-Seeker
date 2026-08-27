@@ -32,6 +32,12 @@ return [
         'title' => 'Seeker settings',
         'subtitle' => 'Control availability, profile features, attachments, and publication rate limits.',
         'updated' => 'The Seeker settings have been updated.',
+        'global' => [
+            'title' => 'Global availability',
+            'enabled' => 'Enable access to Seeker',
+            'enabled_help' => 'When disabled, every public Seeker route and action becomes unavailable. The administrative panel remains accessible so Seeker can be managed and re-enabled.',
+            'disabled_notice' => 'Seeker is currently unavailable to all site users.',
+        ],
         'features' => [
             'title' => 'Feature availability',
             'publications_enabled' => 'Allow new publications',
