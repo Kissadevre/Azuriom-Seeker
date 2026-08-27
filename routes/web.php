@@ -1,6 +1,7 @@
 <?php
 
 use Azuriom\Plugin\Seeker\Controllers\ConversationController;
+use Azuriom\Plugin\Seeker\Controllers\ConversationReportController;
 use Azuriom\Plugin\Seeker\Controllers\MessageController;
 use Azuriom\Plugin\Seeker\Controllers\PublicationController;
 use Azuriom\Plugin\Seeker\Controllers\PublicationImageController;
@@ -22,6 +23,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('publications/{publication}/contact', [ConversationController::class, 'create'])->name('conversations.create');
     Route::post('publications/{publication}/contact', [ConversationController::class, 'store'])->middleware('throttle:10,1')->name('conversations.store');
     Route::get('conversations', [ConversationController::class, 'index'])->name('conversations.index');
+    Route::get('conversations/{conversation}/report', [ConversationReportController::class, 'create'])->name('conversations.reports.create');
+    Route::post('conversations/{conversation}/report', [ConversationReportController::class, 'store'])->middleware('throttle:5,1')->name('conversations.reports.store');
     Route::get('conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
     Route::post('conversations/{conversation}/messages', [MessageController::class, 'store'])->middleware('throttle:30,1')->name('conversations.messages.store');
 });

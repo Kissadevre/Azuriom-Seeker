@@ -12,10 +12,21 @@
 
     <div class="card seeker-chat">
         <div class="card-header p-3">
-            <div class="d-flex align-items-center gap-3">
+            <div class="d-flex flex-wrap align-items-center gap-3">
                 <img src="{{ $other->getAvatar(48) }}" width="48" height="48" class="rounded-circle" alt="">
                 <div class="flex-grow-1"><h1 class="h5 mb-0">{{ $other->name }}</h1><a class="small text-decoration-none" href="{{ route('seeker.publications.show', $conversation->publication) }}">{{ $conversation->publication->title }}</a></div>
-                <span class="badge text-bg-light">@include('seeker::publications._price', ['publication' => $conversation->publication])</span>
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <span class="badge text-bg-light">@include('seeker::publications._price', ['publication' => $conversation->publication])</span>
+                    @if($conversationReport === null)
+                        <a class="btn btn-sm btn-outline-danger" href="{{ route('seeker.conversations.reports.create', $conversation) }}">
+                            <i class="bi bi-flag me-1" aria-hidden="true"></i> @lang('seeker::messages.reports.action')
+                        </a>
+                    @else
+                        <span class="badge text-bg-warning">
+                            <i class="bi bi-flag me-1" aria-hidden="true"></i> @lang('seeker::messages.reports.statuses.'.$conversationReport->status)
+                        </span>
+                    @endif
+                </div>
             </div>
         </div>
 

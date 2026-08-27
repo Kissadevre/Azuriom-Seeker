@@ -63,6 +63,11 @@ class Conversation extends Model
         return $this->hasOne(Message::class)->latestOfMany();
     }
 
+    public function reports()
+    {
+        return $this->hasMany(ConversationReport::class);
+    }
+
     public function scopeForUser(Builder $query, User $user): Builder
     {
         return $query->where(function (Builder $query) use ($user) {

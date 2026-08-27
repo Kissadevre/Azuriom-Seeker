@@ -84,13 +84,16 @@ class ConversationController extends Controller
             ->with('sender')
             ->latest('id')
             ->paginate(50);
+        $conversationReport = $conversation->reports()
+            ->where('reporter_id', $request->user()->id)
+            ->first();
 
         $conversation->messages()
             ->where('sender_id', '!=', $request->user()->id)
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
 
-        return view('seeker::conversations.show', compact('conversation', 'messages'));
+        return view('seeker::conversations.show', compact('conversation', 'messages', 'conversationReport'));
     }
 
     private function ensureContactable(Publication $publication, Request $request): void
