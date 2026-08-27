@@ -16,8 +16,8 @@
 
         <div class="seeker-admin-toolbar mb-4">
             <div class="seeker-admin-toolbar-title"><i class="bi bi-funnel" aria-hidden="true"></i>@lang('seeker::admin.publications.filters')</div>
-            <div class="d-flex flex-wrap justify-content-between align-items-end gap-3">
-                <form method="GET" class="flex-grow-1" style="max-width: 24rem">
+            <form method="GET" class="d-flex flex-wrap align-items-end gap-3">
+                <div class="flex-grow-1" style="min-width: 14rem; max-width: 24rem">
                     <label class="form-label small fw-semibold" for="publicationStatus">@lang('seeker::admin.status')</label>
                     <select id="publicationStatus" name="status" class="form-select" onchange="this.form.submit()">
                         <option value="">@lang('seeker::admin.all_statuses')</option>
@@ -25,14 +25,22 @@
                             <option value="{{ $publicationStatus }}" @selected($status === $publicationStatus)>@lang('seeker::messages.statuses.'.$publicationStatus)</option>
                         @endforeach
                     </select>
-                </form>
+                </div>
+                <div class="flex-grow-1" style="min-width: 14rem; max-width: 24rem">
+                    <label class="form-label small fw-semibold" for="publicationType">@lang('seeker::admin.type')</label>
+                    <select id="publicationType" name="type" class="form-select" onchange="this.form.submit()">
+                        <option value="">@lang('seeker::admin.publications.all_types')</option>
+                        @foreach(\Azuriom\Plugin\Seeker\Models\Publication::types() as $publicationType)
+                            <option value="{{ $publicationType }}" @selected($type === $publicationType)>@lang('seeker::messages.types.'.$publicationType)</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="seeker-admin-filter-actions">
-                    @if(filled($status))
+                    @if(filled($status) || filled($type))
                         <a class="btn btn-outline-secondary" href="{{ route('seeker.admin.publications.index') }}"><i class="bi bi-x-lg me-1" aria-hidden="true"></i>@lang('seeker::admin.clear_filters')</a>
                     @endif
-                    <a class="btn btn-outline-danger" href="{{ route('seeker.admin.reports.index') }}"><i class="bi bi-flag me-1" aria-hidden="true"></i>@lang('seeker::admin.reports.title')</a>
                 </div>
-            </div>
+            </form>
         </div>
 
         <div class="card seeker-admin-card">

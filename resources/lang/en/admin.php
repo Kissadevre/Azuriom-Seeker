@@ -88,6 +88,7 @@ return [
         'title' => 'Seeker publications',
         'subtitle' => 'Review every publication and its linked activity.',
         'filters' => 'Filter publications',
+        'all_types' => 'All publication types',
         'dates' => 'Dates',
         'change_status' => 'Set status to :status',
         'back' => 'Back to publications',

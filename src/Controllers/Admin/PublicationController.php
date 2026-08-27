@@ -16,17 +16,21 @@ class PublicationController extends Controller
         $status = in_array($request->query('status'), Publication::statuses(), true)
             ? $request->query('status')
             : null;
+        $type = in_array($request->query('type'), Publication::types(), true)
+            ? $request->query('type')
+            : null;
 
         $publications = Publication::query()
             ->withTrashed()
             ->with('user')
             ->withCount('conversations')
             ->when($status, fn ($query) => $query->where('status', $status))
+            ->when($type, fn ($query) => $query->where('type', $type))
             ->latest()
             ->paginate(20)
             ->withQueryString();
 
-        return view('seeker::admin.publications.index', compact('publications', 'status'));
+        return view('seeker::admin.publications.index', compact('publications', 'status', 'type'));
     }
 
     public function show(Publication $publication): View
