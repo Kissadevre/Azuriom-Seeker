@@ -19,12 +19,25 @@ class PublicationController extends Controller
 
         $publications = Publication::query()
             ->with('user')
+            ->withCount('conversations')
             ->when($status, fn ($query) => $query->where('status', $status))
             ->latest()
             ->paginate(20)
             ->withQueryString();
 
         return view('seeker::admin.publications.index', compact('publications', 'status'));
+    }
+
+    public function show(Publication $publication): View
+    {
+        $publication->load(['user', 'images'])->loadCount('conversations');
+        $conversations = $publication->conversations()
+            ->with('client')
+            ->withCount(['messages', 'reports'])
+            ->latest()
+            ->paginate(20);
+
+        return view('seeker::admin.publications.show', compact('publication', 'conversations'));
     }
 
     public function updateStatus(PublicationStatusRequest $request, Publication $publication): RedirectResponse
