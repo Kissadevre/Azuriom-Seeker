@@ -107,6 +107,10 @@
                                 <div class="col-6"><a href="{{ route('seeker.images.show', $image) }}" target="_blank" rel="noopener" class="text-decoration-none"><img src="{{ route('seeker.images.show', $image) }}" class="img-fluid rounded border" alt="{{ $image->original_name }}"><div class="small text-body-secondary text-truncate mt-1">{{ $image->original_name }}</div></a></div>
                             @endforeach
                         </div>
+                    @elseif(in_array($publication->portfolio_type, \Azuriom\Plugin\Seeker\Models\Publication::uploadedPortfolioTypes(), true) && ($portfolioMedia = $publication->media->firstWhere('type', $publication->portfolio_type)))
+                        <div class="small text-muted mb-2">@lang('seeker::messages.media.'.$publication->portfolio_type.'_title')</div>
+                        @include('seeker::publications._media', ['media' => $portfolioMedia, 'mediaClass' => $publication->portfolio_type === 'video' ? 'w-100 rounded bg-black' : 'w-100'])
+                        <div class="small text-body-secondary text-break mt-2">{{ $portfolioMedia->original_name }} · {{ number_format($portfolioMedia->size / 1048576, 2) }} MB</div>
                     @else
                         <p class="text-muted mb-0">@lang('seeker::admin.publications.no_portfolio')</p>
                     @endif

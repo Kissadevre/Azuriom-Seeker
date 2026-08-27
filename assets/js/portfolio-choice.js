@@ -20,19 +20,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
 
+            panels.forEach((panel) => {
+                if (panel.dataset.portfolioPanel !== selected) {
+                    return;
+                }
+
+                const fileInput = panel.querySelector('input[type="file"]');
+
+                if (!fileInput) {
+                    return;
+                }
+
+                const hasExisting = panel.dataset.hasExisting === 'true';
+                const existingImages = panel.querySelectorAll('input[name="remove_images[]"]');
+                const keepsAnImage = [...existingImages].some((input) => !input.checked);
+                fileInput.required = !hasExisting || (selected === 'images' && existingImages.length > 0 && !keepsAnImage);
+            });
+
             const externalUrl = form.querySelector('input[name="portfolio_url"]');
-            const imageFiles = form.querySelector('input[name="images[]"]');
 
             if (externalUrl) {
                 externalUrl.required = selected === 'external';
             }
-
-            if (imageFiles) {
-                imageFiles.required = selected === 'images' && !form.querySelector('input[name="remove_images[]"]');
-            }
         };
 
         radios.forEach((radio) => radio.addEventListener('change', updatePanels));
+        form.querySelectorAll('input[name="remove_images[]"]').forEach((input) => input.addEventListener('change', updatePanels));
         updatePanels();
     });
 

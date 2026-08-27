@@ -5,6 +5,7 @@ namespace Azuriom\Plugin\Seeker\Controllers;
 use Azuriom\Http\Controllers\Controller;
 use Azuriom\Plugin\Seeker\Models\Conversation;
 use Azuriom\Plugin\Seeker\Models\Publication;
+use Azuriom\Plugin\Seeker\Models\PublicationMedia;
 use Azuriom\Plugin\Seeker\Models\PublicationReport;
 use Azuriom\Plugin\Seeker\Models\Review;
 use Azuriom\Plugin\Seeker\Models\UserRestriction;
@@ -16,6 +17,7 @@ use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -33,7 +35,7 @@ class PublicationController extends Controller
             ->visible()
             ->withAuthorReputation()
             ->when($request->user() === null, fn ($query) => $query->where('is_guest_visible', true))
-            ->with(['user', 'images'])
+            ->with(['user', 'images', 'media'])
             ->when($type, fn ($query) => $query->where('type', $type))
             ->when($search !== '', fn ($query) => $query->where(function ($query) use ($search) {
                 $query->where('title', 'like', '%'.$search.'%')
@@ -52,7 +54,7 @@ class PublicationController extends Controller
     public function show(Publication $publication, SeekerSettings $settings, RestrictionService $restrictions): View
     {
         $this->ensureVisibleToCurrentUser($publication);
-        $publication->load(['user', 'images']);
+        $publication->load(['user', 'images', 'media']);
         $reputation = Review::query()
             ->where('reviewed_user_id', $publication->user_id)
             ->where('is_visible', true)
@@ -95,7 +97,7 @@ class PublicationController extends Controller
         $publications = Publication::query()
             ->where('user_id', $request->user()->id)
             ->withAuthorReputation()
-            ->with('images')
+            ->with(['images', 'media'])
             ->forListing()
             ->paginate(12);
 
@@ -141,7 +143,7 @@ class PublicationController extends Controller
                     'type', 'title', 'description', 'portfolio_type', 'portfolio_url',
                     'is_guest_visible', 'pricing_type', 'price', 'price_basis',
                 ]));
-                if ($publication->portfolio_type === Publication::PORTFOLIO_IMAGES) {
+                if ($publication->portfolio_type !== Publication::PORTFOLIO_EXTERNAL) {
                     $publication->portfolio_url = null;
                 }
                 if ($publication->pricing_type !== Publication::PRICING_POINTS) {
@@ -153,7 +155,11 @@ class PublicationController extends Controller
                 $publication->published_at = now();
                 $publication->save();
 
-                $this->storeImages($publication, $request->file('images', []), $storedPaths);
+                if ($publication->portfolio_type === Publication::PORTFOLIO_IMAGES) {
+                    $this->storeImages($publication, $request->file('images', []), $storedPaths);
+                } elseif (in_array($publication->portfolio_type, Publication::uploadedPortfolioTypes(), true)) {
+                    $this->storeMedia($publication, $request->file($publication->portfolio_type), $storedPaths);
+                }
 
                 return $publication;
             });
@@ -169,7 +175,7 @@ class PublicationController extends Controller
     public function edit(Publication $publication): View
     {
         $this->ensureOwner($publication);
-        $publication->load('images');
+        $publication->load(['images', 'media']);
 
         return view('seeker::publications.edit', compact('publication'));
     }
@@ -193,7 +199,7 @@ class PublicationController extends Controller
                     ]);
                 }
 
-                if ($publication->portfolio_type === Publication::PORTFOLIO_IMAGES) {
+                if ($publication->portfolio_type !== Publication::PORTFOLIO_EXTERNAL) {
                     $publication->portfolio_url = null;
                 }
                 if ($publication->pricing_type !== Publication::PRICING_POINTS) {
@@ -202,13 +208,29 @@ class PublicationController extends Controller
                 }
                 $publication->save();
 
-                $imagesToRemove = $publication->portfolio_type === Publication::PORTFOLIO_EXTERNAL
+                $imagesToRemove = $publication->portfolio_type !== Publication::PORTFOLIO_IMAGES
                     ? $publication->images()
                     : $publication->images()->whereIn('id', array_unique($request->input('remove_images', [])));
-                $removedPaths = $imagesToRemove->pluck('path')->all();
+                $removedPaths = array_merge($removedPaths, $imagesToRemove->pluck('path')->all());
                 $imagesToRemove->delete();
 
-                $this->storeImages($publication, $request->file('images', []), $storedPaths);
+                $selectedMediaType = in_array($publication->portfolio_type, Publication::uploadedPortfolioTypes(), true)
+                    ? $publication->portfolio_type
+                    : null;
+                $mediaToRemove = $publication->media();
+
+                if ($selectedMediaType !== null && ! $request->hasFile($selectedMediaType)) {
+                    $mediaToRemove->where('type', '!=', $selectedMediaType);
+                }
+
+                $removedPaths = array_merge($removedPaths, $mediaToRemove->pluck('path')->all());
+                $mediaToRemove->delete();
+
+                if ($publication->portfolio_type === Publication::PORTFOLIO_IMAGES) {
+                    $this->storeImages($publication, $request->file('images', []), $storedPaths);
+                } elseif ($selectedMediaType !== null && $request->hasFile($selectedMediaType)) {
+                    $this->storeMedia($publication, $request->file($selectedMediaType), $storedPaths);
+                }
             });
         } catch (Throwable $exception) {
             Storage::disk('local')->delete($storedPaths);
@@ -274,10 +296,43 @@ class PublicationController extends Controller
 
             $publication->images()->create([
                 'path' => $path,
-                'original_name' => mb_substr($file->getClientOriginalName(), 0, 255),
+                'original_name' => $this->sanitizeOriginalName($file),
                 'mime_type' => $file->getMimeType() ?? 'application/octet-stream',
                 'position' => ++$position,
             ]);
         }
+    }
+
+    private function storeMedia(Publication $publication, UploadedFile $file, array &$storedPaths): void
+    {
+        $type = $publication->portfolio_type;
+        $mimeType = $file->getMimeType();
+
+        if (! in_array($type, Publication::uploadedPortfolioTypes(), true)
+            || $mimeType === null
+            || ! in_array($mimeType, PublicationMedia::mimeTypesFor($type), true)) {
+            throw ValidationException::withMessages([
+                $type => trans('seeker::messages.validation.invalid_media'),
+            ]);
+        }
+
+        $path = $file->store('seeker/publications/'.$publication->id.'/'.$type, 'local');
+        $storedPaths[] = $path;
+
+        $publication->media()->create([
+            'type' => $type,
+            'path' => $path,
+            'original_name' => $this->sanitizeOriginalName($file),
+            'mime_type' => $mimeType,
+            'size' => (int) $file->getSize(),
+        ]);
+    }
+
+    private function sanitizeOriginalName(UploadedFile $file): string
+    {
+        $name = basename(str_replace('\\', '/', $file->getClientOriginalName()));
+        $name = trim(preg_replace('/[\x00-\x1F\x7F]/', '', $name) ?? '');
+
+        return $name === '' ? 'upload' : mb_substr($name, 0, 255);
     }
 }

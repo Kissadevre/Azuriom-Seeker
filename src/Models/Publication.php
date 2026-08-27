@@ -21,6 +21,10 @@ class Publication extends Model
 
     public const PORTFOLIO_IMAGES = 'images';
 
+    public const PORTFOLIO_VIDEO = 'video';
+
+    public const PORTFOLIO_AUDIO = 'audio';
+
     public const PRICING_POINTS = 'points';
 
     public const PRICING_FREE = 'free';
@@ -70,6 +74,7 @@ class Publication extends Model
         static::deleting(function (self $publication) {
             if ($publication->isForceDeleting()) {
                 $publication->images()->get()->each->delete();
+                $publication->media()->get()->each->delete();
             }
         });
     }
@@ -82,6 +87,11 @@ class Publication extends Model
     public function images()
     {
         return $this->hasMany(PublicationImage::class)->orderBy('position');
+    }
+
+    public function media()
+    {
+        return $this->hasMany(PublicationMedia::class);
     }
 
     public function reviews()
@@ -140,7 +150,17 @@ class Publication extends Model
 
     public static function portfolioTypes(): array
     {
-        return [self::PORTFOLIO_EXTERNAL, self::PORTFOLIO_IMAGES];
+        return [
+            self::PORTFOLIO_EXTERNAL,
+            self::PORTFOLIO_IMAGES,
+            self::PORTFOLIO_VIDEO,
+            self::PORTFOLIO_AUDIO,
+        ];
+    }
+
+    public static function uploadedPortfolioTypes(): array
+    {
+        return [self::PORTFOLIO_VIDEO, self::PORTFOLIO_AUDIO];
     }
 
     public static function pricingTypes(): array

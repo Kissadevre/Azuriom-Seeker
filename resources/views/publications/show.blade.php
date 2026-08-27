@@ -57,6 +57,13 @@
                         </div>
                     </div>
                 </section>
+            @elseif(in_array($publication->portfolio_type, \Azuriom\Plugin\Seeker\Models\Publication::uploadedPortfolioTypes(), true) && ($portfolioMedia = $publication->media->firstWhere('type', $publication->portfolio_type)))
+                <section class="card">
+                    <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::messages.media.'.$publication->portfolio_type.'_title')</h2></div>
+                    <div class="card-body">
+                        @include('seeker::publications._media', ['media' => $portfolioMedia])
+                    </div>
+                </section>
             @endif
         </div>
 

@@ -102,7 +102,7 @@
                         @if($image = $publication->images->first())
                             <img class="seeker-card-image" src="{{ route('seeker.images.show', $image) }}" alt="">
                         @else
-                            <div class="seeker-card-placeholder"><i class="bi bi-stars" aria-hidden="true"></i></div>
+                            <div class="seeker-card-placeholder"><i class="bi bi-{{ $publication->portfolio_type === 'video' ? 'camera-video' : ($publication->portfolio_type === 'audio' ? 'soundwave' : 'stars') }}" aria-hidden="true"></i></div>
                         @endif
                         <div class="card-body d-flex flex-column">
                             <div class="d-flex flex-wrap gap-2 mb-2">

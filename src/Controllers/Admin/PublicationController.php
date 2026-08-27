@@ -39,7 +39,7 @@ class PublicationController extends Controller
 
     public function show(Publication $publication): View
     {
-        $publication->load(['user', 'images'])->loadCount('conversations');
+        $publication->load(['user', 'images', 'media'])->loadCount('conversations');
         $reports = $publication->reports()
             ->with('reporter')
             ->latest('created_at')

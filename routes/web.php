@@ -9,6 +9,7 @@ use Azuriom\Plugin\Seeker\Controllers\ProfileController;
 use Azuriom\Plugin\Seeker\Controllers\ProfileReportController;
 use Azuriom\Plugin\Seeker\Controllers\PublicationController;
 use Azuriom\Plugin\Seeker\Controllers\PublicationImageController;
+use Azuriom\Plugin\Seeker\Controllers\PublicationMediaController;
 use Azuriom\Plugin\Seeker\Controllers\PublicationReportController;
 use Azuriom\Plugin\Seeker\Controllers\ReviewController;
 use Azuriom\Plugin\Seeker\Controllers\RestrictionController;
@@ -56,3 +57,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::get('publications/{publication}', [PublicationController::class, 'show'])->name('publications.show');
 Route::get('images/{image}', [PublicationImageController::class, 'show'])->name('images.show');
+Route::get('media/{media}', [PublicationMediaController::class, 'show'])->name('media.show');
