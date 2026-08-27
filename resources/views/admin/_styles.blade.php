@@ -211,6 +211,38 @@
                 border-radius: .55rem;
             }
 
+            .seeker-admin-date {
+                display: flex;
+                align-items: center;
+                gap: .45rem;
+            }
+
+            .seeker-admin-date > i {
+                width: 1rem;
+                color: var(--bs-secondary-color);
+                text-align: center;
+            }
+
+            .seeker-admin-status-actions {
+                display: inline-flex;
+                align-items: center;
+                gap: .35rem;
+            }
+
+            .seeker-admin-status-actions .btn {
+                display: inline-flex;
+                width: 2.15rem;
+                height: 2.15rem;
+                align-items: center;
+                justify-content: center;
+                padding: 0;
+                border-radius: .55rem;
+            }
+
+            .seeker-admin-status-actions .btn:disabled {
+                opacity: 1;
+            }
+
             .seeker-admin-empty {
                 padding: 3rem 1rem !important;
                 text-align: center;

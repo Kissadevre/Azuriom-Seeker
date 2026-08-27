@@ -88,6 +88,8 @@ return [
         'title' => 'Publicaciones de Seeker',
         'subtitle' => 'Revisa todas las publicaciones y su actividad relacionada.',
         'filters' => 'Filtrar publicaciones',
+        'dates' => 'Fechas',
+        'change_status' => 'Cambiar estado a :status',
         'back' => 'Volver a publicaciones',
         'public_view' => 'Abrir vista pública',
         'content' => 'Contenido de la publicación',
