@@ -44,23 +44,22 @@
 
         <div class="card seeker-admin-card">
             <div class="table-responsive">
-                <table class="table table-hover align-middle seeker-admin-table seeker-admin-table--actions mb-0">
-                    <thead><tr><th>@lang('seeker::admin.transactions.reference')</th><th>@lang('seeker::admin.transactions.publication')</th><th>@lang('seeker::admin.transactions.type')</th><th>@lang('seeker::admin.transactions.payer')</th><th>@lang('seeker::admin.transactions.payee')</th><th>@lang('seeker::admin.transactions.amount')</th><th>@lang('seeker::admin.status')</th><th>@lang('seeker::admin.transactions.date')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead>
+                <table class="table table-hover align-middle seeker-admin-table seeker-admin-transaction-status-table mb-0">
+                    <thead><tr><th>@lang('seeker::admin.transactions.reference')</th><th>@lang('seeker::admin.transactions.publication')</th><th>@lang('seeker::admin.transactions.type')</th><th>@lang('seeker::admin.transactions.payer')</th><th>@lang('seeker::admin.transactions.payee')</th><th>@lang('seeker::admin.transactions.amount')</th><th class="text-end">@lang('seeker::admin.actions')</th></tr></thead>
                     <tbody>
                         @forelse($transactions as $transaction)
-                            <tr>
-                                <td class="text-nowrap"><code class="px-2 py-1 rounded bg-primary bg-opacity-10 text-primary">#{{ $transaction->id }}</code></td>
-                                <td style="min-width: 15rem"><div class="fw-semibold">{{ $transaction->publication_title }}</div>@if($transaction->conversation)<div class="small text-body-secondary mt-1">@lang('seeker::admin.transactions.conversation', ['id' => $transaction->conversation_id])</div>@endif</td>
+                            @php($movementDate = $transaction->completed_at ?? $transaction->refunded_at ?? $transaction->held_at ?? $transaction->created_at)
+                            <tr class="seeker-admin-transaction-status-{{ $transaction->status }}">
+                                <td class="text-nowrap"><span class="visually-hidden">@lang('seeker::admin.status'): @lang('seeker::admin.transactions.statuses.'.$transaction->status). </span><code class="px-2 py-1 rounded bg-primary bg-opacity-10 text-primary">#{{ $transaction->id }}</code></td>
+                                <td style="min-width: 15rem"><div class="fw-semibold">{{ $transaction->publication_title }}</div><div class="small text-body-secondary mt-1"><i class="bi bi-clock-history me-1" aria-hidden="true"></i>{{ format_date($movementDate, true) }}</div></td>
                                 <td><span class="badge rounded-pill text-bg-light"><i class="bi bi-{{ $transaction->type === 'tip' ? 'gift' : 'briefcase' }} me-1" aria-hidden="true"></i>@lang('seeker::admin.transactions.types.'.$transaction->type)</span></td>
-                                <td><div class="fw-semibold">{{ $transaction->payer_name }}</div>@if($transaction->payer_id)<div class="small text-body-secondary">ID #{{ $transaction->payer_id }}</div>@endif</td>
-                                <td><div class="fw-semibold">{{ $transaction->payee_name }}</div>@if($transaction->payee_id)<div class="small text-body-secondary">ID #{{ $transaction->payee_id }}</div>@endif</td>
+                                <td><div class="fw-semibold">{{ $transaction->payer_name }}</div></td>
+                                <td><div class="fw-semibold">{{ $transaction->payee_name }}</div></td>
                                 <td class="fw-semibold text-nowrap">{{ format_money((float) $transaction->amount) }}</td>
-                                <td><span class="badge text-bg-{{ $transaction->status === 'completed' ? 'success' : ($transaction->status === 'held' ? 'warning' : 'secondary') }} seeker-admin-status">@lang('seeker::admin.transactions.statuses.'.$transaction->status)</span></td>
-                                <td class="text-nowrap text-body-secondary small">@if($transaction->completed_at){{ format_date($transaction->completed_at, true) }}@elseif($transaction->refunded_at){{ format_date($transaction->refunded_at, true) }}@elseif($transaction->held_at){{ format_date($transaction->held_at, true) }}@else{{ format_date($transaction->created_at, true) }}@endif</td>
                                 <td class="text-end">@if($transaction->conversation)<div class="seeker-admin-action-group"><a class="btn btn-sm btn-outline-primary" href="{{ route('seeker.admin.conversations.show', $transaction->conversation) }}" title="@lang('seeker::admin.details')" aria-label="@lang('seeker::admin.details')" data-bs-toggle="tooltip"><i class="bi bi-eye" aria-hidden="true"></i></a></div>@else<span class="text-body-secondary">@lang('seeker::admin.not_available')</span>@endif</td>
                             </tr>
                         @empty
-                            <tr><td colspan="9" class="seeker-admin-empty"><span class="seeker-admin-empty-icon"><i class="bi bi-arrow-left-right" aria-hidden="true"></i></span><div class="fw-semibold">@lang('seeker::admin.transactions.empty')</div></td></tr>
+                            <tr><td colspan="7" class="seeker-admin-empty"><span class="seeker-admin-empty-icon"><i class="bi bi-arrow-left-right" aria-hidden="true"></i></span><div class="fw-semibold">@lang('seeker::admin.transactions.empty')</div></td></tr>
                         @endforelse
                     </tbody>
                 </table>

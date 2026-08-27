@@ -312,6 +312,22 @@
                 border-left-color: var(--bs-primary);
             }
 
+            .seeker-admin-transaction-status-table tbody td:first-child {
+                border-left: .25rem solid transparent;
+            }
+
+            .seeker-admin-transaction-status-table tbody tr.seeker-admin-transaction-status-completed > td:first-child {
+                border-left-color: var(--bs-success);
+            }
+
+            .seeker-admin-transaction-status-table tbody tr.seeker-admin-transaction-status-held > td:first-child {
+                border-left-color: var(--bs-warning);
+            }
+
+            .seeker-admin-transaction-status-table tbody tr.seeker-admin-transaction-status-refunded > td:first-child {
+                border-left-color: var(--bs-secondary);
+            }
+
             .seeker-admin-row-details-control {
                 width: 1%;
                 white-space: nowrap;
