@@ -37,7 +37,7 @@
 
         <div class="card seeker-admin-card">
             <div class="table-responsive">
-                <table class="table table-hover align-middle seeker-admin-table seeker-admin-table--actions mb-0">
+                <table class="table table-hover align-middle seeker-admin-table mb-0">
                     <thead><tr><th>@lang('seeker::admin.publication')</th><th>@lang('seeker::admin.author')</th><th>@lang('seeker::admin.status')</th><th>@lang('seeker::admin.publications.dates')</th><th class="text-center">@lang('seeker::admin.conversation_count')</th><th><span class="visually-hidden">@lang('seeker::admin.actions')</span></th></tr></thead>
                     <tbody>
                         @forelse($publications as $publication)
