@@ -119,7 +119,6 @@
                     @elseif(in_array($publication->portfolio_type, \Azuriom\Plugin\Seeker\Models\Publication::uploadedPortfolioTypes(), true) && ($portfolioMedia = $publication->media->firstWhere('type', $publication->portfolio_type)))
                         <div class="small text-muted mb-2">@lang('seeker::messages.media.'.$publication->portfolio_type.'_title')</div>
                         @include('seeker::publications._media', ['media' => $portfolioMedia, 'mediaClass' => $publication->portfolio_type === 'video' ? 'w-100 rounded bg-black' : 'w-100'])
-                        <div class="small text-body-secondary text-break mt-2">{{ $portfolioMedia->original_name }} · {{ number_format($portfolioMedia->size / 1048576, 2) }} MB</div>
                     @else
                         <p class="text-muted mb-0">@lang('seeker::admin.publications.no_portfolio')</p>
                     @endif

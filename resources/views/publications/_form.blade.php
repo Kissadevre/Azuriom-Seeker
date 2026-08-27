@@ -104,7 +104,6 @@
                 <div class="card-body">
                     <div class="small fw-semibold mb-2">@lang('seeker::messages.fields.current_'.$mediaType)</div>
                     @include('seeker::publications._media', ['media' => $currentMedia, 'mediaClass' => $mediaType === 'video' ? 'seeker-form-video rounded' : 'seeker-form-audio'])
-                    <div class="small text-body-secondary text-break mt-2">{{ $currentMedia->original_name }} · {{ number_format($currentMedia->size / 1048576, 2) }} MB</div>
                 </div>
             </div>
         @endif
