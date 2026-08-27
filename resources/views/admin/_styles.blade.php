@@ -344,6 +344,20 @@
                 padding: 1rem 1.25rem 1.15rem 4.1rem;
             }
 
+            .seeker-admin-row-details-actions {
+                display: flex;
+                justify-content: flex-end;
+                margin: 1rem -1.25rem -1.15rem -4.1rem;
+                padding: .85rem 1.25rem;
+                border-top: 1px solid var(--bs-border-color);
+                background: var(--bs-body-bg);
+            }
+
+            .seeker-admin-row-details-actions .form-select {
+                width: auto;
+                min-width: 12rem;
+            }
+
             .seeker-admin-switch-row {
                 display: flex;
                 align-items: center;
@@ -546,6 +560,16 @@
 
                 .seeker-admin-row-details-content {
                     padding-left: 1rem;
+                }
+
+                .seeker-admin-row-details-actions {
+                    margin-left: -1rem;
+                }
+
+                .seeker-admin-row-details-actions form,
+                .seeker-admin-row-details-actions .form-select,
+                .seeker-admin-row-details-actions .btn {
+                    width: 100%;
                 }
             }
 

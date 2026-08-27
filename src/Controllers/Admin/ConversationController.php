@@ -43,7 +43,8 @@ class ConversationController extends Controller
             ->paginate(100, ['*'], 'messages_page');
         $reports = $conversation->reports()
             ->with(['reporter', 'reportedUser'])
-            ->latest()
+            ->latest('created_at')
+            ->latest('id')
             ->get();
 
         return view('seeker::admin.conversations.show', compact('conversation', 'messages', 'reports'));
