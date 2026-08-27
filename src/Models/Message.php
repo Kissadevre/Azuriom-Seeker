@@ -15,6 +15,9 @@ class Message extends Model
     protected $fillable = [
         'sender_id',
         'content',
+        'image_path',
+        'image_original_name',
+        'image_mime_type',
         'read_at',
     ];
 

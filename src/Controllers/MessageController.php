@@ -8,27 +8,49 @@ use Azuriom\Plugin\Seeker\Models\Conversation;
 use Azuriom\Plugin\Seeker\Requests\StoreMessageRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class MessageController extends Controller
 {
     public function store(StoreMessageRequest $request, Conversation $conversation): RedirectResponse
     {
-        $message = DB::transaction(function () use ($request, $conversation) {
-            $lockedConversation = Conversation::query()
-                ->lockForUpdate()
-                ->findOrFail($conversation->id);
+        $image = $request->file('image');
+        $storedPath = $image?->store('seeker/conversations/'.$conversation->id, 'local');
 
-            abort_unless($lockedConversation->includes($request->user()), 403);
-            abort_unless($lockedConversation->status === Conversation::STATUS_ACTIVE, 409);
+        if ($storedPath === false) {
+            throw new \RuntimeException('Unable to store the conversation image.');
+        }
 
-            $message = $lockedConversation->messages()->create([
-                'sender_id' => $request->user()->id,
-                'content' => $request->validated('content'),
-            ]);
-            $lockedConversation->update(['last_message_at' => $message->created_at]);
+        try {
+            $message = DB::transaction(function () use ($request, $conversation, $image, $storedPath) {
+                $lockedConversation = Conversation::query()
+                    ->lockForUpdate()
+                    ->findOrFail($conversation->id);
 
-            return $message;
-        }, 3);
+                abort_unless($lockedConversation->includes($request->user()), 403);
+                abort_unless($lockedConversation->status === Conversation::STATUS_ACTIVE, 409);
+
+                $message = $lockedConversation->messages()->create([
+                    'sender_id' => $request->user()->id,
+                    'content' => trim((string) $request->validated('content')),
+                    'image_path' => $storedPath,
+                    'image_original_name' => $image === null
+                        ? null
+                        : mb_substr($image->getClientOriginalName(), 0, 255),
+                    'image_mime_type' => $image?->getMimeType(),
+                ]);
+                $lockedConversation->update(['last_message_at' => $message->created_at]);
+
+                return $message;
+            }, 3);
+        } catch (Throwable $exception) {
+            if ($storedPath !== null) {
+                Storage::disk('local')->delete($storedPath);
+            }
+
+            throw $exception;
+        }
 
         $conversation->loadMissing(['client', 'author']);
         $recipient = $conversation->otherParticipant($request->user());

@@ -143,7 +143,14 @@
                 <div class="d-flex {{ $mine ? 'justify-content-end' : 'justify-content-start' }} mb-3">
                     <div class="seeker-message {{ $mine ? 'seeker-message-mine' : '' }}">
                         <div class="small fw-semibold mb-1">{{ $message->sender->name }}</div>
-                        <div class="seeker-message-content">{!! nl2br(e($message->content)) !!}</div>
+                        @if($message->image_path)
+                            <a href="{{ route('seeker.messages.images.show', $message) }}" target="_blank" rel="noopener">
+                                <img class="seeker-message-image rounded" src="{{ route('seeker.messages.images.show', $message) }}" loading="lazy" alt="{{ $message->image_original_name }}">
+                            </a>
+                        @endif
+                        @if(filled($message->content))
+                            <div class="seeker-message-content {{ $message->image_path ? 'mt-2' : '' }}">{!! nl2br(e($message->content)) !!}</div>
+                        @endif
                         <div class="small {{ $mine ? 'text-white-50' : 'text-muted' }} text-end mt-1">{{ format_date($message->created_at, true) }}</div>
                     </div>
                 </div>
@@ -152,13 +159,19 @@
 
         <div class="card-footer p-3">
             @if($conversation->status === 'active')
-                <form method="POST" action="{{ route('seeker.conversations.messages.store', $conversation) }}">
+                <form method="POST" action="{{ route('seeker.conversations.messages.store', $conversation) }}" enctype="multipart/form-data">
                     @csrf
                     <label class="visually-hidden" for="conversationMessage">@lang('seeker::messages.conversations.reply')</label>
                     <div class="input-group">
-                        <textarea id="conversationMessage" name="content" rows="2" maxlength="2000" class="form-control @error('content') is-invalid @enderror" placeholder="@lang('seeker::messages.conversations.reply')" required>{{ old('content') }}</textarea>
+                        <textarea id="conversationMessage" name="content" rows="2" maxlength="2000" class="form-control @error('content') is-invalid @enderror" placeholder="@lang('seeker::messages.conversations.reply')">{{ old('content') }}</textarea>
                         <button class="btn btn-primary px-4"><i class="bi bi-send" aria-hidden="true"></i><span class="visually-hidden">@lang('seeker::messages.conversations.send')</span></button>
                         @error('content')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="mt-2">
+                        <label class="form-label small mb-1" for="conversationImage"><i class="bi bi-image me-1" aria-hidden="true"></i>@lang('seeker::messages.conversations.image')</label>
+                        <input id="conversationImage" type="file" name="image" accept="image/jpeg,image/png,image/webp" class="form-control form-control-sm @error('image') is-invalid @enderror">
+                        <div class="form-text">@lang('seeker::messages.conversations.image_help')</div>
+                        @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </form>
             @else

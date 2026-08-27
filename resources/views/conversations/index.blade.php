@@ -30,7 +30,12 @@
                             @elseif($conversation->completion_status === 'pending')
                                 <span class="badge text-bg-warning mt-1">@lang('seeker::messages.completion.pending')</span>
                             @endif
-                            @if($conversation->latestMessage)<div class="text-truncate mt-1">{{ $conversation->latestMessage->content }}</div>@endif
+                            @if($conversation->latestMessage)
+                                <div class="text-truncate mt-1">
+                                    @if($conversation->latestMessage->image_path)<i class="bi bi-image me-1" aria-hidden="true"></i>@endif
+                                    {{ filled($conversation->latestMessage->content) ? $conversation->latestMessage->content : trans('seeker::messages.conversations.image_message') }}
+                                </div>
+                            @endif
                         </div>
                         @if($conversation->unread_count > 0)<span class="badge rounded-pill text-bg-primary">{{ $conversation->unread_count }}</span>@endif
                     </div>

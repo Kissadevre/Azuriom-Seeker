@@ -142,6 +142,9 @@ return [
         'reply' => 'Write a message',
         'send' => 'Send message',
         'message_sent' => 'Your message has been sent.',
+        'image' => 'Attach an image',
+        'image_help' => 'One JPG, PNG, or WebP image per message, up to 5 MB. Text is optional when an image is attached.',
+        'image_message' => 'Image',
     ],
     'reports' => [
         'action' => 'Report conversation',
