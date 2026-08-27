@@ -340,6 +340,23 @@ return [
         'contact' => 'Moderación restringió temporalmente tu capacidad para iniciar conversaciones nuevas en Seeker.',
         'contact_short' => 'Contacto restringido',
         'profile' => 'Tu perfil de Seeker fue restringido por moderación y no puede verse ni editarse.',
+        'details' => [
+            'badge' => 'Restricción de moderación',
+            'title' => 'Esta acción está restringida',
+            'view' => 'Ver restricción',
+            'types' => [
+                'publish' => 'No puedes crear publicaciones nuevas en Seeker mientras esta restricción esté activa.',
+                'contact' => 'No puedes iniciar conversaciones nuevas en Seeker mientras esta restricción esté activa.',
+                'profile' => 'Tu perfil público de Seeker no puede verse ni editarse mientras esta restricción esté activa.',
+                'access' => 'No puedes acceder a Seeker mientras esta restricción esté activa.',
+            ],
+            'reason' => 'Motivo de moderación',
+            'duration' => 'Duración',
+            'until' => 'Activa hasta el :date',
+            'indefinite' => 'Indefinida',
+            'help' => 'Si consideras que esta restricción se aplicó por error, comunícate con la administración del sitio.',
+            'back_home' => 'Volver al inicio',
+        ],
     ],
     'publications' => [
         'removed' => 'Publicación eliminada',

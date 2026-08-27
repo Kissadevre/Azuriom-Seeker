@@ -11,6 +11,7 @@ use Azuriom\Plugin\Seeker\Controllers\PublicationController;
 use Azuriom\Plugin\Seeker\Controllers\PublicationImageController;
 use Azuriom\Plugin\Seeker\Controllers\PublicationReportController;
 use Azuriom\Plugin\Seeker\Controllers\ReviewController;
+use Azuriom\Plugin\Seeker\Controllers\RestrictionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicationController::class, 'index'])->name('index');
@@ -28,6 +29,9 @@ Route::middleware(['auth', 'verified'])->prefix('publications')->name('publicati
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('restrictions/{type}', [RestrictionController::class, 'show'])
+        ->whereIn('type', \Azuriom\Plugin\Seeker\Models\UserRestriction::types())
+        ->name('restrictions.show');
     Route::get('profiles/{user}/edit', [ProfileController::class, 'edit'])->name('profiles.edit');
     Route::put('profiles/{user}', [ProfileController::class, 'update'])->middleware('throttle:10,1')->name('profiles.update');
     Route::get('profiles/{user}/report', [ProfileReportController::class, 'create'])->name('profiles.reports.create');

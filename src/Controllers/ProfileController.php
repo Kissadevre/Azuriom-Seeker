@@ -24,8 +24,12 @@ class ProfileController extends Controller
         User $user,
         SeekerSettings $settings,
         RestrictionService $restrictions
-    ): View {
-        abort_if($restrictions->restricted($user, UserRestriction::TYPE_PROFILE), 404);
+    ): View|RedirectResponse {
+        if ($restrictions->restricted($user, UserRestriction::TYPE_PROFILE)) {
+            abort_unless($request->user()?->id === $user->id, 404);
+
+            return to_route('seeker.restrictions.show', UserRestriction::TYPE_PROFILE);
+        }
 
         $profile = Profile::query()->where('user_id', $user->id)->first();
         abort_unless($this->hasSeekerPresence($user, $profile) || $request->user()?->id === $user->id, 404);
@@ -103,8 +107,7 @@ class ProfileController extends Controller
         abort_unless($request->user()->id === $user->id, 403);
 
         if ($restrictions->restricted($user, UserRestriction::TYPE_PROFILE)) {
-            return to_route('seeker.index')
-                ->with('error', trans('seeker::messages.restrictions.profile'));
+            return to_route('seeker.restrictions.show', UserRestriction::TYPE_PROFILE);
         }
 
         if (! $settings->biographiesEnabled()) {
@@ -124,8 +127,7 @@ class ProfileController extends Controller
         RestrictionService $restrictions
     ): RedirectResponse {
         if ($restrictions->restricted($user, UserRestriction::TYPE_PROFILE)) {
-            return to_route('seeker.index')
-                ->with('error', trans('seeker::messages.restrictions.profile'));
+            return to_route('seeker.restrictions.show', UserRestriction::TYPE_PROFILE);
         }
 
         if (! $settings->biographiesEnabled()) {

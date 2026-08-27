@@ -9,19 +9,29 @@ class RestrictionService
 {
     private array $cache = [];
 
-    public function restricted(?User $user, string $type): bool
+    public function active(?User $user, string $type): ?UserRestriction
     {
         if ($user === null) {
-            return false;
+            return null;
         }
 
         $key = $user->id.':'.$type;
 
-        return $this->cache[$key] ??= UserRestriction::query()
-            ->active()
-            ->where('user_id', $user->id)
-            ->where('type', $type)
-            ->exists();
+        if (! array_key_exists($key, $this->cache)) {
+            $this->cache[$key] = UserRestriction::query()
+                ->active()
+                ->where('user_id', $user->id)
+                ->where('type', $type)
+                ->latest('id')
+                ->first();
+        }
+
+        return $this->cache[$key];
+    }
+
+    public function restricted(?User $user, string $type): bool
+    {
+        return $this->active($user, $type) !== null;
     }
 
     public function clear(User $user): void

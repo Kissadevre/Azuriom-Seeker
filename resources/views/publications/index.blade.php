@@ -27,6 +27,8 @@
                             <a class="btn btn-primary" href="{{ route('seeker.publications.create') }}">
                                 <i class="bi bi-plus-lg me-1" aria-hidden="true"></i> @lang('seeker::messages.publish')
                             </a>
+                        @elseif($publishRestriction)
+                            <a class="btn btn-outline-warning" href="{{ route('seeker.restrictions.show', \Azuriom\Plugin\Seeker\Models\UserRestriction::TYPE_PUBLISH) }}"><i class="bi bi-shield-lock me-1" aria-hidden="true"></i>@lang('seeker::messages.restrictions.details.view')</a>
                         @endif
                     @endauth
                 </div>

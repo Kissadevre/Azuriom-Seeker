@@ -51,8 +51,7 @@ class ConversationController extends Controller
         }
 
         if ($restrictions->restricted($request->user(), UserRestriction::TYPE_CONTACT)) {
-            return to_route('seeker.publications.show', $publication)
-                ->with('error', trans('seeker::messages.restrictions.contact'));
+            return to_route('seeker.restrictions.show', UserRestriction::TYPE_CONTACT);
         }
 
         if (! $settings->newConversationsEnabled()) {
@@ -84,8 +83,7 @@ class ConversationController extends Controller
         }
 
         if ($restrictions->restricted($request->user(), UserRestriction::TYPE_CONTACT)) {
-            return to_route('seeker.publications.show', $publication)
-                ->with('error', trans('seeker::messages.restrictions.contact'));
+            return to_route('seeker.restrictions.show', UserRestriction::TYPE_CONTACT);
         }
 
         if (! $settings->newConversationsEnabled()) {

@@ -85,10 +85,10 @@
                                 <a class="btn btn-primary" href="{{ route('seeker.conversations.show', $contactConversation) }}">
                                     <i class="bi bi-chat-dots me-1" aria-hidden="true"></i> @lang('seeker::messages.contact.continue')
                                 </a>
-                            @elseif($contactRestricted)
-                                <button class="btn btn-secondary" type="button" disabled>
+                            @elseif($contactRestriction)
+                                <a class="btn btn-secondary" href="{{ route('seeker.restrictions.show', \Azuriom\Plugin\Seeker\Models\UserRestriction::TYPE_CONTACT) }}">
                                     <i class="bi bi-slash-circle me-1" aria-hidden="true"></i> @lang('seeker::messages.restrictions.contact_short')
-                                </button>
+                                </a>
                             @elseif(! $newConversationsEnabled)
                                 <button class="btn btn-secondary" type="button" disabled>
                                     <i class="bi bi-pause-circle me-1" aria-hidden="true"></i> @lang('seeker::messages.features.new_conversations_disabled_short')

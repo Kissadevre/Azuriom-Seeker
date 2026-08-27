@@ -340,6 +340,23 @@ return [
         'contact' => 'Moderation has temporarily restricted your ability to start new Seeker conversations.',
         'contact_short' => 'Contact restricted',
         'profile' => 'Your Seeker profile was restricted by moderation and cannot be viewed or edited.',
+        'details' => [
+            'badge' => 'Moderation restriction',
+            'title' => 'This action is restricted',
+            'view' => 'View restriction',
+            'types' => [
+                'publish' => 'You cannot create new publications in Seeker while this restriction is active.',
+                'contact' => 'You cannot start new conversations in Seeker while this restriction is active.',
+                'profile' => 'Your public Seeker profile cannot be viewed or edited while this restriction is active.',
+                'access' => 'You cannot access Seeker while this restriction is active.',
+            ],
+            'reason' => 'Moderation reason',
+            'duration' => 'Duration',
+            'until' => 'Active until :date',
+            'indefinite' => 'Indefinite',
+            'help' => 'If you believe this restriction was applied incorrectly, contact the site administration.',
+            'back_home' => 'Return home',
+        ],
     ],
     'publications' => [
         'removed' => 'Publication removed',
