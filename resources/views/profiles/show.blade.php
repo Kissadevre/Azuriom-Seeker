@@ -10,13 +10,15 @@
 
 @section('content')
     <div class="seeker-public-shell">
-    <div class="card seeker-profile-hero mb-4">
-        <div class="card-body p-4 p-lg-5">
+    <a class="seeker-back-link" href="{{ route('seeker.index') }}"><i class="bi bi-arrow-left" aria-hidden="true"></i>@lang('seeker::messages.back')</a>
+    <div class="card seeker-profile-hero position-relative mb-4">
+        <div class="card-body p-4">
             <div class="d-flex flex-wrap align-items-start gap-4">
                 <img src="{{ $user->getAvatar(112) }}" width="112" height="112" class="rounded-circle seeker-profile-avatar" alt="">
-                <div class="flex-grow-1">
+                <div class="seeker-profile-copy flex-grow-1">
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                         <div>
+                            <span class="seeker-eyebrow">@lang('seeker::messages.profiles.profile_label')</span>
                             <h1 class="h2 mb-1">{{ $user->name }}</h1>
                             <div class="text-muted">@lang('seeker::messages.profiles.member_since', ['date' => format_date_compact($user->created_at)])</div>
                         </div>
@@ -41,11 +43,11 @@
                     </div>
                     <div class="fs-5 mt-3">@include('seeker::publications._reputation', ['rating' => $reputation['overall']->rating, 'count' => $reputation['overall']->reviews_count])</div>
                     @if($biographiesEnabled)
-                        <div class="mt-3 seeker-description">
+                        <div class="seeker-profile-bio mt-3">
                             @if(filled($profile?->bio))
                                 {!! nl2br(e($profile->bio)) !!}
                             @else
-                                <span class="text-muted">@lang('seeker::messages.profiles.no_bio')</span>
+                                <span class="seeker-profile-bio-empty"><i class="bi bi-person-lines-fill" aria-hidden="true"></i>@lang('seeker::messages.profiles.no_bio')</span>
                             @endif
                         </div>
                     @endif
@@ -88,51 +90,78 @@
         @endif
     @endif
 
-    <div class="row g-3 mb-4">
-        @foreach([
-            ['icon' => 'bi-megaphone', 'value' => $statistics['active_publications'], 'label' => 'active_publications'],
-            ['icon' => 'bi-briefcase', 'value' => $statistics['author_commissions'], 'label' => 'author_commissions'],
-            ['icon' => 'bi-patch-check', 'value' => $statistics['author_completed'], 'label' => 'author_completed'],
-            ['icon' => 'bi-bag-check', 'value' => $statistics['client_completed'], 'label' => 'client_completed'],
-        ] as $stat)
-            <div class="col-6 col-lg-3">
-                <div class="card seeker-stat-card h-100"><div class="card-body text-center"><i class="bi {{ $stat['icon'] }} fs-3 text-primary mb-2" aria-hidden="true"></i><div class="display-6 fw-semibold">{{ $stat['value'] }}</div><div class="small text-muted">@lang('seeker::messages.profiles.stats.'.$stat['label'])</div></div></div>
-            </div>
-        @endforeach
+    <div class="card seeker-profile-metrics mb-4">
+        <div class="row g-0">
+            @foreach([
+                ['icon' => 'bi-megaphone', 'value' => $statistics['active_publications'], 'label' => 'active_publications'],
+                ['icon' => 'bi-briefcase', 'value' => $statistics['author_commissions'], 'label' => 'author_commissions'],
+                ['icon' => 'bi-patch-check', 'value' => $statistics['author_completed'], 'label' => 'author_completed'],
+                ['icon' => 'bi-bag-check', 'value' => $statistics['client_completed'], 'label' => 'client_completed'],
+            ] as $stat)
+                <div class="seeker-profile-metric-column col-6 col-lg-3">
+                    <div class="seeker-profile-metric">
+                        <span class="seeker-profile-metric-icon"><i class="bi {{ $stat['icon'] }}" aria-hidden="true"></i></span>
+                        <div>
+                            <div class="seeker-profile-metric-value">{{ $stat['value'] }}</div>
+                            <div class="seeker-profile-metric-label">@lang('seeker::messages.profiles.stats.'.$stat['label'])</div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-lg-4">
-            <div class="card h-100">
-                <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::messages.profiles.reputation_by_role')</h2></div>
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item p-3"><strong class="d-block mb-1">@lang('seeker::messages.profiles.as_author')</strong>@include('seeker::publications._reputation', ['rating' => $reputation['author']->rating, 'count' => $reputation['author']->reviews_count])</div>
-                    <div class="list-group-item p-3"><strong class="d-block mb-1">@lang('seeker::messages.profiles.as_client')</strong>@include('seeker::publications._reputation', ['rating' => $reputation['client']->rating, 'count' => $reputation['client']->reviews_count])</div>
-                    <div class="list-group-item p-3"><strong class="d-block mb-1">@lang('seeker::messages.profiles.client_commissions')</strong><span class="text-muted">@lang('seeker::messages.profiles.client_summary', ['total' => $statistics['client_commissions'], 'completed' => $statistics['client_completed']])</span></div>
+    <section class="card overflow-hidden mb-4">
+        <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::messages.profiles.reputation_by_role')</h2></div>
+        <div class="row g-0">
+            <div class="seeker-role-summary-column col-md-4">
+                <div class="seeker-role-summary">
+                    <strong class="d-block mb-2">@lang('seeker::messages.profiles.as_author')</strong>
+                    @include('seeker::publications._reputation', ['rating' => $reputation['author']->rating, 'count' => $reputation['author']->reviews_count])
+                </div>
+            </div>
+            <div class="seeker-role-summary-column col-md-4">
+                <div class="seeker-role-summary">
+                    <strong class="d-block mb-2">@lang('seeker::messages.profiles.as_client')</strong>
+                    @include('seeker::publications._reputation', ['rating' => $reputation['client']->rating, 'count' => $reputation['client']->reviews_count])
+                </div>
+            </div>
+            <div class="seeker-role-summary-column col-md-4">
+                <div class="seeker-role-summary">
+                    <strong class="d-block mb-2">@lang('seeker::messages.profiles.client_commissions')</strong>
+                    <span class="text-muted">@lang('seeker::messages.profiles.client_summary', ['total' => $statistics['client_commissions'], 'completed' => $statistics['client_completed']])</span>
                 </div>
             </div>
         </div>
-        <div class="col-lg-8">
-            <div class="card h-100">
-                <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::messages.profiles.verified_reviews')</h2></div>
-                <div class="card-body">
-                    @forelse($reviews as $review)
-                        <article class="{{ ! $loop->last ? 'border-bottom mb-3 pb-3' : '' }}">
-                            <div class="d-flex flex-wrap justify-content-between gap-2 mb-2">
-                                <div><a class="fw-semibold text-decoration-none" href="{{ route('seeker.profiles.show', $review->reviewer) }}">{{ $review->reviewer->name }}</a><span class="badge text-bg-light ms-2">@lang($review->conversation->author_id === $user->id ? 'seeker::messages.profiles.as_author' : 'seeker::messages.profiles.as_client')</span></div>
-                                <span class="text-warning" aria-label="@lang('seeker::messages.reviews.rating_value', ['rating' => $review->rating])">@foreach(range(1, 5) as $star)<i class="bi bi-star{{ $star <= $review->rating ? '-fill' : '' }}" aria-hidden="true"></i>@endforeach</span>
+    </section>
+
+    <section class="card mb-4">
+        <div class="card-header d-flex align-items-center justify-content-between gap-3">
+            <h2 class="h5 mb-0">@lang('seeker::messages.profiles.verified_reviews')</h2>
+            <span class="badge rounded-pill text-bg-light">{{ $reviews->total() }}</span>
+        </div>
+        <div class="card-body">
+            @forelse($reviews as $review)
+                <article class="seeker-review-entry">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="{{ $review->reviewer->getAvatar(44) }}" width="44" height="44" class="rounded-circle seeker-conversation-avatar" alt="">
+                            <div>
+                                <a class="fw-semibold text-decoration-none" href="{{ route('seeker.profiles.show', $review->reviewer) }}">{{ $review->reviewer->name }}</a>
+                                <div><span class="badge text-bg-light">@lang($review->conversation->author_id === $user->id ? 'seeker::messages.profiles.as_author' : 'seeker::messages.profiles.as_client')</span></div>
                             </div>
-                            <p class="mb-1">{{ $review->comment }}</p>
-                            <small class="text-muted">{{ format_date_compact($review->created_at) }}</small>
-                        </article>
-                    @empty
-                        <div class="text-center text-muted py-4">@lang('seeker::messages.reviews.no_reviews_yet')</div>
-                    @endforelse
-                </div>
-                @if($reviews->hasPages())<div class="card-footer d-flex justify-content-center">{{ $reviews->links() }}</div>@endif
-            </div>
+                        </div>
+                        <span class="text-warning" aria-label="@lang('seeker::messages.reviews.rating_value', ['rating' => $review->rating])">@foreach(range(1, 5) as $star)<i class="bi bi-star{{ $star <= $review->rating ? '-fill' : '' }}" aria-hidden="true"></i>@endforeach</span>
+                    </div>
+                    <p class="seeker-review-comment">{{ $review->comment }}</p>
+                    <small class="text-muted"><i class="bi bi-calendar3 me-1" aria-hidden="true"></i>{{ format_date_compact($review->created_at) }}</small>
+                </article>
+            @empty
+                @include('seeker::_empty-state', ['emptyIcon' => 'bi-star', 'emptyTitle' => trans('seeker::messages.reviews.no_reviews_yet')])
+            @endforelse
         </div>
-    </div>
+        @if($reviews->hasPages())<div class="card-footer d-flex justify-content-center">{{ $reviews->links() }}</div>@endif
+    </section>
 
     @if($publications->isNotEmpty())
         <section class="mt-4">

@@ -248,6 +248,7 @@ return [
     ],
     'profiles' => [
         'title' => ':user’s Seeker profile',
+        'profile_label' => 'Seeker profile',
         'my_profile' => 'My Seeker profile',
         'member_since' => 'Zibuu member since :date',
         'edit' => 'Edit Seeker profile',

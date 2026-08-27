@@ -218,23 +218,110 @@
     background: linear-gradient(135deg, rgba(236, 111, 169, .07), rgba(155, 124, 247, .06) 50%, rgba(69, 201, 237, .08));
 }
 
+.seeker-profile-hero::after {
+    position: absolute;
+    right: -4rem;
+    bottom: -6rem;
+    width: 15rem;
+    height: 15rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .18);
+    content: '';
+    pointer-events: none;
+}
+
+.seeker-profile-hero > .card-body {
+    position: relative;
+    z-index: 1;
+}
+
 .seeker-profile-hero .seeker-profile-avatar {
     width: clamp(5.5rem, 12vw, 7rem);
     height: clamp(5.5rem, 12vw, 7rem);
 }
 
-.seeker-stat-card {
-    position: relative;
+.seeker-profile-bio {
+    max-width: 52rem;
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.seeker-profile-bio-empty {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .65rem .85rem;
+    border-radius: .75rem;
+    color: var(--bs-secondary-color);
+    background: rgba(var(--bs-secondary-rgb), .06);
+}
+
+.seeker-profile-metrics {
     overflow: hidden;
 }
 
-.seeker-stat-card i {
+.seeker-profile-metric {
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+    height: 100%;
+    min-height: 6.25rem;
+    padding: 1rem 1.15rem;
+}
+
+.seeker-profile-metric-icon {
     display: inline-grid;
-    width: 3rem;
-    height: 3rem;
+    width: 2.8rem;
+    height: 2.8rem;
     place-items: center;
-    border-radius: .85rem;
+    flex-shrink: 0;
+    border-radius: .8rem;
+    color: var(--bs-primary);
     background: rgba(var(--bs-primary-rgb), .09);
+    font-size: 1.25rem;
+}
+
+.seeker-profile-metric-value {
+    font-size: 1.55rem;
+    font-weight: 750;
+    line-height: 1;
+}
+
+.seeker-profile-metric-label {
+    margin-top: .3rem;
+    color: var(--bs-secondary-color);
+    font-size: .8rem;
+    line-height: 1.25;
+}
+
+.seeker-profile-metric-column + .seeker-profile-metric-column {
+    border-left: 1px solid rgba(var(--bs-secondary-rgb), .12);
+}
+
+.seeker-role-summary {
+    height: 100%;
+    padding: 1.25rem;
+}
+
+.seeker-role-summary-column + .seeker-role-summary-column {
+    border-left: 1px solid rgba(var(--bs-secondary-rgb), .12);
+}
+
+.seeker-review-entry {
+    padding: 1.25rem;
+    border: 1px solid rgba(var(--bs-secondary-rgb), .12);
+    border-radius: .9rem;
+    background: rgba(var(--bs-secondary-rgb), .025);
+}
+
+.seeker-review-entry + .seeker-review-entry {
+    margin-top: .85rem;
+}
+
+.seeker-review-comment {
+    margin: .7rem 0 .35rem;
+    font-size: 1rem;
+    line-height: 1.65;
 }
 
 .seeker-profile-publication {
@@ -513,6 +600,34 @@
 
     .seeker-publication-detail h1 {
         max-width: none;
+    }
+
+    .seeker-profile-hero .card-body {
+        padding: 1.25rem !important;
+    }
+
+    .seeker-profile-metric-column + .seeker-profile-metric-column,
+    .seeker-role-summary-column + .seeker-role-summary-column {
+        border-left: 0;
+    }
+
+    .seeker-profile-metric-column:nth-child(even) {
+        border-left: 1px solid rgba(var(--bs-secondary-rgb), .12);
+    }
+
+    .seeker-profile-metric-column:nth-child(n + 3),
+    .seeker-role-summary-column + .seeker-role-summary-column {
+        border-top: 1px solid rgba(var(--bs-secondary-rgb), .12);
+    }
+}
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .seeker-profile-metric-column:nth-child(3) {
+        border-left: 0;
+    }
+
+    .seeker-profile-metric-column:nth-child(n + 3) {
+        border-top: 1px solid rgba(var(--bs-secondary-rgb), .12);
     }
 }
 
