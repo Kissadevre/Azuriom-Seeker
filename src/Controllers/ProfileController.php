@@ -10,13 +10,14 @@ use Azuriom\Plugin\Seeker\Models\ProfileReport;
 use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Models\Review;
 use Azuriom\Plugin\Seeker\Requests\UpdateProfileRequest;
+use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    public function show(Request $request, User $user): View
+    public function show(Request $request, User $user, SeekerSettings $settings): View
     {
         $profile = Profile::query()->where('user_id', $user->id)->first();
         abort_unless($this->hasSeekerPresence($user, $profile) || $request->user()?->id === $user->id, 404);
@@ -68,6 +69,7 @@ class ProfileController extends Controller
                 ->where('reporter_id', $request->user()->id)
                 ->first()
             : null;
+        $biographiesEnabled = $settings->biographiesEnabled();
 
         return view('seeker::profiles.show', compact(
             'user',
@@ -76,20 +78,32 @@ class ProfileController extends Controller
             'reputation',
             'reviews',
             'publications',
-            'profileReport'
+            'profileReport',
+            'biographiesEnabled'
         ));
     }
 
-    public function edit(Request $request, User $user): View
+    public function edit(Request $request, User $user, SeekerSettings $settings): View|RedirectResponse
     {
         abort_unless($request->user()->id === $user->id, 403);
+
+        if (! $settings->biographiesEnabled()) {
+            return to_route('seeker.profiles.show', $user)
+                ->with('error', trans('seeker::messages.features.biographies_disabled'));
+        }
+
         $profile = Profile::query()->firstOrNew(['user_id' => $user->id]);
 
         return view('seeker::profiles.edit', compact('user', 'profile'));
     }
 
-    public function update(UpdateProfileRequest $request, User $user): RedirectResponse
+    public function update(UpdateProfileRequest $request, User $user, SeekerSettings $settings): RedirectResponse
     {
+        if (! $settings->biographiesEnabled()) {
+            return to_route('seeker.profiles.show', $user)
+                ->with('error', trans('seeker::messages.features.biographies_disabled'));
+        }
+
         $profile = Profile::query()->firstOrNew(['user_id' => $user->id]);
         $profile->user_id = $user->id;
         $profile->bio = $request->filled('bio') ? trim($request->validated('bio')) : null;

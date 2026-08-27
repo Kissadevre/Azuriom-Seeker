@@ -9,6 +9,7 @@ use Azuriom\Plugin\Seeker\Models\Review;
 use Azuriom\Plugin\Seeker\Requests\PublicationStatusRequest;
 use Azuriom\Plugin\Seeker\Requests\StorePublicationRequest;
 use Azuriom\Plugin\Seeker\Requests\UpdatePublicationRequest;
+use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ use Throwable;
 
 class PublicationController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request, SeekerSettings $settings): View
     {
         $type = in_array($request->query('type'), Publication::types(), true) ? $request->query('type') : null;
         $search = mb_substr(trim((string) $request->query('search')), 0, 100);
@@ -39,10 +40,12 @@ class PublicationController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        return view('seeker::publications.index', compact('publications', 'type', 'search'));
+        $publicationsEnabled = $settings->publicationsEnabled();
+
+        return view('seeker::publications.index', compact('publications', 'type', 'search', 'publicationsEnabled'));
     }
 
-    public function show(Publication $publication): View
+    public function show(Publication $publication, SeekerSettings $settings): View
     {
         $this->ensureVisibleToCurrentUser($publication);
         $publication->load(['user', 'images']);
@@ -63,16 +66,18 @@ class PublicationController extends Controller
                 ->where('client_id', auth()->id())
                 ->first()
             : null;
+        $newConversationsEnabled = $settings->newConversationsEnabled();
 
         return view('seeker::publications.show', compact(
             'publication',
             'contactConversation',
             'reputation',
-            'authorReviews'
+            'authorReviews',
+            'newConversationsEnabled'
         ));
     }
 
-    public function mine(Request $request): View
+    public function mine(Request $request, SeekerSettings $settings): View
     {
         $publications = Publication::query()
             ->where('user_id', $request->user()->id)
@@ -81,16 +86,28 @@ class PublicationController extends Controller
             ->latest()
             ->paginate(12);
 
-        return view('seeker::publications.mine', compact('publications'));
+        $publicationsEnabled = $settings->publicationsEnabled();
+
+        return view('seeker::publications.mine', compact('publications', 'publicationsEnabled'));
     }
 
-    public function create(): View
+    public function create(SeekerSettings $settings): View|RedirectResponse
     {
+        if (! $settings->publicationsEnabled()) {
+            return to_route('seeker.publications.mine')
+                ->with('error', trans('seeker::messages.features.publications_disabled'));
+        }
+
         return view('seeker::publications.create');
     }
 
-    public function store(StorePublicationRequest $request): RedirectResponse
+    public function store(StorePublicationRequest $request, SeekerSettings $settings): RedirectResponse
     {
+        if (! $settings->publicationsEnabled()) {
+            return to_route('seeker.publications.mine')
+                ->with('error', trans('seeker::messages.features.publications_disabled'));
+        }
+
         $storedPaths = [];
 
         try {

@@ -3,6 +3,7 @@
 namespace Azuriom\Plugin\Seeker\Requests;
 
 use Azuriom\Plugin\Seeker\Models\Conversation;
+use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreMessageRequest extends FormRequest
@@ -18,6 +19,15 @@ class StoreMessageRequest extends FormRequest
 
     public function rules(): array
     {
+        $imagesEnabled = app(SeekerSettings::class)->messageImagesEnabled();
+
+        if (! $imagesEnabled) {
+            return [
+                'content' => ['required', 'string', 'max:2000'],
+                'image' => ['prohibited'],
+            ];
+        }
+
         return [
             'content' => ['nullable', 'required_without:image', 'string', 'max:2000'],
             'image' => [

@@ -293,6 +293,12 @@ return [
     'security' => [
         'rate_limited' => 'Too many Seeker publication changes. Try again in :seconds seconds.',
     ],
+    'features' => [
+        'publications_disabled' => 'New Seeker publications are temporarily disabled. Existing publications can still be managed.',
+        'new_conversations_disabled' => 'Starting new commissions and talent applications is temporarily disabled. Existing conversations are unaffected.',
+        'new_conversations_disabled_short' => 'New contacts paused',
+        'biographies_disabled' => 'Seeker biographies are currently disabled.',
+    ],
     'notifications' => [
         'new_conversation' => ':user is interested in “:publication”.',
         'new_message' => 'You have a new Seeker message from :user.',

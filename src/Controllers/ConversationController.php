@@ -9,6 +9,7 @@ use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Requests\ContactPublicationRequest;
 use Azuriom\Plugin\Seeker\Services\CommissionCompletionService;
 use Azuriom\Plugin\Seeker\Services\ConversationStarter;
+use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -30,7 +31,7 @@ class ConversationController extends Controller
         return view('seeker::conversations.index', compact('conversations', 'user'));
     }
 
-    public function create(Request $request, Publication $publication): View|RedirectResponse
+    public function create(Request $request, Publication $publication, SeekerSettings $settings): View|RedirectResponse
     {
         $this->ensureContactable($publication, $request);
 
@@ -43,6 +44,11 @@ class ConversationController extends Controller
             return to_route('seeker.conversations.show', $existing);
         }
 
+        if (! $settings->newConversationsEnabled()) {
+            return to_route('seeker.publications.show', $publication)
+                ->with('error', trans('seeker::messages.features.new_conversations_disabled'));
+        }
+
         $publication->load('user');
 
         return view('seeker::conversations.create', compact('publication'));
@@ -51,9 +57,24 @@ class ConversationController extends Controller
     public function store(
         ContactPublicationRequest $request,
         Publication $publication,
-        ConversationStarter $starter
+        ConversationStarter $starter,
+        SeekerSettings $settings
     ): RedirectResponse {
         $this->ensureContactable($publication, $request);
+
+        $existing = Conversation::query()
+            ->where('publication_id', $publication->id)
+            ->where('client_id', $request->user()->id)
+            ->first();
+
+        if ($existing !== null) {
+            return to_route('seeker.conversations.show', $existing);
+        }
+
+        if (! $settings->newConversationsEnabled()) {
+            return to_route('seeker.publications.show', $publication)
+                ->with('error', trans('seeker::messages.features.new_conversations_disabled'));
+        }
 
         $result = $starter->start($publication, $request->user(), $request->validated('content'));
         $conversation = $result['conversation'];
@@ -79,9 +100,9 @@ class ConversationController extends Controller
     public function show(
         Request $request,
         Conversation $conversation,
-        CommissionCompletionService $completionService
-    ): View
-    {
+        CommissionCompletionService $completionService,
+        SeekerSettings $settings
+    ): View {
         $this->ensureParticipant($conversation, $request);
 
         $conversation->load(['publication', 'client', 'author']);
@@ -96,6 +117,7 @@ class ConversationController extends Controller
             ->where('reviewer_id', $request->user()->id)
             ->first();
         $completionServicePoints = null;
+        $messageImagesEnabled = $settings->messageImagesEnabled();
 
         if ($conversation->completion_status === Conversation::COMPLETION_PENDING
             && $conversation->isPaidCommission()) {
@@ -115,7 +137,8 @@ class ConversationController extends Controller
             'messages',
             'conversationReport',
             'conversationReview',
-            'completionServicePoints'
+            'completionServicePoints',
+            'messageImagesEnabled'
         ));
     }
 

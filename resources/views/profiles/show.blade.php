@@ -19,7 +19,9 @@
                         </div>
                         <div class="d-flex flex-wrap gap-2">
                             @if(auth()->id() === $user->id)
-                                <a class="btn btn-primary" href="{{ route('seeker.profiles.edit', $user) }}"><i class="bi bi-pencil me-1" aria-hidden="true"></i>@lang('seeker::messages.profiles.edit')</a>
+                                @if($biographiesEnabled)
+                                    <a class="btn btn-primary" href="{{ route('seeker.profiles.edit', $user) }}"><i class="bi bi-pencil me-1" aria-hidden="true"></i>@lang('seeker::messages.profiles.edit')</a>
+                                @endif
                             @elseif(auth()->check())
                                 @if($profileReport === null)
                                     <a class="btn btn-outline-danger" href="{{ route('seeker.profiles.reports.create', $user) }}"><i class="bi bi-flag me-1" aria-hidden="true"></i>@lang('seeker::messages.profile_reports.action')</a>
@@ -30,13 +32,15 @@
                         </div>
                     </div>
                     <div class="fs-5 mt-3">@include('seeker::publications._reputation', ['rating' => $reputation['overall']->rating, 'count' => $reputation['overall']->reviews_count])</div>
-                    <div class="mt-3 seeker-description">
-                        @if(filled($profile?->bio))
-                            {!! nl2br(e($profile->bio)) !!}
-                        @else
-                            <span class="text-muted">@lang('seeker::messages.profiles.no_bio')</span>
-                        @endif
-                    </div>
+                    @if($biographiesEnabled)
+                        <div class="mt-3 seeker-description">
+                            @if(filled($profile?->bio))
+                                {!! nl2br(e($profile->bio)) !!}
+                            @else
+                                <span class="text-muted">@lang('seeker::messages.profiles.no_bio')</span>
+                            @endif
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -23,9 +23,11 @@
                         <a class="btn btn-outline-primary" href="{{ route('seeker.publications.mine') }}">
                             <i class="bi bi-briefcase me-1" aria-hidden="true"></i> @lang('seeker::messages.my_publications')
                         </a>
-                        <a class="btn btn-primary" href="{{ route('seeker.publications.create') }}">
-                            <i class="bi bi-plus-lg me-1" aria-hidden="true"></i> @lang('seeker::messages.publish')
-                        </a>
+                        @if($publicationsEnabled)
+                            <a class="btn btn-primary" href="{{ route('seeker.publications.create') }}">
+                                <i class="bi bi-plus-lg me-1" aria-hidden="true"></i> @lang('seeker::messages.publish')
+                            </a>
+                        @endif
                     @endauth
                 </div>
             </div>

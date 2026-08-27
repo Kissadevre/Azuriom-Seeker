@@ -167,12 +167,14 @@
                         <button class="btn btn-primary px-4"><i class="bi bi-send" aria-hidden="true"></i><span class="visually-hidden">@lang('seeker::messages.conversations.send')</span></button>
                         @error('content')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
-                    <div class="mt-2">
-                        <label class="form-label small mb-1" for="conversationImage"><i class="bi bi-image me-1" aria-hidden="true"></i>@lang('seeker::messages.conversations.image')</label>
-                        <input id="conversationImage" type="file" name="image" accept="image/jpeg,image/png,image/webp" class="form-control form-control-sm @error('image') is-invalid @enderror">
-                        <div class="form-text">@lang('seeker::messages.conversations.image_help')</div>
-                        @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
+                    @if($messageImagesEnabled)
+                        <div class="mt-2">
+                            <label class="form-label small mb-1" for="conversationImage"><i class="bi bi-image me-1" aria-hidden="true"></i>@lang('seeker::messages.conversations.image')</label>
+                            <input id="conversationImage" type="file" name="image" accept="image/jpeg,image/png,image/webp" class="form-control form-control-sm @error('image') is-invalid @enderror">
+                            <div class="form-text">@lang('seeker::messages.conversations.image_help')</div>
+                            @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                    @endif
                 </form>
             @else
                 <div class="text-center text-muted py-2"><i class="bi bi-lock me-2" aria-hidden="true"></i>@lang('seeker::messages.completion.conversation_closed')</div>

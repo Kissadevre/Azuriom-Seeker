@@ -293,6 +293,12 @@ return [
     'security' => [
         'rate_limited' => 'Demasiados cambios de publicaciones en Seeker. Inténtalo de nuevo en :seconds segundos.',
     ],
+    'features' => [
+        'publications_disabled' => 'Las nuevas publicaciones de Seeker están temporalmente desactivadas. Las publicaciones existentes todavía pueden administrarse.',
+        'new_conversations_disabled' => 'Iniciar nuevas comisiones y aplicaciones de talento está temporalmente desactivado. Las conversaciones existentes no se verán afectadas.',
+        'new_conversations_disabled_short' => 'Nuevos contactos pausados',
+        'biographies_disabled' => 'Las biografías de Seeker están desactivadas actualmente.',
+    ],
     'notifications' => [
         'new_conversation' => ':user está interesado en “:publication”.',
         'new_message' => 'Tienes un nuevo mensaje de Seeker de :user.',

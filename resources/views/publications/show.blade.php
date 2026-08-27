@@ -85,6 +85,10 @@
                                 <a class="btn btn-primary" href="{{ route('seeker.conversations.show', $contactConversation) }}">
                                     <i class="bi bi-chat-dots me-1" aria-hidden="true"></i> @lang('seeker::messages.contact.continue')
                                 </a>
+                            @elseif(! $newConversationsEnabled)
+                                <button class="btn btn-secondary" type="button" disabled>
+                                    <i class="bi bi-pause-circle me-1" aria-hidden="true"></i> @lang('seeker::messages.features.new_conversations_disabled_short')
+                                </button>
                             @else
                                 <a class="btn btn-primary" href="{{ route('seeker.conversations.create', $publication) }}">
                                     <i class="bi bi-chat-dots me-1" aria-hidden="true"></i> @lang('seeker::messages.contact.action_'.$publication->type)

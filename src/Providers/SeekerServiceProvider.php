@@ -3,7 +3,9 @@
 namespace Azuriom\Plugin\Seeker\Providers;
 
 use Azuriom\Extensions\Plugin\BasePluginServiceProvider;
+use Azuriom\Models\ActionLog;
 use Azuriom\Models\Permission;
+use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -23,6 +25,12 @@ class SeekerServiceProvider extends BasePluginServiceProvider
         Permission::registerPermissions([
             'seeker.moderate' => 'seeker::admin.permissions.moderate',
         ]);
+
+        ActionLog::registerLogs('seeker.settings.updated', [
+            'icon' => 'sliders',
+            'color' => 'info',
+            'message' => 'seeker::admin.logs.settings_updated',
+        ]);
     }
 
     protected function routeDescriptions(): array
@@ -34,27 +42,38 @@ class SeekerServiceProvider extends BasePluginServiceProvider
 
     protected function registerRateLimiters(): void
     {
-        RateLimiter::for('seeker.publications.create', fn (Request $request) => [
-            $this->publicationLimit(Limit::perHour(3), $request, 'create:user'),
-            $this->publicationLimit(Limit::perHour(15), $request, 'create:ip', false),
-            $this->publicationLimit(Limit::perDay(10), $request, 'create:daily'),
-        ]);
-
-        RateLimiter::for('seeker.publications.edit', fn (Request $request) => [
-            $this->publicationLimit(Limit::perHour(12), $request, 'edit:user'),
-            $this->publicationLimit(Limit::perHour(60), $request, 'edit:ip', false),
-            $this->publicationLimit(Limit::perDay(30), $request, 'edit:daily'),
-        ]);
+        RateLimiter::for('seeker.publications.create', fn (Request $request) => $this->publicationLimits($request, 'create'));
+        RateLimiter::for('seeker.publications.edit', fn (Request $request) => $this->publicationLimits($request, 'edit'));
     }
 
-    private function publicationLimit(Limit $limit, Request $request, string $scope, bool $byUser = true): Limit
+    private function publicationLimits(Request $request, string $action): Limit|array
     {
-        $identifier = $byUser
-            ? (string) $request->user()->getAuthIdentifier()
-            : (string) $request->ip();
+        $definitions = $this->app->make(SeekerSettings::class)->rateLimits($action);
+        $limits = [];
 
+        foreach ($definitions as $definition) {
+            if ($definition['attempts'] === 0) {
+                continue;
+            }
+
+            $identifier = $definition['by_user']
+                ? (string) $request->user()?->getAuthIdentifier()
+                : (string) $request->ip();
+
+            $limits[] = $this->publicationLimit(
+                Limit::perMinutes($definition['window'], $definition['attempts']),
+                $request,
+                $definition['scope'].':'.$identifier.':'.$definition['attempts'].':'.$definition['window']
+            );
+        }
+
+        return $limits === [] ? Limit::none() : $limits;
+    }
+
+    private function publicationLimit(Limit $limit, Request $request, string $key): Limit
+    {
         return $limit
-            ->by('seeker:'.$scope.':'.$identifier)
+            ->by('seeker:'.$key)
             ->response(fn (Request $request, array $headers) => back()
                 ->with('error', trans('seeker::messages.security.rate_limited', [
                     'seconds' => $headers['Retry-After'] ?? 60,
@@ -72,9 +91,17 @@ class SeekerServiceProvider extends BasePluginServiceProvider
         return [
             'seeker' => [
                 'name' => trans('seeker::admin.title'),
+                'type' => 'dropdown',
                 'icon' => 'bi bi-people',
                 'permission' => 'seeker.moderate',
-                'route' => 'seeker.admin.publications.index',
+                'route' => 'seeker.admin.*',
+                'items' => [
+                    'seeker.admin.settings' => trans('seeker::admin.nav.settings'),
+                    'seeker.admin.publications.index' => trans('seeker::admin.nav.publications'),
+                    'seeker.admin.conversations.index' => trans('seeker::admin.nav.conversations'),
+                    'seeker.admin.profile-reports.index' => trans('seeker::admin.nav.reports'),
+                    'seeker.admin.transactions.index' => trans('seeker::admin.nav.transactions'),
+                ],
             ],
         ];
     }
