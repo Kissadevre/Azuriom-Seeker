@@ -12,7 +12,7 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 - Public catalog with text search and publication-type filters.
 - Authenticated creation and management of commission offers and talent searches.
 - Role permissions for general Seeker access, creating publications, deleting owned publications, and editing an owned profile biography.
-- One consolidated, reversible migration containing the complete Seeker schema for clean plugin installations.
+- Separate reversible migrations, one per table, ordered by schema dependency.
 - MariaDB-safe database identifiers, with regression coverage for its 64-character index-name limit.
 - Minimal TinyMCE rich-text descriptions with a server-enforced HTML allowlist and no embedded image, video, audio, iframe, or file uploads.
 - Account and IP rate limits plus Azuriom-configured CAPTCHA verification for publication creation and editing.
@@ -72,6 +72,7 @@ Before releasing a new version:
 1. Validate `plugin.json` and `composer.json`.
 2. Run PHP syntax checks and compile every Blade view.
 3. Run fresh migration and rollback smoke tests on SQLite and the production database engine.
+   Never edit or consolidate released migrations; add a new dated migration for every later schema change.
 4. Verify guest, verified-user, owner, moderator, and unauthorized-user flows.
 5. Test image, video, and audio upload, rendering, replacement, publication deletion, plugin enable/disable, and route caching.
 6. Test with both the default Azuriom theme and the target custom theme.
