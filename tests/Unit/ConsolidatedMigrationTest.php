@@ -42,8 +42,31 @@ class ConsolidatedMigrationTest extends TestCase
             $migration->up();
 
             foreach (self::TABLE_COLUMNS as $table => $columns) {
+                $this->assertLessThanOrEqual(64, strlen($table), $table);
                 $this->assertTrue(Schema::hasTable($table), $table);
                 $this->assertEqualsCanonicalizing($columns, Schema::getColumnListing($table), $table);
+
+                foreach ($columns as $column) {
+                    $this->assertLessThanOrEqual(64, strlen($column), $table.'.'.$column);
+                }
+
+                foreach (Schema::getIndexes($table) as $index) {
+                    $this->assertLessThanOrEqual(
+                        64,
+                        strlen($index['name']),
+                        $index['name'].' exceeds the MariaDB identifier limit.'
+                    );
+                }
+
+                foreach (Schema::getForeignKeys($table) as $foreignKey) {
+                    $defaultName = $table.'_'.implode('_', $foreignKey['columns']).'_foreign';
+
+                    $this->assertLessThanOrEqual(
+                        64,
+                        strlen($defaultName),
+                        $defaultName.' exceeds the MariaDB identifier limit.'
+                    );
+                }
             }
 
             $foreignKeyCount = collect(array_keys(self::TABLE_COLUMNS))

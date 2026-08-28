@@ -87,7 +87,10 @@ return new class extends Migration
             $table->index(['client_id', 'status']);
             $table->index(['author_id', 'status']);
             $table->index('last_message_at');
-            $table->index(['completion_status', 'completion_requested_at']);
+            $table->index(
+                ['completion_status', 'completion_requested_at'],
+                'seeker_conversations_completion_index'
+            );
         });
 
         Schema::create('seeker_messages', function (Blueprint $table) {

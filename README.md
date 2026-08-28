@@ -13,6 +13,7 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 - Authenticated creation and management of commission offers and talent searches.
 - Role permissions for general Seeker access, creating publications, deleting owned publications, and editing an owned profile biography.
 - One consolidated, reversible migration containing the complete Seeker schema for clean plugin installations.
+- MariaDB-safe database identifiers, with regression coverage for its 64-character index-name limit.
 - Minimal TinyMCE rich-text descriptions with a server-enforced HTML allowlist and no embedded image, video, audio, iframe, or file uploads.
 - Account and IP rate limits plus Azuriom-configured CAPTCHA verification for publication creation and editing.
 - Administrative settings for feature availability and fully configurable publication rate-limit attempts and windows.
