@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="seeker-public-shell">
-    <div class="seeker-hero card border-0 mb-4">
+    <div class="seeker-hero card mb-4">
         <div class="card-body p-4 p-lg-5">
             <div class="row align-items-center g-4">
                 <div class="col-lg">
