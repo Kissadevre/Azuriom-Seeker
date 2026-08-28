@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="seeker-public-shell">
-    <a class="seeker-back-link" href="{{ route('seeker.index') }}"><i class="bi bi-arrow-left" aria-hidden="true"></i>@lang('seeker::messages.back')</a>
+    @include('seeker::_breadcrumb', ['breadcrumbs' => [['label' => $publication->title]]])
 
     <div class="row g-4">
         <div class="col-lg-8">

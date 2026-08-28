@@ -7,7 +7,10 @@
 @section('content')
     @php($other = $conversation->otherParticipant(auth()->user()))
     <div class="seeker-public-shell">
-    <a class="seeker-back-link" href="{{ route('seeker.conversations.index') }}"><i class="bi bi-arrow-left" aria-hidden="true"></i>@lang('seeker::messages.conversations.back')</a>
+    @include('seeker::_breadcrumb', ['breadcrumbs' => [
+        ['label' => trans('seeker::messages.conversations.title'), 'url' => route('seeker.conversations.index')],
+        ['label' => $other->name],
+    ]])
 
     <div class="card seeker-chat overflow-hidden">
         <div class="card-header p-3">

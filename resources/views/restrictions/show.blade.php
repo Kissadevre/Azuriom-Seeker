@@ -12,6 +12,7 @@
         default => 'bi-shield-x',
     })
     <div class="seeker-public-shell">
+    @include('seeker::_breadcrumb', ['breadcrumbs' => [['label' => trans('seeker::messages.restrictions.details.title')]]])
     <div class="row justify-content-center py-4 py-lg-5">
         <div class="col-lg-9 col-xl-8">
             <div class="card seeker-restriction-card overflow-hidden">

@@ -12,8 +12,11 @@
                     'pageIcon' => 'bi-star',
                     'pageTitle' => trans('seeker::messages.reviews.title'),
                     'pageSubtitle' => trans('seeker::messages.reviews.reviewing', ['user' => $reviewedUser->name]),
-                    'backUrl' => route('seeker.conversations.show', $conversation),
-                    'backLabel' => trans('seeker::messages.reviews.back'),
+                    'breadcrumbs' => [
+                        ['label' => trans('seeker::messages.conversations.title'), 'url' => route('seeker.conversations.index')],
+                        ['label' => $conversation->publication->title, 'url' => route('seeker.conversations.show', $conversation)],
+                        ['label' => trans('seeker::messages.reviews.title')],
+                    ],
                 ])
             <form method="POST" action="{{ route('seeker.conversations.reviews.store', $conversation) }}" class="card seeker-form-card">
                 @csrf

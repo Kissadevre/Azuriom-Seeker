@@ -10,7 +10,7 @@
 
 @section('content')
     <div class="seeker-public-shell">
-    <a class="seeker-back-link" href="{{ route('seeker.index') }}"><i class="bi bi-arrow-left" aria-hidden="true"></i>@lang('seeker::messages.back')</a>
+    @include('seeker::_breadcrumb', ['breadcrumbs' => [['label' => $user->name]]])
     <div class="card seeker-profile-hero position-relative mb-4">
         <div class="card-body p-4">
             <div class="d-flex flex-wrap align-items-start gap-4">

@@ -3,6 +3,10 @@
 return [
     'title' => 'Portal de talentos',
     'subtitle' => 'Encuentra talento creativo, servicios independientes y colaboradores para tu próximo proyecto.',
+    'breadcrumb' => [
+        'label' => 'Ruta de navegación',
+        'home' => 'Seeker',
+    ],
     'my_publications' => 'Mis publicaciones',
     'my_publications_subtitle' => 'Administra tus ofertas, búsquedas de talento, visibilidad y estado de publicación.',
     'quick_menu' => [

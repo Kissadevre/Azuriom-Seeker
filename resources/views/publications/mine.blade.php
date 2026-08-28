@@ -6,6 +6,7 @@
 
 @section('content')
     <div class="seeker-public-shell">
+    @include('seeker::_breadcrumb', ['breadcrumbs' => [['label' => trans('seeker::messages.my_publications')]]])
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         @include('seeker::_page-header', ['pageIcon' => 'bi-briefcase', 'pageTitle' => trans('seeker::messages.my_publications'), 'pageSubtitle' => trans('seeker::messages.my_publications_subtitle'), 'pageHeaderClass' => 'mb-0'])
         <div class="d-flex gap-2"><a class="btn btn-outline-primary" href="{{ route('seeker.profiles.show', auth()->user()) }}"><i class="bi bi-person-badge me-1" aria-hidden="true"></i>@lang('seeker::messages.profiles.my_profile')</a>@if($publicationsEnabled)<a class="btn btn-primary" href="{{ route('seeker.publications.create') }}"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i> @lang('seeker::messages.publish')</a>@elseif($publishRestriction)<a class="btn btn-outline-warning" href="{{ route('seeker.restrictions.show', \Azuriom\Plugin\Seeker\Models\UserRestriction::TYPE_PUBLISH) }}"><i class="bi bi-shield-lock me-1" aria-hidden="true"></i>@lang('seeker::messages.restrictions.details.view')</a>@endif</div>

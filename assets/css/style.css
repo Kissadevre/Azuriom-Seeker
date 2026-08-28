@@ -67,6 +67,37 @@
     color: var(--bs-secondary-color);
 }
 
+.seeker-breadcrumb {
+    margin-bottom: 1.25rem;
+    padding: .75rem 1rem;
+    border: 1px solid var(--seeker-border);
+    border-radius: var(--bs-border-radius-lg, .5rem);
+    background: var(--bs-tertiary-bg);
+}
+
+.seeker-breadcrumb .breadcrumb {
+    align-items: center;
+}
+
+.seeker-breadcrumb .breadcrumb-item {
+    min-width: 0;
+}
+
+.seeker-breadcrumb .breadcrumb-item a {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.seeker-breadcrumb .breadcrumb-item.active {
+    overflow: hidden;
+    color: var(--bs-secondary-color);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .seeker-page-icon,
 .seeker-title-icon {
     display: inline-grid;

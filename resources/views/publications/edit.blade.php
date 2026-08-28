@@ -13,8 +13,11 @@
                     'pageIcon' => 'bi-pencil',
                     'pageTitle' => trans('seeker::messages.edit'),
                     'pageSubtitle' => trans('seeker::messages.edit_description', ['publication' => $publication->title]),
-                    'backUrl' => route('seeker.publications.show', $publication),
-                    'backLabel' => trans('seeker::messages.publication_reports.back'),
+                    'breadcrumbs' => [
+                        ['label' => trans('seeker::messages.my_publications'), 'url' => route('seeker.publications.mine')],
+                        ['label' => $publication->title, 'url' => route('seeker.publications.show', $publication)],
+                        ['label' => trans('seeker::messages.edit')],
+                    ],
                 ])
                 <form method="POST" action="{{ route('seeker.publications.update', $publication) }}" enctype="multipart/form-data" class="card seeker-form-card" id="captcha-form">
                 @method('PUT')

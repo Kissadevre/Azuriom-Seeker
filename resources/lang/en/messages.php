@@ -3,6 +3,10 @@
 return [
     'title' => 'Talent portal',
     'subtitle' => 'Find creative talent, freelance services, and collaborators for your next project.',
+    'breadcrumb' => [
+        'label' => 'Breadcrumb',
+        'home' => 'Seeker',
+    ],
     'my_publications' => 'My publications',
     'my_publications_subtitle' => 'Manage your offers, talent searches, visibility, and publication status.',
     'quick_menu' => [

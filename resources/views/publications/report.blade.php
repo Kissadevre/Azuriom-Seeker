@@ -12,8 +12,10 @@
                     'pageIcon' => 'bi-flag',
                     'pageTitle' => trans('seeker::messages.publication_reports.title'),
                     'pageSubtitle' => trans('seeker::messages.publication_reports.reporting', ['publication' => $publication->title]),
-                    'backUrl' => route('seeker.publications.show', $publication),
-                    'backLabel' => trans('seeker::messages.publication_reports.back'),
+                    'breadcrumbs' => [
+                        ['label' => $publication->title, 'url' => route('seeker.publications.show', $publication)],
+                        ['label' => trans('seeker::messages.publication_reports.title')],
+                    ],
                 ])
                 <form method="POST" action="{{ route('seeker.publications.reports.store', $publication) }}" class="card seeker-form-card seeker-report-card">
                 @csrf

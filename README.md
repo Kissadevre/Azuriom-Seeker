@@ -10,6 +10,7 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 ## Current features
 
 - Public catalog with text search and publication-type filters.
+- Accessible, responsive breadcrumbs across public publication, profile, conversation, and restriction flows.
 - Authenticated creation and management of commission offers and talent searches.
 - Role permissions for general Seeker access, creating publications, deleting owned publications, and editing an owned profile biography.
 - Separate reversible migrations, one per table, ordered by schema dependency.
