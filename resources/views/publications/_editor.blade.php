@@ -31,6 +31,14 @@
                 @if(dark_theme())
                 skin: 'oxide-dark',
                 @endif
+                setup: (editor) => {
+                    editor.on('init', () => {
+                        // TinyMCE hides the source textarea. Keeping its native
+                        // required constraint would make browsers reject the form
+                        // before TinyMCE can synchronize the edited content.
+                        editor.getElement().removeAttribute('required');
+                    });
+                },
             });
         </script>
     @endpush
