@@ -20,4 +20,20 @@ class PublicStyleTest extends TestCase
         $this->assertStringContainsString('--seeker-brand-gradient: var(--bs-primary);', $styles);
         $this->assertStringContainsString('--seeker-border: var(--bs-border-color);', $styles);
     }
+
+    public function test_audio_player_uses_theme_tokens_instead_of_fixed_brand_colors(): void
+    {
+        $styles = strtolower(file_get_contents(dirname(__DIR__, 2).'/assets/css/audio-player.css'));
+        $script = strtolower(file_get_contents(dirname(__DIR__, 2).'/assets/js/audio-player.js'));
+        $assets = $styles.$script;
+
+        $this->assertStringNotContainsString('#ec6fa9', $assets);
+        $this->assertStringNotContainsString('#8a7cf3', $assets);
+        $this->assertStringNotContainsString('#45c9ed', $assets);
+        $this->assertStringNotContainsString('#726ee6', $assets);
+        $this->assertStringContainsString('background: var(--bs-primary);', $styles);
+        $this->assertStringContainsString('background: var(--bs-tertiary-bg);', $styles);
+        $this->assertStringContainsString("getpropertyvalue('--bs-primary')", $script);
+        $this->assertStringContainsString("getpropertyvalue('--bs-secondary-rgb')", $script);
+    }
 }

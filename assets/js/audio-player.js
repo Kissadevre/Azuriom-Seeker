@@ -61,6 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 : 0;
             const gap = 2;
             const barWidth = Math.max(1.5, (bounds.width - gap * (peaks.length - 1)) / peaks.length);
+            const styles = getComputedStyle(interfaceElement);
+            const playedColor = styles.getPropertyValue('--bs-primary').trim() || '#0d6efd';
+            const idleColorChannels = styles.getPropertyValue('--bs-secondary-rgb').trim() || '108, 117, 125';
 
             peaks.forEach((peak, index) => {
                 const height = Math.max(4, peak * bounds.height);
@@ -68,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const y = (bounds.height - height) / 2;
                 const played = (index + .5) / peaks.length <= progress;
 
-                context.fillStyle = played ? '#726ee6' : 'rgba(77, 145, 190, .35)';
+                context.fillStyle = played ? playedColor : `rgba(${idleColorChannels}, .32)`;
                 if (typeof context.roundRect === 'function') {
                     context.beginPath();
                     context.roundRect(x, y, barWidth, height, barWidth / 2);
