@@ -126,7 +126,7 @@ return [
     'help' => [
         'commission' => 'Usa esta opción cuando ofrezcas un servicio o aceptes comisiones.',
         'talent' => 'Usa esta opción cuando tu proyecto busque un talento específico.',
-        'description' => 'Usa texto enriquecido para explicar el alcance, habilidades, entregables, disponibilidad y cómo deben proceder los interesados. Las imágenes, videos y audios deben agregarse únicamente en el portafolio.',
+        'description' => 'Usa Markdown para títulos, énfasis, listas, citas, código y enlaces seguros. El HTML y las imágenes o medios embebidos no se renderizan; usa los campos del portafolio para los assets.',
         'portfolio_type' => 'Elige una opción: un enlace externo, una galería de imágenes, videos o archivos de audio.',
         'external' => 'Envía a los visitantes a un portafolio alojado en otro sitio web.',
         'uploaded_images' => 'Muestra trabajos de referencia directamente en tu publicación.',

@@ -4,7 +4,7 @@ namespace Azuriom\Plugin\Seeker\Requests;
 
 use Azuriom\Plugin\Seeker\Models\Publication;
 use Azuriom\Plugin\Seeker\Models\PublicationMedia;
-use Azuriom\Plugin\Seeker\Services\PublicationRichText;
+use Azuriom\Plugin\Seeker\Services\PublicationMarkdown;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Azuriom\Plugin\Seeker\Support\SeekerPermissions;
 use Illuminate\Foundation\Http\FormRequest;
@@ -18,7 +18,7 @@ class StorePublicationRequest extends FormRequest
 
         if (is_string($description)) {
             $this->merge([
-                'description' => app(PublicationRichText::class)->sanitize($description),
+                'description' => app(PublicationMarkdown::class)->normalize($description),
             ]);
         }
     }
@@ -40,7 +40,7 @@ class StorePublicationRequest extends FormRequest
                 'string',
                 'max:50000',
                 function (string $attribute, mixed $value, \Closure $fail): void {
-                    $length = mb_strlen(app(PublicationRichText::class)->plainText((string) $value));
+                    $length = mb_strlen(app(PublicationMarkdown::class)->plainText((string) $value));
 
                     if ($length < 20) {
                         $fail(trans('seeker::messages.validation.description_min'));

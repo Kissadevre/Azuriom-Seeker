@@ -126,7 +126,7 @@ return [
     'help' => [
         'commission' => 'Use this when you offer a service or take commissions.',
         'talent' => 'Use this when your project is looking for a specific talent.',
-        'description' => 'Use rich text to explain the scope, skills, deliverables, availability, and how interested users should proceed. Images, video, and audio belong only in the portfolio.',
+        'description' => 'Use Markdown for headings, emphasis, lists, quotes, code, and safe links. Raw HTML and embedded images or media are not rendered; use the portfolio fields for assets.',
         'portfolio_type' => 'Choose one option: an external link, an image gallery, videos, or audio files.',
         'external' => 'Send visitors to a portfolio hosted on another website.',
         'uploaded_images' => 'Show reference work directly in your publication.',

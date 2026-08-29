@@ -20,15 +20,18 @@ class PublicationEditorTest extends TestCase
         $this->assertFileDoesNotExist($pluginRoot.'/resources/views/elements/captcha.blade.php');
     }
 
-    public function test_tinymce_removes_native_validation_from_its_hidden_textarea(): void
+    public function test_publication_description_uses_a_visible_markdown_textarea(): void
     {
-        $editorView = file_get_contents(dirname(__DIR__, 2).'/resources/views/publications/_editor.blade.php');
+        $pluginRoot = dirname(__DIR__, 2);
+        $form = file_get_contents($pluginRoot.'/resources/views/publications/_form.blade.php');
+        $create = file_get_contents($pluginRoot.'/resources/views/publications/create.blade.php');
+        $edit = file_get_contents($pluginRoot.'/resources/views/publications/edit.blade.php');
 
-        $this->assertIsString($editorView);
-        $this->assertStringContainsString(
-            "editor.getElement().removeAttribute('required');",
-            $editorView
-        );
+        $this->assertIsString($form);
+        $this->assertStringContainsString('name="description"', $form);
+        $this->assertStringContainsString('required', $form);
+        $this->assertStringNotContainsString('tinymce', strtolower($form.$create.$edit));
+        $this->assertFileDoesNotExist($pluginRoot.'/resources/views/publications/_editor.blade.php');
     }
 
     public function test_description_remains_required_by_server_validation(): void
