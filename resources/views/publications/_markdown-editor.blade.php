@@ -2,9 +2,39 @@
     <link href="{{ asset('vendor/easymde/easymde.min.css') }}" rel="stylesheet">
     <style>
         .seeker-markdown-editor .editor-toolbar {
+            display: block;
+            min-height: 3rem;
+            padding: .5rem;
+            white-space: normal;
             border: var(--bs-border-width) solid var(--bs-border-color);
             border-bottom: 0;
             border-radius: var(--bs-border-radius) var(--bs-border-radius) 0 0;
+        }
+
+        /* EasyMDE names this control "table". Reset Bootstrap's .table layout. */
+        .seeker-markdown-editor .editor-toolbar .table {
+            display: inline-block;
+            width: auto;
+            margin: 0 1px;
+            vertical-align: middle;
+        }
+
+        .seeker-markdown-editor .editor-toolbar button {
+            width: 2.25rem;
+            height: 2.25rem;
+            margin: 0 1px;
+            padding: 0;
+            color: var(--bs-body-color) !important;
+            font-size: 1.25rem;
+            line-height: 2.25rem;
+            vertical-align: middle;
+        }
+
+        .seeker-markdown-editor .editor-toolbar i.separator {
+            height: 1.75rem;
+            margin: 0 .35rem;
+            vertical-align: middle;
+            border-color: var(--bs-border-color);
         }
 
         .seeker-markdown-editor .CodeMirror {
@@ -13,10 +43,6 @@
             background: var(--bs-body-bg);
             border: var(--bs-border-width) solid var(--bs-border-color);
             border-radius: 0 0 var(--bs-border-radius) var(--bs-border-radius);
-        }
-
-        .seeker-markdown-editor .editor-toolbar button {
-            color: var(--bs-body-color) !important;
         }
 
         .seeker-markdown-editor .editor-toolbar button.active,

@@ -42,6 +42,8 @@ class PublicationEditorTest extends TestCase
         $this->assertStringContainsString("description.removeAttribute('required')", $editor);
         $this->assertStringContainsString("description.removeAttribute('minlength')", $editor);
         $this->assertStringContainsString("description.removeAttribute('maxlength')", $editor);
+        $this->assertStringContainsString('.editor-toolbar .table', $editor);
+        $this->assertStringContainsString('display: inline-block', $editor);
         $this->assertStringNotContainsString("'image'", $editor);
         $this->assertStringNotContainsString("'preview'", $editor);
         $this->assertStringNotContainsString('uploadImage', $editor);
