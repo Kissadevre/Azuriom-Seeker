@@ -9,6 +9,17 @@ use Tests\TestCase;
 
 class PublicationEditorTest extends TestCase
 {
+    public function test_publication_form_uses_the_native_azuriom_captcha_view(): void
+    {
+        $pluginRoot = dirname(__DIR__, 2);
+        $form = file_get_contents($pluginRoot.'/resources/views/publications/_form.blade.php');
+
+        $this->assertIsString($form);
+        $this->assertStringContainsString("@include('elements.captcha', ['center' => true])", $form);
+        $this->assertFileDoesNotExist($pluginRoot.'/resources/views/captcha.blade.php');
+        $this->assertFileDoesNotExist($pluginRoot.'/resources/views/elements/captcha.blade.php');
+    }
+
     public function test_tinymce_removes_native_validation_from_its_hidden_textarea(): void
     {
         $editorView = file_get_contents(dirname(__DIR__, 2).'/resources/views/publications/_editor.blade.php');

@@ -41,6 +41,12 @@ class SeekerPermissionsTest extends TestCase
         $this->assertNotContains('can:'.SeekerPermissions::DELETE_OWN_PUBLICATIONS, $updateMiddleware);
     }
 
+    public function test_publication_writes_use_azuriom_captcha_middleware(): void
+    {
+        $this->assertRouteHasMiddleware('seeker.publications.store', 'captcha');
+        $this->assertRouteHasMiddleware('seeker.publications.update', 'captcha');
+    }
+
     public function test_all_public_seeker_routes_use_the_general_access_middleware(): void
     {
         $seekerRoutes = collect(Route::getRoutes()->getRoutes())

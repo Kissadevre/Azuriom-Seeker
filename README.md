@@ -16,7 +16,7 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 - Separate reversible migrations, one per table, ordered by schema dependency.
 - MariaDB-safe database identifiers, with regression coverage for its 64-character index-name limit.
 - Minimal TinyMCE rich-text descriptions with a server-enforced HTML allowlist and no embedded image, video, audio, iframe, or file uploads.
-- Account and IP rate limits plus Azuriom-configured CAPTCHA verification for publication creation and editing.
+- Account and IP rate limits plus Azuriom-configured CAPTCHA verification for publication creation and editing, rendered through Azuriom's native `elements.captcha` view and verified by its native middleware.
 - Administrative settings for feature availability and fully configurable publication rate-limit attempts and windows.
 - Per-format portfolio availability controls with an enforced minimum of one enabled format; existing portfolio content remains visible when its format is disabled.
 - Global Seeker availability switch that blocks every public route and action while keeping the administrative panel available for recovery.
