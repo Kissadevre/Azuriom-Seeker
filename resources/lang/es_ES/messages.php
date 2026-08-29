@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Portal de talentos',
+    'user_menu' => 'Seeker',
     'subtitle' => 'Encuentra talento creativo, servicios independientes y colaboradores para tu próximo proyecto.',
     'breadcrumb' => [
         'label' => 'Ruta de navegación',

@@ -16,6 +16,8 @@ class SeekerSettings
 
     public const MESSAGE_IMAGES_ENABLED_KEY = 'seeker.message_images_enabled';
 
+    public const USER_MENU_ENABLED_KEY = 'seeker.user_menu_enabled';
+
     public const PORTFOLIO_TYPE_KEYS = [
         Publication::PORTFOLIO_EXTERNAL => 'seeker.portfolio_types.external_enabled',
         Publication::PORTFOLIO_IMAGES => 'seeker.portfolio_types.images_enabled',
@@ -97,6 +99,11 @@ class SeekerSettings
     public function messageImagesEnabled(): bool
     {
         return $this->boolean(self::MESSAGE_IMAGES_ENABLED_KEY, true);
+    }
+
+    public function userMenuEnabled(): bool
+    {
+        return $this->boolean(self::USER_MENU_ENABLED_KEY, false);
     }
 
     public function portfolioTypes(): array

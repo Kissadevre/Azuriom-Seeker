@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Talent portal',
+    'user_menu' => 'Seeker',
     'subtitle' => 'Find creative talent, freelance services, and collaborators for your next project.',
     'breadcrumb' => [
         'label' => 'Breadcrumb',

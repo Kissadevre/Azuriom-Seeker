@@ -21,6 +21,7 @@ class SettingController extends Controller
             'newConversationsEnabled' => $settings->newConversationsEnabled(),
             'biographiesEnabled' => $settings->biographiesEnabled(),
             'messageImagesEnabled' => $settings->messageImagesEnabled(),
+            'userMenuEnabled' => $settings->userMenuEnabled(),
             'portfolioTypes' => $settings->portfolioTypes(),
             'rateLimits' => $settings->allRateLimits(),
         ]);
@@ -34,6 +35,7 @@ class SettingController extends Controller
             'new_conversations_enabled' => ['required', 'boolean'],
             'biographies_enabled' => ['required', 'boolean'],
             'message_images_enabled' => ['required', 'boolean'],
+            'user_menu_enabled' => ['required', 'boolean'],
             'portfolio_types' => [
                 'required',
                 'array:'.implode(',', Publication::portfolioTypes()),
@@ -65,6 +67,7 @@ class SettingController extends Controller
             SeekerSettings::NEW_CONVERSATIONS_ENABLED_KEY => (bool) $validated['new_conversations_enabled'],
             SeekerSettings::BIOGRAPHIES_ENABLED_KEY => (bool) $validated['biographies_enabled'],
             SeekerSettings::MESSAGE_IMAGES_ENABLED_KEY => (bool) $validated['message_images_enabled'],
+            SeekerSettings::USER_MENU_ENABLED_KEY => (bool) $validated['user_menu_enabled'],
         ];
 
         foreach (SeekerSettings::PORTFOLIO_TYPE_KEYS as $type => $key) {

@@ -52,6 +52,8 @@ return [
             'biographies_enabled_help' => 'Al desactivarlo, los usuarios no pueden editar biografías y todas las existentes quedan ocultas sin eliminarse.',
             'message_images_enabled' => 'Permitir imágenes adjuntas en conversaciones',
             'message_images_enabled_help' => 'Al desactivarlo, no pueden adjuntarse imágenes nuevas. Las imágenes ya enviadas permanecen visibles para los participantes.',
+            'user_menu_enabled' => 'Mostrar Seeker en el menú de usuario',
+            'user_menu_enabled_help' => 'Agrega un acceso directo a Seeker al final de los enlaces de plug-ins del menú desplegable de la cuenta.',
         ],
         'portfolio_types' => [
             'title' => 'Disponibilidad de portafolios',

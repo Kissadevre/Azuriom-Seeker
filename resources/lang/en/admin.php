@@ -52,6 +52,8 @@ return [
             'biographies_enabled_help' => 'When disabled, users cannot edit biographies and all existing biographies are hidden without being deleted.',
             'message_images_enabled' => 'Allow image attachments in conversations',
             'message_images_enabled_help' => 'When disabled, new images cannot be attached. Images already sent remain visible to conversation participants.',
+            'user_menu_enabled' => 'Show Seeker in the user menu',
+            'user_menu_enabled_help' => 'Adds a Seeker shortcut at the end of the plugin links in the account dropdown.',
         ],
         'portfolio_types' => [
             'title' => 'Portfolio availability',

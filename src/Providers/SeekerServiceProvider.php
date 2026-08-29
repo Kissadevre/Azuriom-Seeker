@@ -26,6 +26,7 @@ class SeekerServiceProvider extends BasePluginServiceProvider
         $this->registerRouteDescriptions();
         $this->registerAdminNavigation();
         $this->registerUserNavigation();
+        $this->registerUserMenuShortcut();
         $this->registerRateLimiters();
 
         Permission::registerPermissions([
@@ -207,6 +208,29 @@ class SeekerServiceProvider extends BasePluginServiceProvider
                 'name' => trans('seeker::messages.conversations.title'),
                 'icon' => 'bi bi-chat-dots',
                 'route' => 'seeker.conversations.index',
+                'permission' => SeekerPermissions::ACCESS,
+            ],
+        ];
+    }
+
+    protected function registerUserMenuShortcut(): void
+    {
+        $this->app->booted(function (): void {
+            $this->app['plugins']->addUserNavItem(fn () => $this->userMenuShortcut());
+        });
+    }
+
+    protected function userMenuShortcut(): array
+    {
+        if (! $this->app->make(SeekerSettings::class)->userMenuEnabled()) {
+            return [];
+        }
+
+        return [
+            'seeker-portal' => [
+                'name' => trans('seeker::messages.user_menu'),
+                'icon' => 'bi bi-people',
+                'route' => 'seeker.index',
                 'permission' => SeekerPermissions::ACCESS,
             ],
         ];

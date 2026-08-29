@@ -33,6 +33,7 @@
                         'new_conversations_enabled' => $newConversationsEnabled,
                         'biographies_enabled' => $biographiesEnabled,
                         'message_images_enabled' => $messageImagesEnabled,
+                        'user_menu_enabled' => $userMenuEnabled,
                     ] as $settingName => $settingValue)
                         <div class="seeker-admin-switch-row">
                             <label for="{{ $settingName }}" class="mb-0"><span class="d-block fw-semibold">@lang('seeker::admin.settings.features.'.$settingName)</span><small class="text-body-secondary">@lang('seeker::admin.settings.features.'.$settingName.'_help')</small></label>
