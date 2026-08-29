@@ -20,7 +20,7 @@ class PublicationEditorTest extends TestCase
         $this->assertFileDoesNotExist($pluginRoot.'/resources/views/elements/captcha.blade.php');
     }
 
-    public function test_publication_description_uses_a_visible_markdown_textarea(): void
+    public function test_publication_description_uses_the_azuriom_markdown_editor(): void
     {
         $pluginRoot = dirname(__DIR__, 2);
         $form = file_get_contents($pluginRoot.'/resources/views/publications/_form.blade.php');
@@ -29,9 +29,22 @@ class PublicationEditorTest extends TestCase
 
         $this->assertIsString($form);
         $this->assertStringContainsString('name="description"', $form);
+        $this->assertStringContainsString('markdown-editor', $form);
         $this->assertStringContainsString('required', $form);
+        $this->assertStringContainsString("@include('seeker::publications._markdown-editor')", $create);
+        $this->assertStringContainsString("@include('seeker::publications._markdown-editor')", $edit);
         $this->assertStringNotContainsString('tinymce', strtolower($form.$create.$edit));
-        $this->assertFileDoesNotExist($pluginRoot.'/resources/views/publications/_editor.blade.php');
+
+        $editor = file_get_contents($pluginRoot.'/resources/views/publications/_markdown-editor.blade.php');
+
+        $this->assertIsString($editor);
+        $this->assertStringContainsString("asset('vendor/easymde/easymde.min.js')", $editor);
+        $this->assertStringContainsString("description.removeAttribute('required')", $editor);
+        $this->assertStringContainsString("description.removeAttribute('minlength')", $editor);
+        $this->assertStringContainsString("description.removeAttribute('maxlength')", $editor);
+        $this->assertStringNotContainsString("'image'", $editor);
+        $this->assertStringNotContainsString("'preview'", $editor);
+        $this->assertStringNotContainsString('uploadImage', $editor);
     }
 
     public function test_description_remains_required_by_server_validation(): void
