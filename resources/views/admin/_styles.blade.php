@@ -393,6 +393,17 @@
                 font-size: 1.25rem;
             }
 
+            .seeker-admin-menu-controls {
+                display: flex;
+                flex: 0 0 auto;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .seeker-admin-icon-field {
+                width: 18rem;
+            }
+
             .seeker-admin-detail-item {
                 height: 100%;
                 padding: 1rem;
@@ -569,6 +580,20 @@
                     align-items: center;
                     gap: 1rem;
                     padding: 1rem;
+                }
+
+                .seeker-admin-menu-row {
+                    align-items: stretch;
+                    flex-direction: column;
+                }
+
+                .seeker-admin-menu-controls {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+
+                .seeker-admin-icon-field {
+                    width: min(18rem, calc(100% - 4rem));
                 }
 
                 .seeker-admin-card > .card-body.p-4 {

@@ -52,8 +52,20 @@ return [
             'biographies_enabled_help' => 'When disabled, users cannot edit biographies and all existing biographies are hidden without being deleted.',
             'message_images_enabled' => 'Allow image attachments in conversations',
             'message_images_enabled_help' => 'When disabled, new images cannot be attached. Images already sent remain visible to conversation participants.',
-            'user_menu_enabled' => 'Show Seeker in the user menu',
-            'user_menu_enabled_help' => 'Adds a Seeker shortcut at the end of the plugin links in the account dropdown.',
+        ],
+        'user_menu' => [
+            'title' => 'User menu',
+            'subtitle' => 'Choose which Seeker shortcuts appear in the account dropdown and customize their icons.',
+            'icon_label' => 'Bootstrap Icon',
+            'icon_help' => 'Enter a valid Bootstrap Icons class beginning with "bi-", such as bi-briefcase, bi-chat-dots, or bi-people.',
+            'items' => [
+                'seeker' => 'Seeker',
+                'seeker_help' => 'Adds a shortcut to the Seeker portal at the end of the plugin links.',
+                'my_publications' => 'My publications',
+                'my_publications_help' => 'Shows the authenticated user a shortcut to their Seeker publications.',
+                'messages' => 'Messages',
+                'messages_help' => 'Shows the authenticated user a shortcut to their Seeker conversations.',
+            ],
         ],
         'portfolio_types' => [
             'title' => 'Portfolio availability',

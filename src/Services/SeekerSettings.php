@@ -18,6 +18,27 @@ class SeekerSettings
 
     public const USER_MENU_ENABLED_KEY = 'seeker.user_menu_enabled';
 
+    public const USER_MENU_ITEMS = [
+        'seeker' => [
+            'enabled_key' => self::USER_MENU_ENABLED_KEY,
+            'enabled' => false,
+            'icon_key' => 'seeker.user_menu.seeker_icon',
+            'icon' => 'bi-people',
+        ],
+        'my_publications' => [
+            'enabled_key' => 'seeker.user_menu.my_publications_enabled',
+            'enabled' => true,
+            'icon_key' => 'seeker.user_menu.my_publications_icon',
+            'icon' => 'bi-briefcase',
+        ],
+        'messages' => [
+            'enabled_key' => 'seeker.user_menu.messages_enabled',
+            'enabled' => true,
+            'icon_key' => 'seeker.user_menu.messages_icon',
+            'icon' => 'bi-chat-dots',
+        ],
+    ];
+
     public const PORTFOLIO_TYPE_KEYS = [
         Publication::PORTFOLIO_EXTERNAL => 'seeker.portfolio_types.external_enabled',
         Publication::PORTFOLIO_IMAGES => 'seeker.portfolio_types.images_enabled',
@@ -103,7 +124,38 @@ class SeekerSettings
 
     public function userMenuEnabled(): bool
     {
-        return $this->boolean(self::USER_MENU_ENABLED_KEY, false);
+        return $this->userMenuItemEnabled('seeker');
+    }
+
+    public function userMenuItemEnabled(string $item): bool
+    {
+        $definition = self::USER_MENU_ITEMS[$item] ?? null;
+
+        return $definition !== null
+            && $this->boolean($definition['enabled_key'], $definition['enabled']);
+    }
+
+    public function userMenuIcon(string $item): string
+    {
+        $definition = self::USER_MENU_ITEMS[$item] ?? null;
+
+        if ($definition === null) {
+            return 'bi-question-circle';
+        }
+
+        $icon = (string) setting($definition['icon_key'], $definition['icon']);
+
+        return preg_match('/\Abi-[a-z0-9]+(?:-[a-z0-9]+)*\z/', $icon) === 1
+            ? $icon
+            : $definition['icon'];
+    }
+
+    public function userMenuItems(): array
+    {
+        return collect(self::USER_MENU_ITEMS)->map(fn (array $definition, string $item) => [
+            'enabled' => $this->userMenuItemEnabled($item),
+            'icon' => $this->userMenuIcon($item),
+        ])->all();
     }
 
     public function portfolioTypes(): array

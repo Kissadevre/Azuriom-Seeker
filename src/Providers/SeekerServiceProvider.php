@@ -197,20 +197,28 @@ class SeekerServiceProvider extends BasePluginServiceProvider
 
     protected function userNavigation(): array
     {
-        return [
-            'seeker' => [
+        $settings = $this->app->make(SeekerSettings::class);
+        $items = [];
+
+        if ($settings->userMenuItemEnabled('my_publications')) {
+            $items['seeker'] = [
                 'name' => trans('seeker::messages.my_publications'),
-                'icon' => 'bi bi-briefcase',
+                'icon' => 'bi '.$settings->userMenuIcon('my_publications'),
                 'route' => 'seeker.publications.mine',
                 'permission' => SeekerPermissions::ACCESS,
-            ],
-            'seeker-messages' => [
+            ];
+        }
+
+        if ($settings->userMenuItemEnabled('messages')) {
+            $items['seeker-messages'] = [
                 'name' => trans('seeker::messages.conversations.title'),
-                'icon' => 'bi bi-chat-dots',
+                'icon' => 'bi '.$settings->userMenuIcon('messages'),
                 'route' => 'seeker.conversations.index',
                 'permission' => SeekerPermissions::ACCESS,
-            ],
-        ];
+            ];
+        }
+
+        return $items;
     }
 
     protected function registerUserMenuShortcut(): void
@@ -229,7 +237,7 @@ class SeekerServiceProvider extends BasePluginServiceProvider
         return [
             'seeker-portal' => [
                 'name' => trans('seeker::messages.user_menu'),
-                'icon' => 'bi bi-people',
+                'icon' => 'bi '.$this->app->make(SeekerSettings::class)->userMenuIcon('seeker'),
                 'route' => 'seeker.index',
                 'permission' => SeekerPermissions::ACCESS,
             ],

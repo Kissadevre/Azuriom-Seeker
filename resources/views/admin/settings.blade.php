@@ -33,7 +33,6 @@
                         'new_conversations_enabled' => $newConversationsEnabled,
                         'biographies_enabled' => $biographiesEnabled,
                         'message_images_enabled' => $messageImagesEnabled,
-                        'user_menu_enabled' => $userMenuEnabled,
                     ] as $settingName => $settingValue)
                         <div class="seeker-admin-switch-row">
                             <label for="{{ $settingName }}" class="mb-0"><span class="d-block fw-semibold">@lang('seeker::admin.settings.features.'.$settingName)</span><small class="text-body-secondary">@lang('seeker::admin.settings.features.'.$settingName.'_help')</small></label>
@@ -41,6 +40,31 @@
                         </div>
                     @endforeach
                 </div>
+            </div>
+
+            <div class="card seeker-admin-card mb-4">
+                <div class="card-header d-flex align-items-start gap-2"><i class="bi bi-person-lines-fill text-primary mt-1" aria-hidden="true"></i><div><h2>@lang('seeker::admin.settings.user_menu.title')</h2><p class="small text-body-secondary mb-0 mt-1">@lang('seeker::admin.settings.user_menu.subtitle')</p></div></div>
+                <div class="card-body p-0">
+                    @foreach($userMenuItems as $menuItem => $menuSettings)
+                        @php($enabledInput = 'user_menu.'.$menuItem.'.enabled')
+                        @php($iconInput = 'user_menu.'.$menuItem.'.icon')
+                        <div class="seeker-admin-switch-row seeker-admin-menu-row">
+                            <label for="user_menu_{{ $menuItem }}_enabled" class="mb-0"><span class="d-block fw-semibold">@lang('seeker::admin.settings.user_menu.items.'.$menuItem)</span><small class="text-body-secondary">@lang('seeker::admin.settings.user_menu.items.'.$menuItem.'_help')</small></label>
+                            <div class="seeker-admin-menu-controls">
+                                <div class="seeker-admin-icon-field" data-bootstrap-icon-field>
+                                    <label class="form-label small text-body-secondary" for="user_menu_{{ $menuItem }}_icon">@lang('seeker::admin.settings.user_menu.icon_label')</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi {{ old($iconInput, $menuSettings['icon']) }}" data-bootstrap-icon-preview aria-hidden="true"></i></span>
+                                        <input type="text" id="user_menu_{{ $menuItem }}_icon" name="user_menu[{{ $menuItem }}][icon]" value="{{ old($iconInput, $menuSettings['icon']) }}" class="form-control @error($iconInput) is-invalid @enderror" placeholder="bi-briefcase" maxlength="64" pattern="bi-[a-z0-9]+(?:-[a-z0-9]+)*" data-bootstrap-icon-input required>
+                                        @error($iconInput)<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+                                </div>
+                                <div class="form-check form-switch"><input type="hidden" name="user_menu[{{ $menuItem }}][enabled]" value="0"><input class="form-check-input" type="checkbox" role="switch" id="user_menu_{{ $menuItem }}_enabled" name="user_menu[{{ $menuItem }}][enabled]" value="1" @checked(old($enabledInput, $menuSettings['enabled']))></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="card-footer bg-body text-body-secondary small"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.user_menu.icon_help')</div>
             </div>
 
             <div class="card seeker-admin-card mb-4" data-portfolio-settings data-portfolio-settings-message="@lang('seeker::admin.settings.portfolio_types.at_least_one')">

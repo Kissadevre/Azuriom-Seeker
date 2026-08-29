@@ -21,7 +21,7 @@ class SettingController extends Controller
             'newConversationsEnabled' => $settings->newConversationsEnabled(),
             'biographiesEnabled' => $settings->biographiesEnabled(),
             'messageImagesEnabled' => $settings->messageImagesEnabled(),
-            'userMenuEnabled' => $settings->userMenuEnabled(),
+            'userMenuItems' => $settings->userMenuItems(),
             'portfolioTypes' => $settings->portfolioTypes(),
             'rateLimits' => $settings->allRateLimits(),
         ]);
@@ -35,7 +35,7 @@ class SettingController extends Controller
             'new_conversations_enabled' => ['required', 'boolean'],
             'biographies_enabled' => ['required', 'boolean'],
             'message_images_enabled' => ['required', 'boolean'],
-            'user_menu_enabled' => ['required', 'boolean'],
+            'user_menu' => ['required', 'array:'.implode(',', array_keys(SeekerSettings::USER_MENU_ITEMS))],
             'portfolio_types' => [
                 'required',
                 'array:'.implode(',', Publication::portfolioTypes()),
@@ -55,6 +55,16 @@ class SettingController extends Controller
             $rules['portfolio_types.'.$type] = ['required', 'boolean'];
         }
 
+        foreach (array_keys(SeekerSettings::USER_MENU_ITEMS) as $item) {
+            $rules['user_menu.'.$item.'.enabled'] = ['required', 'boolean'];
+            $rules['user_menu.'.$item.'.icon'] = [
+                'required',
+                'string',
+                'max:64',
+                'regex:/\Abi-[a-z0-9]+(?:-[a-z0-9]+)*\z/',
+            ];
+        }
+
         foreach (array_keys(SeekerSettings::RATE_LIMITS) as $name) {
             $rules['limits.'.$name.'.attempts'] = ['required', 'integer', 'min:0', 'max:10000'];
             $rules['limits.'.$name.'.window'] = ['required', 'integer', 'min:1', 'max:10080'];
@@ -67,8 +77,12 @@ class SettingController extends Controller
             SeekerSettings::NEW_CONVERSATIONS_ENABLED_KEY => (bool) $validated['new_conversations_enabled'],
             SeekerSettings::BIOGRAPHIES_ENABLED_KEY => (bool) $validated['biographies_enabled'],
             SeekerSettings::MESSAGE_IMAGES_ENABLED_KEY => (bool) $validated['message_images_enabled'],
-            SeekerSettings::USER_MENU_ENABLED_KEY => (bool) $validated['user_menu_enabled'],
         ];
+
+        foreach (SeekerSettings::USER_MENU_ITEMS as $item => $definition) {
+            $values[$definition['enabled_key']] = (bool) $validated['user_menu'][$item]['enabled'];
+            $values[$definition['icon_key']] = $validated['user_menu'][$item]['icon'];
+        }
 
         foreach (SeekerSettings::PORTFOLIO_TYPE_KEYS as $type => $key) {
             $values[$key] = (bool) $validated['portfolio_types'][$type];

@@ -52,8 +52,20 @@ return [
             'biographies_enabled_help' => 'Al desactivarlo, los usuarios no pueden editar biografías y todas las existentes quedan ocultas sin eliminarse.',
             'message_images_enabled' => 'Permitir imágenes adjuntas en conversaciones',
             'message_images_enabled_help' => 'Al desactivarlo, no pueden adjuntarse imágenes nuevas. Las imágenes ya enviadas permanecen visibles para los participantes.',
-            'user_menu_enabled' => 'Mostrar Seeker en el menú de usuario',
-            'user_menu_enabled_help' => 'Agrega un acceso directo a Seeker al final de los enlaces de plug-ins del menú desplegable de la cuenta.',
+        ],
+        'user_menu' => [
+            'title' => 'Menú de usuario',
+            'subtitle' => 'Elige qué accesos de Seeker aparecen en el menú desplegable de la cuenta y personaliza sus iconos.',
+            'icon_label' => 'Bootstrap Icon',
+            'icon_help' => 'Ingresa una clase válida de Bootstrap Icons que comience con "bi-", como bi-briefcase, bi-chat-dots o bi-people.',
+            'items' => [
+                'seeker' => 'Seeker',
+                'seeker_help' => 'Agrega un acceso directo al portal de Seeker al final de los enlaces de plug-ins.',
+                'my_publications' => 'Mis publicaciones',
+                'my_publications_help' => 'Muestra al usuario autenticado un acceso a sus publicaciones de Seeker.',
+                'messages' => 'Mensajes',
+                'messages_help' => 'Muestra al usuario autenticado un acceso a sus conversaciones de Seeker.',
+            ],
         ],
         'portfolio_types' => [
             'title' => 'Disponibilidad de portafolios',
