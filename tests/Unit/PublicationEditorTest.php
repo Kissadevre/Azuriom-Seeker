@@ -24,6 +24,16 @@ class PublicationEditorTest extends TestCase
     {
         $settings = $this->createMock(SeekerSettings::class);
         $settings->method('enabledPortfolioTypes')->willReturn([Publication::PORTFOLIO_EXTERNAL]);
+        $settings->method('assetCountLimit')->willReturnMap([
+            [Publication::PORTFOLIO_IMAGES, 6],
+            [Publication::PORTFOLIO_VIDEO, 1],
+            [Publication::PORTFOLIO_AUDIO, 1],
+        ]);
+        $settings->method('assetSizeKilobytes')->willReturnMap([
+            [Publication::PORTFOLIO_IMAGES, 5120],
+            [Publication::PORTFOLIO_VIDEO, 10240],
+            [Publication::PORTFOLIO_AUDIO, 10240],
+        ]);
         $this->app->instance(SeekerSettings::class, $settings);
 
         $rules = (new StorePublicationRequest)->rules();

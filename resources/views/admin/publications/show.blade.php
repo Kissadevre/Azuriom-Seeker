@@ -116,9 +116,13 @@
                                 </div>
                             @endforeach
                         </div>
-                    @elseif(in_array($publication->portfolio_type, \Azuriom\Plugin\Seeker\Models\Publication::uploadedPortfolioTypes(), true) && ($portfolioMedia = $publication->media->firstWhere('type', $publication->portfolio_type)))
+                    @elseif(in_array($publication->portfolio_type, \Azuriom\Plugin\Seeker\Models\Publication::uploadedPortfolioTypes(), true) && ($portfolioMedia = $publication->media->where('type', $publication->portfolio_type))->isNotEmpty())
                         <div class="small text-muted mb-2">@lang('seeker::messages.media.'.$publication->portfolio_type.'_title')</div>
-                        @include('seeker::publications._media', ['media' => $portfolioMedia, 'mediaClass' => $publication->portfolio_type === 'video' ? 'w-100 rounded bg-black' : 'w-100'])
+                        <div class="d-grid gap-3">
+                            @foreach($portfolioMedia as $media)
+                                @include('seeker::publications._media', ['media' => $media, 'mediaClass' => $publication->portfolio_type === 'video' ? 'w-100 rounded bg-black' : 'w-100'])
+                            @endforeach
+                        </div>
                     @else
                         <p class="text-muted mb-0">@lang('seeker::admin.publications.no_portfolio')</p>
                     @endif

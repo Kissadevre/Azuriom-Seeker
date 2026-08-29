@@ -91,7 +91,7 @@ class Publication extends Model
 
     public function media()
     {
-        return $this->hasMany(PublicationMedia::class);
+        return $this->hasMany(PublicationMedia::class)->orderBy('id');
     }
 
     public function reviews()

@@ -46,6 +46,27 @@ class SeekerSettings
         Publication::PORTFOLIO_AUDIO => 'seeker.portfolio_types.audio_enabled',
     ];
 
+    public const ASSET_LIMITS = [
+        Publication::PORTFOLIO_IMAGES => [
+            'count_key' => 'seeker.asset_limits.images.count',
+            'count' => 6,
+            'size_key' => 'seeker.asset_limits.images.size_megabytes',
+            'size' => 5,
+        ],
+        Publication::PORTFOLIO_VIDEO => [
+            'count_key' => 'seeker.asset_limits.video.count',
+            'count' => 1,
+            'size_key' => 'seeker.asset_limits.video.size_megabytes',
+            'size' => 10,
+        ],
+        Publication::PORTFOLIO_AUDIO => [
+            'count_key' => 'seeker.asset_limits.audio.count',
+            'count' => 1,
+            'size_key' => 'seeker.asset_limits.audio.size_megabytes',
+            'size' => 10,
+        ],
+    ];
+
     public const RATE_LIMITS = [
         'create_user_short' => [
             'attempts_key' => 'seeker.rate_limits.create_user_short.attempts',
@@ -173,6 +194,29 @@ class SeekerSettings
     public function portfolioTypeEnabled(string $type): bool
     {
         return $this->portfolioTypes()[$type] ?? false;
+    }
+
+    public function assetLimits(): array
+    {
+        return collect(self::ASSET_LIMITS)->map(fn (array $definition) => [
+            'count' => $this->integer($definition['count_key'], $definition['count'], 1, 100),
+            'size' => $this->integer($definition['size_key'], $definition['size'], 1, 2048),
+        ])->all();
+    }
+
+    public function assetCountLimit(string $type): int
+    {
+        return $this->assetLimits()[$type]['count'] ?? 1;
+    }
+
+    public function assetSizeMegabytes(string $type): int
+    {
+        return $this->assetLimits()[$type]['size'] ?? 1;
+    }
+
+    public function assetSizeKilobytes(string $type): int
+    {
+        return $this->assetSizeMegabytes($type) * 1024;
     }
 
     public function rateLimits(string $action): array

@@ -27,18 +27,30 @@
 @php
     $availablePortfolioTypes ??= app(\Azuriom\Plugin\Seeker\Services\SeekerSettings::class)->enabledPortfolioTypes();
     $portfolioTypeDisabled ??= false;
+    $assetLimits ??= app(\Azuriom\Plugin\Seeker\Services\SeekerSettings::class)->assetLimits();
     $selectedPortfolioType = old(
         'portfolio_type',
         $publication->portfolio_type ?? ($availablePortfolioTypes[0] ?? null)
     );
     $serverUploadLimit = \Illuminate\Http\UploadedFile::getMaxFilesize();
+    $serverFileCountLimit = max(1, (int) ini_get('max_file_uploads'));
+    $availableAssetTypes = array_intersect($availablePortfolioTypes, array_keys($assetLimits));
+    $configuredUploadLimit = (int) collect($assetLimits)->only($availableAssetTypes)->max('size') * 1024 * 1024;
+    $configuredFileCountLimit = (int) collect($assetLimits)->only($availableAssetTypes)->max('count');
     $currentPortfolioType = $publication->portfolio_type ?? null;
 @endphp
 
-@if($serverUploadLimit < 10 * 1024 * 1024 && array_intersect($availablePortfolioTypes, \Azuriom\Plugin\Seeker\Models\Publication::uploadedPortfolioTypes()))
+@if($serverUploadLimit < $configuredUploadLimit)
     <div class="alert alert-warning d-flex gap-2 align-items-start mb-4" role="alert">
         <i class="bi bi-exclamation-triangle flex-shrink-0" aria-hidden="true"></i>
-        <div>@lang('seeker::messages.help.server_upload_limit', ['size' => number_format($serverUploadLimit / 1048576, 0).' MB'])</div>
+        <div>@lang('seeker::messages.help.server_upload_limit', ['server' => number_format($serverUploadLimit / 1048576, 0).' MB', 'configured' => number_format($configuredUploadLimit / 1048576, 0).' MB'])</div>
+    </div>
+@endif
+
+@if($serverFileCountLimit < $configuredFileCountLimit)
+    <div class="alert alert-warning d-flex gap-2 align-items-start mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle flex-shrink-0" aria-hidden="true"></i>
+        <div>@lang('seeker::messages.help.server_file_count_limit', ['server' => $serverFileCountLimit, 'configured' => $configuredFileCountLimit])</div>
     </div>
 @endif
 
@@ -101,7 +113,7 @@
         <input id="publicationImages" type="file" name="images[]" class="form-control @error('images') is-invalid @enderror @error('images.*') is-invalid @enderror" accept="image/jpeg,image/png,image/webp" multiple>
         @error('images')<div class="invalid-feedback">{{ $message }}</div>@enderror
         @error('images.*')<div class="invalid-feedback">{{ $message }}</div>@enderror
-        <div class="form-text">@lang('seeker::messages.help.images')</div>
+        <div class="form-text">@lang('seeker::messages.help.images', ['count' => $assetLimits['images']['count'], 'size' => $assetLimits['images']['size']])</div>
     @else
         <div class="alert alert-warning py-2 mb-0"><i class="bi bi-lock me-1" aria-hidden="true"></i>@lang('seeker::messages.help.disabled_current_portfolio')</div>
     @endunless
@@ -110,22 +122,33 @@
 
 @foreach(array_intersect(\Azuriom\Plugin\Seeker\Models\Publication::uploadedPortfolioTypes(), $availablePortfolioTypes) as $mediaType)
     @php
-        $currentMedia = isset($publication) ? $publication->media->firstWhere('type', $mediaType) : null;
+        $currentMedia = isset($publication) ? $publication->media->where('type', $mediaType) : collect();
     @endphp
-    <div class="mb-4" data-portfolio-panel="{{ $mediaType }}" data-has-existing="{{ $currentMedia ? 'true' : 'false' }}">
-        @if($currentMedia)
-            <div class="card bg-body-tertiary border mb-3">
-                <div class="card-body">
-                    <div class="small fw-semibold mb-2">@lang('seeker::messages.fields.current_'.$mediaType)</div>
-                    @include('seeker::publications._media', ['media' => $currentMedia, 'mediaClass' => $mediaType === 'video' ? 'seeker-form-video rounded' : 'seeker-form-audio'])
+    <div class="mb-4" data-portfolio-panel="{{ $mediaType }}" data-has-existing="{{ $currentMedia->isNotEmpty() ? 'true' : 'false' }}">
+        @if($currentMedia->isNotEmpty())
+            <fieldset class="mb-3">
+                <legend class="h6">@lang('seeker::messages.fields.current_'.$mediaType)</legend>
+                <div class="row g-3">
+                    @foreach($currentMedia as $media)
+                        <div class="col-md-6">
+                            <div class="card bg-body-tertiary border h-100">
+                                <div class="card-body">
+                                    @include('seeker::publications._media', ['media' => $media, 'mediaClass' => $mediaType === 'video' ? 'seeker-form-video rounded' : 'seeker-form-audio'])
+                                    <label class="form-check mt-3 mb-0"><input class="form-check-input" type="checkbox" name="remove_media[]" value="{{ $media->id }}" @checked(in_array($media->id, old('remove_media', [])))><span class="form-check-label">@lang('seeker::messages.delete')</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
-            </div>
+                <div class="form-text">@lang('seeker::messages.help.remove_media')</div>
+            </fieldset>
         @endif
         @unless($portfolioTypeDisabled && $currentPortfolioType === $mediaType)
             <label class="form-label fw-semibold" for="publication{{ ucfirst($mediaType) }}">@lang('seeker::messages.fields.'.$mediaType)</label>
-            <input id="publication{{ ucfirst($mediaType) }}" type="file" name="{{ $mediaType }}" class="form-control @error($mediaType) is-invalid @enderror" accept="{{ $mediaType === 'video' ? 'video/mp4,video/webm,.mp4,.webm' : 'audio/mpeg,audio/wav,audio/ogg,audio/mp4,.mp3,.wav,.ogg,.m4a' }}">
+            <input id="publication{{ ucfirst($mediaType) }}" type="file" name="{{ $mediaType }}[]" class="form-control @error($mediaType) is-invalid @enderror @error($mediaType.'.*') is-invalid @enderror" accept="{{ $mediaType === 'video' ? 'video/mp4,video/webm,.mp4,.webm' : 'audio/mpeg,audio/wav,audio/ogg,audio/mp4,.mp3,.wav,.ogg,.m4a' }}" multiple>
             @error($mediaType)<div class="invalid-feedback">{{ $message }}</div>@enderror
-            <div class="form-text">@lang('seeker::messages.help.'.$mediaType)</div>
+            @error($mediaType.'.*')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            <div class="form-text">@lang('seeker::messages.help.'.$mediaType, ['count' => $assetLimits[$mediaType]['count'], 'size' => $assetLimits[$mediaType]['size']])</div>
         @else
             <div class="alert alert-warning py-2 mb-0"><i class="bi bi-lock me-1" aria-hidden="true"></i>@lang('seeker::messages.help.disabled_current_portfolio')</div>
         @endunless

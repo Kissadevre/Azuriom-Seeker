@@ -26,6 +26,11 @@ class MigrationTest extends TestCase
         '2026_08_28_001100_create_seeker_transactions_table.php' => 'seeker_transactions',
     ];
 
+    /** @var string[] */
+    private const ALTERATION_MIGRATIONS = [
+        '2026_08_28_001200_allow_multiple_seeker_publication_media.php',
+    ];
+
     /** @var array<string, array<int, string>> */
     private const TABLE_COLUMNS = [
         'seeker_publications' => ['id', 'user_id', 'type', 'title', 'description', 'portfolio_type', 'portfolio_url', 'is_guest_visible', 'pricing_type', 'price', 'price_basis', 'status', 'is_pinned', 'pinned_at', 'published_at', 'created_at', 'updated_at', 'deleted_at'],
@@ -66,6 +71,14 @@ class MigrationTest extends TestCase
                 $migrations[] = $migration;
 
                 $this->assertTrue(Schema::hasTable($table), $file.' did not create '.$table);
+            }
+
+            foreach (self::ALTERATION_MIGRATIONS as $file) {
+                $migration = require dirname(__DIR__, 2).'/database/migrations/'.$file;
+
+                $this->assertInstanceOf(Migration::class, $migration);
+                $migration->up();
+                $migrations[] = $migration;
             }
 
             $this->assertSchemaMatchesExpectedStructure();
@@ -121,8 +134,12 @@ class MigrationTest extends TestCase
             ->sum(fn (string $table) => count(Schema::getForeignKeys($table)));
         $indexCount = collect(array_keys(self::TABLE_COLUMNS))
             ->sum(fn (string $table) => count(Schema::getIndexes($table)));
+        $mediaTypeUnique = collect(Schema::getIndexes('seeker_publication_media'))
+            ->contains(fn (array $index) => $index['unique']
+                && $index['columns'] === ['publication_id', 'type']);
 
         $this->assertSame(26, $foreignKeyCount);
-        $this->assertSame(43, $indexCount);
+        $this->assertSame(42, $indexCount);
+        $this->assertFalse($mediaTypeUnique, 'Publication media must allow multiple files of the same type.');
     }
 }

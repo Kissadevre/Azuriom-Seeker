@@ -23,6 +23,7 @@ class SettingController extends Controller
             'messageImagesEnabled' => $settings->messageImagesEnabled(),
             'userMenuItems' => $settings->userMenuItems(),
             'portfolioTypes' => $settings->portfolioTypes(),
+            'assetLimits' => $settings->assetLimits(),
             'rateLimits' => $settings->allRateLimits(),
         ]);
     }
@@ -48,11 +49,17 @@ class SettingController extends Controller
                     }
                 },
             ],
+            'asset_limits' => ['required', 'array:'.implode(',', array_keys(SeekerSettings::ASSET_LIMITS))],
             'limits' => ['required', 'array'],
         ];
 
         foreach (Publication::portfolioTypes() as $type) {
             $rules['portfolio_types.'.$type] = ['required', 'boolean'];
+        }
+
+        foreach (array_keys(SeekerSettings::ASSET_LIMITS) as $type) {
+            $rules['asset_limits.'.$type.'.count'] = ['required', 'integer', 'min:1', 'max:100'];
+            $rules['asset_limits.'.$type.'.size'] = ['required', 'integer', 'min:1', 'max:2048'];
         }
 
         foreach (array_keys(SeekerSettings::USER_MENU_ITEMS) as $item) {
@@ -86,6 +93,11 @@ class SettingController extends Controller
 
         foreach (SeekerSettings::PORTFOLIO_TYPE_KEYS as $type => $key) {
             $values[$key] = (bool) $validated['portfolio_types'][$type];
+        }
+
+        foreach (SeekerSettings::ASSET_LIMITS as $type => $definition) {
+            $values[$definition['count_key']] = (int) $validated['asset_limits'][$type]['count'];
+            $values[$definition['size_key']] = (int) $validated['asset_limits'][$type]['size'];
         }
 
         foreach (SeekerSettings::RATE_LIMITS as $name => $definition) {

@@ -85,6 +85,25 @@
             </div>
 
             <div class="card seeker-admin-card mb-4">
+                <div class="card-header d-flex align-items-start gap-2"><i class="bi bi-device-ssd text-primary mt-1" aria-hidden="true"></i><div><h2>@lang('seeker::admin.settings.asset_limits.title')</h2><p class="small text-body-secondary mb-0 mt-1">@lang('seeker::admin.settings.asset_limits.subtitle')</p></div></div>
+                <div class="table-responsive">
+                    <table class="table align-middle seeker-admin-table mb-0">
+                        <thead><tr><th>@lang('seeker::admin.settings.asset_limits.type')</th><th>@lang('seeker::admin.settings.asset_limits.count')</th><th>@lang('seeker::admin.settings.asset_limits.size')</th></tr></thead>
+                        <tbody>
+                            @foreach($assetLimits as $assetType => $assetLimit)
+                                <tr>
+                                    <td style="min-width: 14rem"><label class="fw-semibold" for="asset_limit_{{ $assetType }}_count"><i class="bi bi-{{ ['images' => 'images', 'video' => 'camera-video', 'audio' => 'soundwave'][$assetType] }} me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.asset_limits.types.'.$assetType)</label><div class="small text-body-secondary mt-1">@lang('seeker::admin.settings.asset_limits.types.'.$assetType.'_help')</div></td>
+                                    <td style="min-width: 11rem"><input id="asset_limit_{{ $assetType }}_count" type="number" min="1" max="100" name="asset_limits[{{ $assetType }}][count]" value="{{ old('asset_limits.'.$assetType.'.count', $assetLimit['count']) }}" class="form-control @error('asset_limits.'.$assetType.'.count') is-invalid @enderror" required>@error('asset_limits.'.$assetType.'.count')<div class="invalid-feedback">{{ $message }}</div>@enderror</td>
+                                    <td style="min-width: 14rem"><div class="input-group"><input type="number" min="1" max="2048" name="asset_limits[{{ $assetType }}][size]" value="{{ old('asset_limits.'.$assetType.'.size', $assetLimit['size']) }}" class="form-control @error('asset_limits.'.$assetType.'.size') is-invalid @enderror" required><span class="input-group-text">MB</span>@error('asset_limits.'.$assetType.'.size')<div class="invalid-feedback">{{ $message }}</div>@enderror</div></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer bg-body text-body-secondary small"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.asset_limits.server_help')</div>
+            </div>
+
+            <div class="card seeker-admin-card mb-4">
                 <div class="card-header d-flex align-items-start gap-2"><i class="bi bi-speedometer2 text-primary mt-1" aria-hidden="true"></i><div><h2>@lang('seeker::admin.settings.rate_limits.title')</h2><p class="small text-body-secondary mb-0 mt-1">@lang('seeker::admin.settings.rate_limits.subtitle')</p></div></div>
                 <div class="table-responsive">
                     <table class="table align-middle seeker-admin-table mb-0">

@@ -125,6 +125,7 @@ class PublicationController extends Controller
 
         return view('seeker::publications.create', [
             'availablePortfolioTypes' => $settings->enabledPortfolioTypes(),
+            'assetLimits' => $settings->assetLimits(),
         ]);
     }
 
@@ -165,7 +166,7 @@ class PublicationController extends Controller
                 if ($publication->portfolio_type === Publication::PORTFOLIO_IMAGES) {
                     $this->storeImages($publication, $request->file('images', []), $storedPaths);
                 } elseif (in_array($publication->portfolio_type, Publication::uploadedPortfolioTypes(), true)) {
-                    $this->storeMedia($publication, $request->file($publication->portfolio_type), $storedPaths);
+                    $this->storeMedia($publication, $request->file($publication->portfolio_type, []), $storedPaths);
                 }
 
                 return $publication;
@@ -191,10 +192,13 @@ class PublicationController extends Controller
             $availablePortfolioTypes[] = $publication->portfolio_type;
         }
 
+        $assetLimits = $settings->assetLimits();
+
         return view('seeker::publications.edit', compact(
             'publication',
             'availablePortfolioTypes',
-            'portfolioTypeDisabled'
+            'portfolioTypeDisabled',
+            'assetLimits'
         ));
     }
 
@@ -237,8 +241,15 @@ class PublicationController extends Controller
                     : null;
                 $mediaToRemove = $publication->media();
 
-                if ($selectedMediaType !== null && ! $request->hasFile($selectedMediaType)) {
-                    $mediaToRemove->where('type', '!=', $selectedMediaType);
+                if ($selectedMediaType !== null) {
+                    $removeMediaIds = array_unique($request->input('remove_media', []));
+                    $mediaToRemove->where(function ($query) use ($selectedMediaType, $removeMediaIds) {
+                        $query->where('type', '!=', $selectedMediaType);
+
+                        if ($removeMediaIds !== []) {
+                            $query->orWhereIn('id', $removeMediaIds);
+                        }
+                    });
                 }
 
                 $removedPaths = array_merge($removedPaths, $mediaToRemove->pluck('path')->all());
@@ -247,7 +258,7 @@ class PublicationController extends Controller
                 if ($publication->portfolio_type === Publication::PORTFOLIO_IMAGES) {
                     $this->storeImages($publication, $request->file('images', []), $storedPaths);
                 } elseif ($selectedMediaType !== null && $request->hasFile($selectedMediaType)) {
-                    $this->storeMedia($publication, $request->file($selectedMediaType), $storedPaths);
+                    $this->storeMedia($publication, $request->file($selectedMediaType, []), $storedPaths);
                 }
             });
         } catch (Throwable $exception) {
@@ -322,29 +333,36 @@ class PublicationController extends Controller
         }
     }
 
-    private function storeMedia(Publication $publication, UploadedFile $file, array &$storedPaths): void
+    private function storeMedia(Publication $publication, array $files, array &$storedPaths): void
     {
         $type = $publication->portfolio_type;
-        $mimeType = $file->getMimeType();
 
-        if (! in_array($type, Publication::uploadedPortfolioTypes(), true)
-            || $mimeType === null
-            || ! in_array($mimeType, PublicationMedia::mimeTypesFor($type), true)) {
+        if (! in_array($type, Publication::uploadedPortfolioTypes(), true)) {
             throw ValidationException::withMessages([
                 $type => trans('seeker::messages.validation.invalid_media'),
             ]);
         }
 
-        $path = $file->store('seeker/publications/'.$publication->id.'/'.$type, 'local');
-        $storedPaths[] = $path;
+        foreach ($files as $file) {
+            $mimeType = $file->getMimeType();
 
-        $publication->media()->create([
-            'type' => $type,
-            'path' => $path,
-            'original_name' => $this->sanitizeOriginalName($file),
-            'mime_type' => $mimeType,
-            'size' => (int) $file->getSize(),
-        ]);
+            if ($mimeType === null || ! in_array($mimeType, PublicationMedia::mimeTypesFor($type), true)) {
+                throw ValidationException::withMessages([
+                    $type => trans('seeker::messages.validation.invalid_media'),
+                ]);
+            }
+
+            $path = $file->store('seeker/publications/'.$publication->id.'/'.$type, 'local');
+            $storedPaths[] = $path;
+
+            $publication->media()->create([
+                'type' => $type,
+                'path' => $path,
+                'original_name' => $this->sanitizeOriginalName($file),
+                'mime_type' => $mimeType,
+                'size' => (int) $file->getSize(),
+            ]);
+        }
     }
 
     private function sanitizeOriginalName(UploadedFile $file): string
