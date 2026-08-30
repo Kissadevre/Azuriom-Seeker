@@ -12,6 +12,7 @@ use Azuriom\Plugin\Seeker\Models\UserRestriction;
 use Azuriom\Plugin\Seeker\Requests\PublicationStatusRequest;
 use Azuriom\Plugin\Seeker\Requests\StorePublicationRequest;
 use Azuriom\Plugin\Seeker\Requests\UpdatePublicationRequest;
+use Azuriom\Plugin\Seeker\Services\DiscordWebhookNotifier;
 use Azuriom\Plugin\Seeker\Services\RestrictionService;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Azuriom\Plugin\Seeker\Support\SeekerPermissions;
@@ -20,6 +21,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -132,7 +134,8 @@ class PublicationController extends Controller
     public function store(
         StorePublicationRequest $request,
         SeekerSettings $settings,
-        RestrictionService $restrictions
+        RestrictionService $restrictions,
+        DiscordWebhookNotifier $discordWebhook
     ): RedirectResponse {
         if (! $settings->publicationsEnabled()) {
             return to_route('seeker.publications.mine')
@@ -174,6 +177,20 @@ class PublicationController extends Controller
         } catch (Throwable $exception) {
             Storage::disk('local')->delete($storedPaths);
             throw $exception;
+        }
+
+        // The publication is already committed, so no notification failure can roll it back.
+        try {
+            $discordWebhook->publicationCreated($publication);
+        } catch (Throwable $exception) {
+            try {
+                Log::warning('An unexpected error occurred while notifying Discord about a Seeker publication.', [
+                    'publication_id' => $publication->id,
+                    'exception' => $exception::class,
+                ]);
+            } catch (Throwable) {
+                // Notification diagnostics must not affect the completed publication flow.
+            }
         }
 
         return redirect()->route('seeker.publications.show', $publication)

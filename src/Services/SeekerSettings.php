@@ -16,6 +16,15 @@ class SeekerSettings
 
     public const MESSAGE_IMAGES_ENABLED_KEY = 'seeker.message_images_enabled';
 
+    public const DISCORD_WEBHOOK_ENABLED_KEY = 'seeker.discord_webhook.enabled';
+
+    public const DISCORD_WEBHOOK_URL_KEY = 'seeker.discord_webhook.url';
+
+    public const DISCORD_WEBHOOK_TYPE_KEYS = [
+        Publication::TYPE_COMMISSION => 'seeker.discord_webhook.commission_enabled',
+        Publication::TYPE_TALENT => 'seeker.discord_webhook.talent_enabled',
+    ];
+
     public const USER_MENU_ENABLED_KEY = 'seeker.user_menu_enabled';
 
     public const USER_MENU_ITEMS = [
@@ -141,6 +150,34 @@ class SeekerSettings
     public function messageImagesEnabled(): bool
     {
         return $this->boolean(self::MESSAGE_IMAGES_ENABLED_KEY, true);
+    }
+
+    public function discordWebhookEnabled(): bool
+    {
+        return $this->boolean(self::DISCORD_WEBHOOK_ENABLED_KEY, false);
+    }
+
+    public function discordWebhookUrl(): string
+    {
+        return trim((string) setting(self::DISCORD_WEBHOOK_URL_KEY, ''));
+    }
+
+    public function discordWebhookTypeEnabled(string $type): bool
+    {
+        $key = self::DISCORD_WEBHOOK_TYPE_KEYS[$type] ?? null;
+
+        return $key !== null && $this->boolean($key, true);
+    }
+
+    public function discordWebhookSettings(): array
+    {
+        return [
+            'enabled' => $this->discordWebhookEnabled(),
+            'url' => $this->discordWebhookUrl(),
+            'types' => collect(self::DISCORD_WEBHOOK_TYPE_KEYS)
+                ->mapWithKeys(fn (string $key, string $type) => [$type => $this->discordWebhookTypeEnabled($type)])
+                ->all(),
+        ];
     }
 
     public function userMenuEnabled(): bool

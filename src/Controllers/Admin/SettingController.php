@@ -6,6 +6,7 @@ use Azuriom\Http\Controllers\Controller;
 use Azuriom\Models\ActionLog;
 use Azuriom\Models\Setting;
 use Azuriom\Plugin\Seeker\Models\Publication;
+use Azuriom\Plugin\Seeker\Services\DiscordWebhookNotifier;
 use Azuriom\Plugin\Seeker\Services\SeekerSettings;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -21,6 +22,7 @@ class SettingController extends Controller
             'newConversationsEnabled' => $settings->newConversationsEnabled(),
             'biographiesEnabled' => $settings->biographiesEnabled(),
             'messageImagesEnabled' => $settings->messageImagesEnabled(),
+            'discordWebhook' => $settings->discordWebhookSettings(),
             'userMenuItems' => $settings->userMenuItems(),
             'portfolioTypes' => $settings->portfolioTypes(),
             'assetLimits' => $settings->assetLimits(),
@@ -36,6 +38,20 @@ class SettingController extends Controller
             'new_conversations_enabled' => ['required', 'boolean'],
             'biographies_enabled' => ['required', 'boolean'],
             'message_images_enabled' => ['required', 'boolean'],
+            'discord_webhook' => ['required', 'array:enabled,url,types'],
+            'discord_webhook.enabled' => ['required', 'boolean'],
+            'discord_webhook.url' => [
+                'nullable',
+                'string',
+                'max:2048',
+                'required_if:discord_webhook.enabled,1',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (filled($value) && ! DiscordWebhookNotifier::isValidUrl((string) $value)) {
+                        $fail(trans('seeker::admin.settings.discord_webhook.invalid_url'));
+                    }
+                },
+            ],
+            'discord_webhook.types' => ['required', 'array:'.implode(',', Publication::types())],
             'user_menu' => ['required', 'array:'.implode(',', array_keys(SeekerSettings::USER_MENU_ITEMS))],
             'portfolio_types' => [
                 'required',
@@ -55,6 +71,10 @@ class SettingController extends Controller
 
         foreach (Publication::portfolioTypes() as $type) {
             $rules['portfolio_types.'.$type] = ['required', 'boolean'];
+        }
+
+        foreach (Publication::types() as $type) {
+            $rules['discord_webhook.types.'.$type] = ['required', 'boolean'];
         }
 
         foreach (array_keys(SeekerSettings::ASSET_LIMITS) as $type) {
@@ -84,7 +104,13 @@ class SettingController extends Controller
             SeekerSettings::NEW_CONVERSATIONS_ENABLED_KEY => (bool) $validated['new_conversations_enabled'],
             SeekerSettings::BIOGRAPHIES_ENABLED_KEY => (bool) $validated['biographies_enabled'],
             SeekerSettings::MESSAGE_IMAGES_ENABLED_KEY => (bool) $validated['message_images_enabled'],
+            SeekerSettings::DISCORD_WEBHOOK_ENABLED_KEY => (bool) $validated['discord_webhook']['enabled'],
+            SeekerSettings::DISCORD_WEBHOOK_URL_KEY => trim((string) ($validated['discord_webhook']['url'] ?? '')),
         ];
+
+        foreach (SeekerSettings::DISCORD_WEBHOOK_TYPE_KEYS as $type => $key) {
+            $values[$key] = (bool) $validated['discord_webhook']['types'][$type];
+        }
 
         foreach (SeekerSettings::USER_MENU_ITEMS as $item => $definition) {
             $values[$definition['enabled_key']] = (bool) $validated['user_menu'][$item]['enabled'];
@@ -110,5 +136,30 @@ class SettingController extends Controller
 
         return to_route('seeker.admin.settings')
             ->with('success', trans('seeker::admin.settings.updated'));
+    }
+
+    public function testDiscordWebhook(Request $request, DiscordWebhookNotifier $notifier): RedirectResponse
+    {
+        $validated = $request->validate([
+            'discord_webhook.url' => [
+                'required',
+                'string',
+                'max:2048',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (! DiscordWebhookNotifier::isValidUrl((string) $value)) {
+                        $fail(trans('seeker::admin.settings.discord_webhook.invalid_url'));
+                    }
+                },
+            ],
+        ]);
+
+        $sent = $notifier->test(trim($validated['discord_webhook']['url']));
+
+        return back()->with(
+            $sent ? 'success' : 'error',
+            trans($sent
+                ? 'seeker::admin.settings.discord_webhook.test_success'
+                : 'seeker::admin.settings.discord_webhook.test_failed')
+        );
     }
 }

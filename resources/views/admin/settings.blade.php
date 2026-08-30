@@ -26,6 +26,39 @@
             </div>
 
             <div class="card seeker-admin-card mb-4">
+                <div class="card-header d-flex align-items-start gap-2">
+                    <i class="bi bi-discord text-primary mt-1" aria-hidden="true"></i>
+                    <div>
+                        <h2>@lang('seeker::admin.settings.discord_webhook.title')</h2>
+                        <p class="small text-body-secondary mb-0 mt-1">@lang('seeker::admin.settings.discord_webhook.subtitle')</p>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="seeker-admin-switch-row">
+                        <label for="discord_webhook_enabled" class="mb-0"><span class="d-block fw-semibold">@lang('seeker::admin.settings.discord_webhook.enabled')</span><small class="text-body-secondary">@lang('seeker::admin.settings.discord_webhook.enabled_help')</small></label>
+                        <div class="form-check form-switch"><input type="hidden" name="discord_webhook[enabled]" value="0"><input class="form-check-input" type="checkbox" role="switch" id="discord_webhook_enabled" name="discord_webhook[enabled]" value="1" @checked(old('discord_webhook.enabled', $discordWebhook['enabled']))></div>
+                    </div>
+                    @foreach(\Azuriom\Plugin\Seeker\Models\Publication::types() as $notificationType)
+                        <div class="seeker-admin-switch-row">
+                            <label for="discord_webhook_type_{{ $notificationType }}" class="mb-0"><span class="d-block fw-semibold">@lang('seeker::admin.settings.discord_webhook.types.'.$notificationType)</span><small class="text-body-secondary">@lang('seeker::admin.settings.discord_webhook.types.'.$notificationType.'_help')</small></label>
+                            <div class="form-check form-switch"><input type="hidden" name="discord_webhook[types][{{ $notificationType }}]" value="0"><input class="form-check-input" type="checkbox" role="switch" id="discord_webhook_type_{{ $notificationType }}" name="discord_webhook[types][{{ $notificationType }}]" value="1" @checked(old('discord_webhook.types.'.$notificationType, $discordWebhook['types'][$notificationType]))></div>
+                        </div>
+                    @endforeach
+                    <div class="p-3 border-top">
+                        <label class="form-label fw-semibold" for="discord_webhook_url">@lang('seeker::admin.settings.discord_webhook.url')</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-link-45deg" aria-hidden="true"></i></span>
+                            <input type="password" id="discord_webhook_url" name="discord_webhook[url]" value="{{ old('discord_webhook.url', $discordWebhook['url']) }}" class="form-control @error('discord_webhook.url') is-invalid @enderror" maxlength="2048" autocomplete="new-password" placeholder="https://discord.com/api/webhooks/...">
+                            <button type="submit" class="btn btn-outline-primary" formaction="{{ route('seeker.admin.settings.discord-webhook.test') }}" formmethod="POST" formnovalidate><i class="bi bi-send-check me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.discord_webhook.test')</button>
+                            @error('discord_webhook.url')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="form-text">@lang('seeker::admin.settings.discord_webhook.url_help')</div>
+                    </div>
+                </div>
+                <div class="card-footer bg-body text-body-secondary small"><i class="bi bi-shield-check me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.discord_webhook.delivery_help')</div>
+            </div>
+
+            <div class="card seeker-admin-card mb-4">
                 <div class="card-header d-flex align-items-center gap-2"><i class="bi bi-toggles text-primary" aria-hidden="true"></i><h2>@lang('seeker::admin.settings.features.title')</h2></div>
                 <div class="card-body p-0">
                     @foreach([
