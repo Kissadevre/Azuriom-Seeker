@@ -1,23 +1,19 @@
 .seeker-public-shell {
-    --seeker-brand-pink: #ec6fa9;
-    --seeker-brand-lilac: #9b7cf7;
-    --seeker-brand-cyan: #45c9ed;
-    --seeker-brand-gradient: linear-gradient(135deg, var(--seeker-brand-pink), var(--seeker-brand-lilac) 52%, var(--seeker-brand-cyan));
-    --seeker-radius: 1.15rem;
-    --seeker-border: rgba(var(--bs-primary-rgb), .16);
+    --seeker-brand-gradient: var(--bs-primary);
+    --seeker-radius: var(--bs-border-radius-lg, .5rem);
+    --seeker-border: var(--bs-border-color);
 }
 
 .seeker-public-shell .card,
 .seeker-surface {
     border-color: var(--seeker-border);
     border-radius: var(--seeker-radius);
-    box-shadow: 0 .65rem 2rem rgba(26, 38, 77, .045);
 }
 
 .seeker-public-shell .card-header,
 .seeker-public-shell .card-footer {
-    border-color: rgba(var(--bs-secondary-rgb), .12);
-    background: rgba(var(--bs-primary-rgb), .025);
+    border-color: var(--seeker-border);
+    background: var(--bs-tertiary-bg);
 }
 
 .seeker-public-shell .form-control,
@@ -25,7 +21,7 @@
 .seeker-public-shell .input-group-text,
 .seeker-public-shell .btn {
     min-height: 2.75rem;
-    border-radius: .75rem;
+    border-radius: var(--bs-border-radius, .375rem);
 }
 
 .seeker-public-shell .input-group > :not(:first-child) {
@@ -71,6 +67,37 @@
     color: var(--bs-secondary-color);
 }
 
+.seeker-breadcrumb {
+    margin-bottom: 1.25rem;
+    padding: .75rem 1rem;
+    border: 1px solid var(--seeker-border);
+    border-radius: var(--bs-border-radius-lg, .5rem);
+    background: var(--bs-tertiary-bg);
+}
+
+.seeker-breadcrumb .breadcrumb {
+    align-items: center;
+}
+
+.seeker-breadcrumb .breadcrumb-item {
+    min-width: 0;
+}
+
+.seeker-breadcrumb .breadcrumb-item a {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.seeker-breadcrumb .breadcrumb-item.active {
+    overflow: hidden;
+    color: var(--bs-secondary-color);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .seeker-page-icon,
 .seeker-title-icon {
     display: inline-grid;
@@ -78,10 +105,9 @@
     height: 3.75rem;
     place-items: center;
     flex-shrink: 0;
-    border-radius: 1rem;
+    border-radius: var(--bs-border-radius-lg, .5rem);
     color: #fff;
     background: var(--seeker-brand-gradient);
-    box-shadow: 0 .6rem 1.4rem rgba(155, 124, 247, .2);
     font-size: 1.5rem;
 }
 
@@ -96,9 +122,9 @@
 
 .seeker-empty-state {
     padding: clamp(2.5rem, 7vw, 4.5rem) 1.5rem;
-    border: 1px dashed rgba(var(--bs-primary-rgb), .28);
+    border: 1px dashed var(--seeker-border);
     border-radius: var(--seeker-radius);
-    background: rgba(var(--bs-primary-rgb), .025);
+    background: var(--bs-tertiary-bg);
     text-align: center;
 }
 
@@ -108,9 +134,9 @@
     height: 4rem;
     place-items: center;
     margin-bottom: 1rem;
-    border-radius: 1rem;
+    border-radius: var(--bs-border-radius-lg, .5rem);
     color: var(--bs-primary);
-    background: rgba(var(--bs-primary-rgb), .1);
+    background: var(--bs-primary-bg-subtle, rgba(var(--bs-primary-rgb), .1));
     font-size: 1.7rem;
 }
 
@@ -141,8 +167,8 @@
     position: relative;
     isolation: isolate;
     z-index: 3;
-    border: 1px solid rgba(var(--bs-primary-rgb), .16) !important;
-    background: linear-gradient(135deg, rgba(236, 111, 169, .1), rgba(155, 124, 247, .1) 52%, rgba(69, 201, 237, .12));
+    border-color: var(--seeker-border);
+    background: var(--bs-body-bg);
 }
 
 .seeker-hero::after {
@@ -153,7 +179,7 @@
     height: 8rem;
     z-index: -1;
     border-radius: 50%;
-    background: rgba(255, 255, 255, .18);
+    background: transparent;
     content: '';
 }
 
@@ -168,8 +194,8 @@
     min-width: 20rem;
     padding: .5rem;
     border-color: var(--seeker-border);
-    border-radius: 1rem;
-    box-shadow: 0 1rem 2.5rem rgba(26, 38, 77, .14);
+    border-radius: var(--bs-border-radius-lg, .5rem);
+    box-shadow: var(--bs-box-shadow);
 }
 
 .seeker-quick-menu-item {
@@ -213,7 +239,7 @@
 }
 
 .seeker-card:hover {
-    box-shadow: 0 .75rem 1.75rem rgba(0, 0, 0, .1);
+    box-shadow: var(--bs-box-shadow-sm);
     transform: translateY(-3px);
 }
 
@@ -235,10 +261,9 @@
     min-width: 0;
     padding: 1rem;
     border: 1px solid var(--seeker-border);
-    border-radius: 1rem;
+    border-radius: var(--bs-border-radius-lg, .5rem);
     color: var(--bs-body-color);
     background: var(--bs-body-bg);
-    box-shadow: 0 .45rem 1.5rem rgba(26, 38, 77, .035);
     text-decoration: none;
     transition: border-color .15s ease, background-color .15s ease, transform .15s ease;
 }
@@ -250,9 +275,8 @@
 }
 
 .seeker-category-link.active {
-    border-color: rgba(var(--bs-primary-rgb), .55);
-    background: linear-gradient(135deg, rgba(236, 111, 169, .085), rgba(155, 124, 247, .08) 52%, rgba(69, 201, 237, .1));
-    box-shadow: 0 .55rem 1.75rem rgba(155, 124, 247, .1);
+    border-color: var(--bs-primary);
+    background: var(--bs-primary-bg-subtle, rgba(var(--bs-primary-rgb), .1));
 }
 
 .seeker-category-icon {
@@ -261,7 +285,7 @@
     height: 2.8rem;
     place-items: center;
     flex-shrink: 0;
-    border-radius: .8rem;
+    border-radius: var(--bs-border-radius, .375rem);
     color: var(--bs-primary);
     background: rgba(var(--bs-primary-rgb), .09);
     font-size: 1.2rem;
@@ -332,7 +356,7 @@
 
 .seeker-profile-hero {
     overflow: hidden;
-    background: linear-gradient(135deg, rgba(236, 111, 169, .07), rgba(155, 124, 247, .06) 50%, rgba(69, 201, 237, .08));
+    background: var(--bs-tertiary-bg);
 }
 
 .seeker-profile-hero::after {
@@ -342,7 +366,7 @@
     width: 15rem;
     height: 15rem;
     border-radius: 50%;
-    background: rgba(255, 255, 255, .18);
+    background: transparent;
     content: '';
     pointer-events: none;
 }
@@ -459,9 +483,9 @@
 }
 
 .seeker-featured-badge {
-    color: #684b00;
-    border: 1px solid rgba(236, 174, 42, .3);
-    background: linear-gradient(135deg, #fff1b8, #ffd978);
+    color: var(--bs-warning-text-emphasis, #664d03);
+    border: 1px solid var(--bs-warning-border-subtle, #ffecb5);
+    background: var(--bs-warning-bg-subtle, #fff3cd);
 }
 
 .seeker-inbox-filters {
@@ -515,7 +539,7 @@
     left: 0;
     width: .25rem;
     border-radius: 0 .25rem .25rem 0;
-    background: var(--seeker-brand-gradient);
+    background: var(--bs-primary);
     content: '';
 }
 
@@ -552,7 +576,7 @@
 }
 
 .seeker-chat > .card-header {
-    background: linear-gradient(135deg, rgba(236, 111, 169, .045), rgba(69, 201, 237, .055));
+    background: var(--bs-tertiary-bg);
 }
 
 .seeker-chat-composer {

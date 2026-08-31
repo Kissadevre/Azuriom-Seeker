@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('settings', [SettingController::class, 'show'])->name('settings');
 Route::post('settings', [SettingController::class, 'save'])->name('settings.save');
+Route::post('settings/discord-webhook/test', [SettingController::class, 'testDiscordWebhook'])->name('settings.discord-webhook.test');
 Route::get('publications', [PublicationController::class, 'index'])->name('publications.index');
 Route::get('publications/{publication}', [PublicationController::class, 'show'])->withTrashed()->name('publications.show');
 Route::patch('publications/{publication}/status', [PublicationController::class, 'updateStatus'])->withTrashed()->name('publications.status');

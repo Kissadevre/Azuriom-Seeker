@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="seeker-public-shell">
-    <div class="seeker-hero card border-0 mb-4">
+    <div class="seeker-hero card mb-4">
         <div class="card-body p-4 p-lg-5">
             <div class="row align-items-center g-4">
                 <div class="col-lg">
@@ -118,7 +118,7 @@
                                 @endif
                             </div>
                             <h2 class="h5 card-title">{{ $publication->title }}</h2>
-                            <p class="card-text text-muted flex-grow-1">{{ \Illuminate\Support\Str::limit(app(\Azuriom\Plugin\Seeker\Services\PublicationRichText::class)->plainText($publication->description), 150) }}</p>
+                            <p class="card-text text-muted flex-grow-1">{{ \Illuminate\Support\Str::limit(app(\Azuriom\Plugin\Seeker\Services\PublicationMarkdown::class)->plainText($publication->description), 150) }}</p>
                             <div class="d-flex align-items-center gap-2 small text-muted mb-3">
                                 <img src="{{ $publication->user->getAvatar(32) }}" width="32" height="32" class="rounded-circle" alt="">
                                 <div class="position-relative z-2">

@@ -12,8 +12,10 @@
                     'pageIcon' => 'bi-chat-dots',
                     'pageTitle' => trans('seeker::messages.contact.title_'.$publication->type),
                     'pageSubtitle' => $publication->user->name.' · '.$publication->title,
-                    'backUrl' => route('seeker.publications.show', $publication),
-                    'backLabel' => $publication->title,
+                    'breadcrumbs' => [
+                        ['label' => $publication->title, 'url' => route('seeker.publications.show', $publication)],
+                        ['label' => trans('seeker::messages.contact.title_'.$publication->type)],
+                    ],
                 ])
 
             <div class="card seeker-flow-summary mb-4">

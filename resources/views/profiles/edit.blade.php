@@ -12,8 +12,10 @@
                     'pageIcon' => 'bi-person-lines-fill',
                     'pageTitle' => trans('seeker::messages.profiles.edit'),
                     'pageSubtitle' => trans('seeker::messages.profiles.edit_description'),
-                    'backUrl' => route('seeker.profiles.show', $user),
-                    'backLabel' => trans('seeker::messages.profiles.back'),
+                    'breadcrumbs' => [
+                        ['label' => $user->name, 'url' => route('seeker.profiles.show', $user)],
+                        ['label' => trans('seeker::messages.profiles.edit')],
+                    ],
                 ])
                 <form method="POST" action="{{ route('seeker.profiles.update', $user) }}" class="card seeker-form-card">
                 @csrf @method('PUT')

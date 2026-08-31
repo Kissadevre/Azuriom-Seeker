@@ -16,11 +16,64 @@ class SeekerSettings
 
     public const MESSAGE_IMAGES_ENABLED_KEY = 'seeker.message_images_enabled';
 
+    public const DISCORD_WEBHOOK_ENABLED_KEY = 'seeker.discord_webhook.enabled';
+
+    public const DISCORD_WEBHOOK_URL_KEY = 'seeker.discord_webhook.url';
+
+    public const DISCORD_WEBHOOK_TYPE_KEYS = [
+        Publication::TYPE_COMMISSION => 'seeker.discord_webhook.commission_enabled',
+        Publication::TYPE_TALENT => 'seeker.discord_webhook.talent_enabled',
+    ];
+
+    public const USER_MENU_ENABLED_KEY = 'seeker.user_menu_enabled';
+
+    public const USER_MENU_ITEMS = [
+        'seeker' => [
+            'enabled_key' => self::USER_MENU_ENABLED_KEY,
+            'enabled' => false,
+            'icon_key' => 'seeker.user_menu.seeker_icon',
+            'icon' => 'bi-people',
+        ],
+        'my_publications' => [
+            'enabled_key' => 'seeker.user_menu.my_publications_enabled',
+            'enabled' => true,
+            'icon_key' => 'seeker.user_menu.my_publications_icon',
+            'icon' => 'bi-briefcase',
+        ],
+        'messages' => [
+            'enabled_key' => 'seeker.user_menu.messages_enabled',
+            'enabled' => true,
+            'icon_key' => 'seeker.user_menu.messages_icon',
+            'icon' => 'bi-chat-dots',
+        ],
+    ];
+
     public const PORTFOLIO_TYPE_KEYS = [
         Publication::PORTFOLIO_EXTERNAL => 'seeker.portfolio_types.external_enabled',
         Publication::PORTFOLIO_IMAGES => 'seeker.portfolio_types.images_enabled',
         Publication::PORTFOLIO_VIDEO => 'seeker.portfolio_types.video_enabled',
         Publication::PORTFOLIO_AUDIO => 'seeker.portfolio_types.audio_enabled',
+    ];
+
+    public const ASSET_LIMITS = [
+        Publication::PORTFOLIO_IMAGES => [
+            'count_key' => 'seeker.asset_limits.images.count',
+            'count' => 6,
+            'size_key' => 'seeker.asset_limits.images.size_megabytes',
+            'size' => 5,
+        ],
+        Publication::PORTFOLIO_VIDEO => [
+            'count_key' => 'seeker.asset_limits.video.count',
+            'count' => 1,
+            'size_key' => 'seeker.asset_limits.video.size_megabytes',
+            'size' => 10,
+        ],
+        Publication::PORTFOLIO_AUDIO => [
+            'count_key' => 'seeker.asset_limits.audio.count',
+            'count' => 1,
+            'size_key' => 'seeker.asset_limits.audio.size_megabytes',
+            'size' => 10,
+        ],
     ];
 
     public const RATE_LIMITS = [
@@ -99,6 +152,70 @@ class SeekerSettings
         return $this->boolean(self::MESSAGE_IMAGES_ENABLED_KEY, true);
     }
 
+    public function discordWebhookEnabled(): bool
+    {
+        return $this->boolean(self::DISCORD_WEBHOOK_ENABLED_KEY, false);
+    }
+
+    public function discordWebhookUrl(): string
+    {
+        return trim((string) setting(self::DISCORD_WEBHOOK_URL_KEY, ''));
+    }
+
+    public function discordWebhookTypeEnabled(string $type): bool
+    {
+        $key = self::DISCORD_WEBHOOK_TYPE_KEYS[$type] ?? null;
+
+        return $key !== null && $this->boolean($key, true);
+    }
+
+    public function discordWebhookSettings(): array
+    {
+        return [
+            'enabled' => $this->discordWebhookEnabled(),
+            'url' => $this->discordWebhookUrl(),
+            'types' => collect(self::DISCORD_WEBHOOK_TYPE_KEYS)
+                ->mapWithKeys(fn (string $key, string $type) => [$type => $this->discordWebhookTypeEnabled($type)])
+                ->all(),
+        ];
+    }
+
+    public function userMenuEnabled(): bool
+    {
+        return $this->userMenuItemEnabled('seeker');
+    }
+
+    public function userMenuItemEnabled(string $item): bool
+    {
+        $definition = self::USER_MENU_ITEMS[$item] ?? null;
+
+        return $definition !== null
+            && $this->boolean($definition['enabled_key'], $definition['enabled']);
+    }
+
+    public function userMenuIcon(string $item): string
+    {
+        $definition = self::USER_MENU_ITEMS[$item] ?? null;
+
+        if ($definition === null) {
+            return 'bi-question-circle';
+        }
+
+        $icon = (string) setting($definition['icon_key'], $definition['icon']);
+
+        return preg_match('/\Abi-[a-z0-9]+(?:-[a-z0-9]+)*\z/', $icon) === 1
+            ? $icon
+            : $definition['icon'];
+    }
+
+    public function userMenuItems(): array
+    {
+        return collect(self::USER_MENU_ITEMS)->map(fn (array $definition, string $item) => [
+            'enabled' => $this->userMenuItemEnabled($item),
+            'icon' => $this->userMenuIcon($item),
+        ])->all();
+    }
+
     public function portfolioTypes(): array
     {
         return collect(self::PORTFOLIO_TYPE_KEYS)
@@ -114,6 +231,29 @@ class SeekerSettings
     public function portfolioTypeEnabled(string $type): bool
     {
         return $this->portfolioTypes()[$type] ?? false;
+    }
+
+    public function assetLimits(): array
+    {
+        return collect(self::ASSET_LIMITS)->map(fn (array $definition) => [
+            'count' => $this->integer($definition['count_key'], $definition['count'], 1, 100),
+            'size' => $this->integer($definition['size_key'], $definition['size'], 1, 2048),
+        ])->all();
+    }
+
+    public function assetCountLimit(string $type): int
+    {
+        return $this->assetLimits()[$type]['count'] ?? 1;
+    }
+
+    public function assetSizeMegabytes(string $type): int
+    {
+        return $this->assetLimits()[$type]['size'] ?? 1;
+    }
+
+    public function assetSizeKilobytes(string $type): int
+    {
+        return $this->assetSizeMegabytes($type) * 1024;
     }
 
     public function rateLimits(string $action): array

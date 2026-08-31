@@ -20,13 +20,17 @@ class UpdatePublicationRequest extends StorePublicationRequest
 
     public function rules(): array
     {
+        $settings = app(SeekerSettings::class);
+
         return [
             ...parent::rules(),
-            'images' => ['nullable', 'prohibited_unless:portfolio_type,'.Publication::PORTFOLIO_IMAGES, 'array', 'max:6'],
+            'images' => ['nullable', 'prohibited_unless:portfolio_type,'.Publication::PORTFOLIO_IMAGES, 'array', 'max:'.$settings->assetCountLimit(Publication::PORTFOLIO_IMAGES)],
             'remove_images' => ['nullable', 'array'],
             'remove_images.*' => ['integer', Rule::exists('seeker_publication_images', 'id')],
             'video' => $this->mediaRules(Publication::PORTFOLIO_VIDEO, false),
             'audio' => $this->mediaRules(Publication::PORTFOLIO_AUDIO, false),
+            'remove_media' => ['nullable', 'array'],
+            'remove_media.*' => ['integer', Rule::exists('seeker_publication_media', 'id')],
         ];
     }
 
@@ -45,8 +49,14 @@ class UpdatePublicationRequest extends StorePublicationRequest
                     $validator->errors()->add('images', trans('seeker::messages.validation.images_required'));
                 }
 
-                if ($this->input('portfolio_type') === Publication::PORTFOLIO_IMAGES && $remaining > 6) {
-                    $validator->errors()->add('images', trans('seeker::messages.validation.max_images'));
+                $settings = app(SeekerSettings::class);
+                $imageLimit = $settings->assetCountLimit(Publication::PORTFOLIO_IMAGES);
+
+                if ($this->input('portfolio_type') === Publication::PORTFOLIO_IMAGES && $remaining > $imageLimit) {
+                    $validator->errors()->add('images', trans('seeker::messages.validation.max_assets', [
+                        'count' => $imageLimit,
+                        'type' => trans('seeker::messages.fields.images'),
+                    ]));
                 }
 
                 $selectedType = $this->input('portfolio_type');
@@ -68,12 +78,27 @@ class UpdatePublicationRequest extends StorePublicationRequest
                     }
                 }
 
-                if (in_array($selectedType, Publication::uploadedPortfolioTypes(), true)
-                    && ! $this->hasFile($selectedType)
-                    && ! $publication->media()->where('type', $selectedType)->exists()) {
-                    $validator->errors()->add($selectedType, trans('seeker::messages.validation.media_required', [
-                        'type' => trans('seeker::messages.portfolio_types.'.$selectedType),
-                    ]));
+                if (in_array($selectedType, Publication::uploadedPortfolioTypes(), true)) {
+                    $removedMedia = $publication->media()
+                        ->where('type', $selectedType)
+                        ->whereIn('id', array_unique($this->input('remove_media', [])))
+                        ->count();
+                    $uploadedMedia = count($this->file($selectedType, []));
+                    $remainingMedia = $publication->media()->where('type', $selectedType)->count()
+                        - $removedMedia
+                        + $uploadedMedia;
+                    $mediaLimit = $settings->assetCountLimit($selectedType);
+
+                    if ($remainingMedia < 1) {
+                        $validator->errors()->add($selectedType, trans('seeker::messages.validation.media_required', [
+                            'type' => trans('seeker::messages.portfolio_types.'.$selectedType),
+                        ]));
+                    } elseif ($remainingMedia > $mediaLimit) {
+                        $validator->errors()->add($selectedType, trans('seeker::messages.validation.max_assets', [
+                            'count' => $mediaLimit,
+                            'type' => trans('seeker::messages.fields.'.$selectedType),
+                        ]));
+                    }
                 }
             },
         ];

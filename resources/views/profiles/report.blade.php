@@ -12,8 +12,10 @@
                     'pageIcon' => 'bi-flag',
                     'pageTitle' => trans('seeker::messages.profile_reports.title'),
                     'pageSubtitle' => trans('seeker::messages.profile_reports.reporting', ['user' => $user->name]),
-                    'backUrl' => route('seeker.profiles.show', $user),
-                    'backLabel' => trans('seeker::messages.profile_reports.back'),
+                    'breadcrumbs' => [
+                        ['label' => $user->name, 'url' => route('seeker.profiles.show', $user)],
+                        ['label' => trans('seeker::messages.profile_reports.title')],
+                    ],
                 ])
                 <form method="POST" action="{{ route('seeker.profiles.reports.store', $user) }}" class="card seeker-form-card seeker-report-card">
                 @csrf

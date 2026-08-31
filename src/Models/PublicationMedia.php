@@ -14,8 +14,6 @@ class PublicationMedia extends Model
 
     public const TYPE_AUDIO = 'audio';
 
-    public const MAX_SIZE_KILOBYTES = 10240;
-
     public const VIDEO_EXTENSIONS = ['mp4', 'webm'];
 
     public const VIDEO_MIME_TYPES = ['video/mp4', 'video/webm'];

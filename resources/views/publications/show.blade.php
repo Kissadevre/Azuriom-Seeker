@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="seeker-public-shell">
-    <a class="seeker-back-link" href="{{ route('seeker.index') }}"><i class="bi bi-arrow-left" aria-hidden="true"></i>@lang('seeker::messages.back')</a>
+    @include('seeker::_breadcrumb', ['breadcrumbs' => [['label' => $publication->title]]])
 
     <div class="row g-4">
         <div class="col-lg-8">
@@ -25,7 +25,7 @@
                         @endif
                     </div>
                     <h1 class="display-6 fw-bold">{{ $publication->title }}</h1>
-                    <div class="seeker-description">{!! app(\Azuriom\Plugin\Seeker\Services\PublicationRichText::class)->render($publication->description) !!}</div>
+                    <div class="seeker-description">{!! app(\Azuriom\Plugin\Seeker\Services\PublicationMarkdown::class)->render($publication->description) !!}</div>
 
                     @if($publication->portfolio_type === 'external' && $publication->portfolio_url)
                         <button class="btn btn-primary mt-4" type="button" data-bs-toggle="modal" data-bs-target="#externalPortfolioWarning">
@@ -54,11 +54,13 @@
                         </div>
                     </div>
                 </section>
-            @elseif(in_array($publication->portfolio_type, \Azuriom\Plugin\Seeker\Models\Publication::uploadedPortfolioTypes(), true) && ($portfolioMedia = $publication->media->firstWhere('type', $publication->portfolio_type)))
+            @elseif(in_array($publication->portfolio_type, \Azuriom\Plugin\Seeker\Models\Publication::uploadedPortfolioTypes(), true) && ($portfolioMedia = $publication->media->where('type', $publication->portfolio_type))->isNotEmpty())
                 <section class="card">
                     <div class="card-header"><h2 class="h5 mb-0">@lang('seeker::messages.media.'.$publication->portfolio_type.'_title')</h2></div>
-                    <div class="card-body">
-                        @include('seeker::publications._media', ['media' => $portfolioMedia])
+                    <div class="card-body d-grid gap-3">
+                        @foreach($portfolioMedia as $media)
+                            @include('seeker::publications._media', ['media' => $media])
+                        @endforeach
                     </div>
                 </section>
             @endif

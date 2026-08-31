@@ -10,8 +10,7 @@
         'pageIcon' => 'bi-chat-dots',
         'pageTitle' => trans('seeker::messages.conversations.title'),
         'pageSubtitle' => trans('seeker::messages.conversations.subtitle'),
-        'backUrl' => route('seeker.index'),
-        'backLabel' => trans('seeker::messages.back'),
+        'breadcrumbs' => [['label' => trans('seeker::messages.conversations.title')]],
     ])
 
     <nav class="seeker-inbox-filters mb-3" aria-label="@lang('seeker::messages.conversations.filters.label')">

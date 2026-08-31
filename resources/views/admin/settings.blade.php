@@ -26,6 +26,39 @@
             </div>
 
             <div class="card seeker-admin-card mb-4">
+                <div class="card-header d-flex align-items-start gap-2">
+                    <i class="bi bi-discord text-primary mt-1" aria-hidden="true"></i>
+                    <div>
+                        <h2>@lang('seeker::admin.settings.discord_webhook.title')</h2>
+                        <p class="small text-body-secondary mb-0 mt-1">@lang('seeker::admin.settings.discord_webhook.subtitle')</p>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="seeker-admin-switch-row">
+                        <label for="discord_webhook_enabled" class="mb-0"><span class="d-block fw-semibold">@lang('seeker::admin.settings.discord_webhook.enabled')</span><small class="text-body-secondary">@lang('seeker::admin.settings.discord_webhook.enabled_help')</small></label>
+                        <div class="form-check form-switch"><input type="hidden" name="discord_webhook[enabled]" value="0"><input class="form-check-input" type="checkbox" role="switch" id="discord_webhook_enabled" name="discord_webhook[enabled]" value="1" @checked(old('discord_webhook.enabled', $discordWebhook['enabled']))></div>
+                    </div>
+                    @foreach(\Azuriom\Plugin\Seeker\Models\Publication::types() as $notificationType)
+                        <div class="seeker-admin-switch-row">
+                            <label for="discord_webhook_type_{{ $notificationType }}" class="mb-0"><span class="d-block fw-semibold">@lang('seeker::admin.settings.discord_webhook.types.'.$notificationType)</span><small class="text-body-secondary">@lang('seeker::admin.settings.discord_webhook.types.'.$notificationType.'_help')</small></label>
+                            <div class="form-check form-switch"><input type="hidden" name="discord_webhook[types][{{ $notificationType }}]" value="0"><input class="form-check-input" type="checkbox" role="switch" id="discord_webhook_type_{{ $notificationType }}" name="discord_webhook[types][{{ $notificationType }}]" value="1" @checked(old('discord_webhook.types.'.$notificationType, $discordWebhook['types'][$notificationType]))></div>
+                        </div>
+                    @endforeach
+                    <div class="p-3 border-top">
+                        <label class="form-label fw-semibold" for="discord_webhook_url">@lang('seeker::admin.settings.discord_webhook.url')</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-link-45deg" aria-hidden="true"></i></span>
+                            <input type="password" id="discord_webhook_url" name="discord_webhook[url]" value="{{ old('discord_webhook.url', $discordWebhook['url']) }}" class="form-control @error('discord_webhook.url') is-invalid @enderror" maxlength="2048" autocomplete="new-password" placeholder="https://discord.com/api/webhooks/...">
+                            <button type="submit" class="btn btn-outline-primary" formaction="{{ route('seeker.admin.settings.discord-webhook.test') }}" formmethod="POST" formnovalidate><i class="bi bi-send-check me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.discord_webhook.test')</button>
+                            @error('discord_webhook.url')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="form-text">@lang('seeker::admin.settings.discord_webhook.url_help')</div>
+                    </div>
+                </div>
+                <div class="card-footer bg-body text-body-secondary small"><i class="bi bi-shield-check me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.discord_webhook.delivery_help')</div>
+            </div>
+
+            <div class="card seeker-admin-card mb-4">
                 <div class="card-header d-flex align-items-center gap-2"><i class="bi bi-toggles text-primary" aria-hidden="true"></i><h2>@lang('seeker::admin.settings.features.title')</h2></div>
                 <div class="card-body p-0">
                     @foreach([
@@ -40,6 +73,31 @@
                         </div>
                     @endforeach
                 </div>
+            </div>
+
+            <div class="card seeker-admin-card mb-4">
+                <div class="card-header d-flex align-items-start gap-2"><i class="bi bi-person-lines-fill text-primary mt-1" aria-hidden="true"></i><div><h2>@lang('seeker::admin.settings.user_menu.title')</h2><p class="small text-body-secondary mb-0 mt-1">@lang('seeker::admin.settings.user_menu.subtitle')</p></div></div>
+                <div class="card-body p-0">
+                    @foreach($userMenuItems as $menuItem => $menuSettings)
+                        @php($enabledInput = 'user_menu.'.$menuItem.'.enabled')
+                        @php($iconInput = 'user_menu.'.$menuItem.'.icon')
+                        <div class="seeker-admin-switch-row seeker-admin-menu-row">
+                            <label for="user_menu_{{ $menuItem }}_enabled" class="mb-0"><span class="d-block fw-semibold">@lang('seeker::admin.settings.user_menu.items.'.$menuItem)</span><small class="text-body-secondary">@lang('seeker::admin.settings.user_menu.items.'.$menuItem.'_help')</small></label>
+                            <div class="seeker-admin-menu-controls">
+                                <div class="seeker-admin-icon-field" data-bootstrap-icon-field>
+                                    <label class="form-label small text-body-secondary" for="user_menu_{{ $menuItem }}_icon">@lang('seeker::admin.settings.user_menu.icon_label')</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi {{ old($iconInput, $menuSettings['icon']) }}" data-bootstrap-icon-preview aria-hidden="true"></i></span>
+                                        <input type="text" id="user_menu_{{ $menuItem }}_icon" name="user_menu[{{ $menuItem }}][icon]" value="{{ old($iconInput, $menuSettings['icon']) }}" class="form-control @error($iconInput) is-invalid @enderror" placeholder="bi-briefcase" maxlength="64" pattern="bi-[a-z0-9]+(?:-[a-z0-9]+)*" data-bootstrap-icon-input required>
+                                        @error($iconInput)<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+                                </div>
+                                <div class="form-check form-switch"><input type="hidden" name="user_menu[{{ $menuItem }}][enabled]" value="0"><input class="form-check-input" type="checkbox" role="switch" id="user_menu_{{ $menuItem }}_enabled" name="user_menu[{{ $menuItem }}][enabled]" value="1" @checked(old($enabledInput, $menuSettings['enabled']))></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="card-footer bg-body text-body-secondary small"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.user_menu.icon_help')</div>
             </div>
 
             <div class="card seeker-admin-card mb-4" data-portfolio-settings data-portfolio-settings-message="@lang('seeker::admin.settings.portfolio_types.at_least_one')">
@@ -57,6 +115,25 @@
                     <div class="text-danger small d-none" data-portfolio-settings-client-error><i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.portfolio_types.at_least_one')</div>
                     <div class="small text-body-secondary mt-1"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.portfolio_types.existing_help')</div>
                 </div>
+            </div>
+
+            <div class="card seeker-admin-card mb-4">
+                <div class="card-header d-flex align-items-start gap-2"><i class="bi bi-device-ssd text-primary mt-1" aria-hidden="true"></i><div><h2>@lang('seeker::admin.settings.asset_limits.title')</h2><p class="small text-body-secondary mb-0 mt-1">@lang('seeker::admin.settings.asset_limits.subtitle')</p></div></div>
+                <div class="table-responsive">
+                    <table class="table align-middle seeker-admin-table mb-0">
+                        <thead><tr><th>@lang('seeker::admin.settings.asset_limits.type')</th><th>@lang('seeker::admin.settings.asset_limits.count')</th><th>@lang('seeker::admin.settings.asset_limits.size')</th></tr></thead>
+                        <tbody>
+                            @foreach($assetLimits as $assetType => $assetLimit)
+                                <tr>
+                                    <td style="min-width: 14rem"><label class="fw-semibold" for="asset_limit_{{ $assetType }}_count"><i class="bi bi-{{ ['images' => 'images', 'video' => 'camera-video', 'audio' => 'soundwave'][$assetType] }} me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.asset_limits.types.'.$assetType)</label><div class="small text-body-secondary mt-1">@lang('seeker::admin.settings.asset_limits.types.'.$assetType.'_help')</div></td>
+                                    <td style="min-width: 11rem"><input id="asset_limit_{{ $assetType }}_count" type="number" min="1" max="100" name="asset_limits[{{ $assetType }}][count]" value="{{ old('asset_limits.'.$assetType.'.count', $assetLimit['count']) }}" class="form-control @error('asset_limits.'.$assetType.'.count') is-invalid @enderror" required>@error('asset_limits.'.$assetType.'.count')<div class="invalid-feedback">{{ $message }}</div>@enderror</td>
+                                    <td style="min-width: 14rem"><div class="input-group"><input type="number" min="1" max="2048" name="asset_limits[{{ $assetType }}][size]" value="{{ old('asset_limits.'.$assetType.'.size', $assetLimit['size']) }}" class="form-control @error('asset_limits.'.$assetType.'.size') is-invalid @enderror" required><span class="input-group-text">MB</span>@error('asset_limits.'.$assetType.'.size')<div class="invalid-feedback">{{ $message }}</div>@enderror</div></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer bg-body text-body-secondary small"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>@lang('seeker::admin.settings.asset_limits.server_help')</div>
             </div>
 
             <div class="card seeker-admin-card mb-4">

@@ -12,8 +12,11 @@
                     'pageIcon' => 'bi-flag',
                     'pageTitle' => trans('seeker::messages.reports.title'),
                     'pageSubtitle' => trans('seeker::messages.reports.reported_user', ['user' => $reportedUser->name]),
-                    'backUrl' => route('seeker.conversations.show', $conversation),
-                    'backLabel' => trans('seeker::messages.reports.back'),
+                    'breadcrumbs' => [
+                        ['label' => trans('seeker::messages.conversations.title'), 'url' => route('seeker.conversations.index')],
+                        ['label' => $conversation->publication->title, 'url' => route('seeker.conversations.show', $conversation)],
+                        ['label' => trans('seeker::messages.reports.title')],
+                    ],
                 ])
             <div class="card seeker-form-card seeker-report-card">
                 <div class="card-body p-4 p-md-5">
