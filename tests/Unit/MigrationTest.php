@@ -10,26 +10,7 @@ use Tests\TestCase;
 
 class MigrationTest extends TestCase
 {
-    /** @var array<string, string> */
-    private const MIGRATIONS = [
-        '2026_08_28_000000_create_seeker_publications_table.php' => 'seeker_publications',
-        '2026_08_28_000100_create_seeker_publication_images_table.php' => 'seeker_publication_images',
-        '2026_08_28_000200_create_seeker_publication_media_table.php' => 'seeker_publication_media',
-        '2026_08_28_000300_create_seeker_conversations_table.php' => 'seeker_conversations',
-        '2026_08_28_000400_create_seeker_messages_table.php' => 'seeker_messages',
-        '2026_08_28_000500_create_seeker_conversation_reports_table.php' => 'seeker_conversation_reports',
-        '2026_08_28_000600_create_seeker_reviews_table.php' => 'seeker_reviews',
-        '2026_08_28_000700_create_seeker_profiles_table.php' => 'seeker_profiles',
-        '2026_08_28_000800_create_seeker_profile_reports_table.php' => 'seeker_profile_reports',
-        '2026_08_28_000900_create_seeker_publication_reports_table.php' => 'seeker_publication_reports',
-        '2026_08_28_001000_create_seeker_user_restrictions_table.php' => 'seeker_user_restrictions',
-        '2026_08_28_001100_create_seeker_transactions_table.php' => 'seeker_transactions',
-    ];
-
-    /** @var string[] */
-    private const ALTERATION_MIGRATIONS = [
-        '2026_08_28_001200_allow_multiple_seeker_publication_media.php',
-    ];
+    private const BASELINE_MIGRATION = '2026_09_21_000000_create_seeker_tables.php';
 
     /** @var array<string, array<int, string>> */
     private const TABLE_COLUMNS = [
@@ -47,12 +28,18 @@ class MigrationTest extends TestCase
         'seeker_transactions' => ['id', 'conversation_id', 'payer_id', 'payee_id', 'payer_name', 'payee_name', 'publication_title', 'type', 'status', 'amount', 'held_at', 'completed_at', 'refunded_at', 'created_at', 'updated_at'],
     ];
 
-    public function test_separate_migrations_create_and_drop_the_complete_schema(): void
+    public function test_consolidated_baseline_and_future_migrations_create_and_drop_the_complete_schema(): void
     {
         $connection = config('database.default');
         $databaseKey = 'database.connections.'.$connection.'.database';
         $originalDatabase = config($databaseKey);
         $migrations = [];
+        $migrationFiles = glob(dirname(__DIR__, 2).'/database/migrations/*.php');
+        sort($migrationFiles);
+
+        $this->assertNotEmpty($migrationFiles);
+        $this->assertSame(self::BASELINE_MIGRATION, basename($migrationFiles[0]));
+
         DB::purge($connection);
         config([$databaseKey => ':memory:']);
 
@@ -61,20 +48,18 @@ class MigrationTest extends TestCase
                 $table->increments('id');
             });
 
-            foreach (self::MIGRATIONS as $file => $table) {
-                $migration = require dirname(__DIR__, 2).'/database/migrations/'.$file;
+            $baseline = require $migrationFiles[0];
 
-                $this->assertInstanceOf(Migration::class, $migration);
-                $this->assertFalse(Schema::hasTable($table), $table.' must have its own migration');
+            $this->assertInstanceOf(Migration::class, $baseline);
+            $baseline->up();
+            $migrations[] = $baseline;
 
-                $migration->up();
-                $migrations[] = $migration;
-
-                $this->assertTrue(Schema::hasTable($table), $file.' did not create '.$table);
+            foreach (array_keys(self::TABLE_COLUMNS) as $table) {
+                $this->assertTrue(Schema::hasTable($table), self::BASELINE_MIGRATION.' did not create '.$table);
             }
 
-            foreach (self::ALTERATION_MIGRATIONS as $file) {
-                $migration = require dirname(__DIR__, 2).'/database/migrations/'.$file;
+            foreach (array_slice($migrationFiles, 1) as $file) {
+                $migration = require $file;
 
                 $this->assertInstanceOf(Migration::class, $migration);
                 $migration->up();
