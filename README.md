@@ -13,7 +13,7 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 - Accessible, responsive breadcrumbs across public publication, profile, conversation, and restriction flows.
 - Authenticated creation and management of commission offers and talent searches.
 - Role permissions for general Seeker access, creating publications, deleting owned publications, and editing an owned profile biography.
-- Separate reversible migrations, one per table, ordered by schema dependency.
+- One reversible baseline migration for the first public release, ordered by schema dependency and ready for later dated migrations.
 - MariaDB-safe database identifiers, with regression coverage for its 64-character index-name limit.
 - Markdown publication descriptions rendered by Azuriom's CommonMark integration with escaped raw HTML, unsafe-link protection, and no embedded images or media.
 - Account and IP rate limits plus Azuriom-configured CAPTCHA verification for publication creation and editing, rendered through Azuriom's native `elements.captcha` view and verified by its native middleware.
@@ -50,6 +50,8 @@ Seeker is an Azuriom talent portal where community members can offer freelance c
 
 Place this repository at `plugins/seeker`, then enable **Seeker** from the Azuriom administration panel. Azuriom runs the plugin migrations and publishes the plugin assets as part of its normal enable flow.
 
+The consolidated baseline replaces all pre-release migration history. Development environments created with an earlier Seeker build must reset their Seeker test schema and migration history before installing this version; public releases from this point forward receive schema changes through new dated migration files.
+
 Video and audio uploads require PHP's `upload_max_filesize` to be at least `10M` and `post_max_size` to be greater than `10M` (for example, `12M`) so multipart request overhead does not reduce Seeker's effective limit.
 
 Grant `Access Seeker` to every authenticated role that should use the portal, then assign the create, owned-publication deletion, and biography-editing permissions independently. Anonymous visitors remain governed by each publication's guest visibility setting.
@@ -73,7 +75,7 @@ Before releasing a new version:
 1. Validate `plugin.json` and `composer.json`.
 2. Run PHP syntax checks and compile every Blade view.
 3. Run fresh migration and rollback smoke tests on SQLite and the production database engine.
-   Never edit or consolidate released migrations; add a new dated migration for every later schema change.
+   Never edit the public baseline or any released migration; add a new dated migration for every later schema change.
 4. Verify guest, verified-user, owner, moderator, and unauthorized-user flows.
 5. Test image, video, and audio upload, rendering, replacement, publication deletion, plugin enable/disable, and route caching.
 6. Test with both the default Azuriom theme and the target custom theme.
