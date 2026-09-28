@@ -18,6 +18,7 @@ class SettingController extends Controller
     {
         return view('seeker::admin.settings', [
             'seekerEnabled' => $settings->enabled(),
+            'debugEnabled' => $settings->debugEnabled(),
             'publicationsEnabled' => $settings->publicationsEnabled(),
             'newConversationsEnabled' => $settings->newConversationsEnabled(),
             'biographiesEnabled' => $settings->biographiesEnabled(),
@@ -34,6 +35,7 @@ class SettingController extends Controller
     {
         $rules = [
             'seeker_enabled' => ['required', 'boolean'],
+            'debug_enabled' => ['required', 'boolean'],
             'publications_enabled' => ['required', 'boolean'],
             'new_conversations_enabled' => ['required', 'boolean'],
             'biographies_enabled' => ['required', 'boolean'],
@@ -100,6 +102,7 @@ class SettingController extends Controller
         $validated = $request->validate($rules);
         $values = [
             SeekerSettings::ENABLED_KEY => (bool) $validated['seeker_enabled'],
+            SeekerSettings::DEBUG_ENABLED_KEY => (bool) $validated['debug_enabled'],
             SeekerSettings::PUBLICATIONS_ENABLED_KEY => (bool) $validated['publications_enabled'],
             SeekerSettings::NEW_CONVERSATIONS_ENABLED_KEY => (bool) $validated['new_conversations_enabled'],
             SeekerSettings::BIOGRAPHIES_ENABLED_KEY => (bool) $validated['biographies_enabled'],

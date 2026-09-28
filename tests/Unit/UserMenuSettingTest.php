@@ -11,10 +11,11 @@ class UserMenuSettingTest extends TestCase
 {
     public function test_user_menu_shortcut_is_disabled_by_default(): void
     {
-        $this->app->instance(SettingsRepository::class, new SettingsRepository);
+        $this->app->instance(SettingsRepository::class, new SettingsRepository());
 
         $settings = $this->app->make(SeekerSettings::class);
 
+        $this->assertFalse($settings->debugEnabled());
         $this->assertFalse($settings->userMenuEnabled());
         $this->assertTrue($settings->userMenuItemEnabled('my_publications'));
         $this->assertTrue($settings->userMenuItemEnabled('messages'));
