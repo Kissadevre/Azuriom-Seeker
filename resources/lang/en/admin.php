@@ -3,6 +3,7 @@
 return [
     'title' => 'Seeker',
     'subtitle' => 'Moderate talent portal publications.',
+    'debug' => ['title' => 'Debug mode', 'enabled' => 'Enable debug logging', 'description' => 'Record detailed Seeker activity for troubleshooting.', 'help' => 'Logs requests, execution time, failures, and technical context for 14 days. Credentials and webhooks are redacted.'],
     'nav' => [
         'settings' => 'Settings',
         'publications' => 'Publications',

@@ -8,6 +8,8 @@ class SeekerSettings
 {
     public const ENABLED_KEY = 'seeker.enabled';
 
+    public const DEBUG_ENABLED_KEY = 'seeker.debug_enabled';
+
     public const PUBLICATIONS_ENABLED_KEY = 'seeker.publications_enabled';
 
     public const NEW_CONVERSATIONS_ENABLED_KEY = 'seeker.new_conversations_enabled';
@@ -130,6 +132,11 @@ class SeekerSettings
     public function enabled(): bool
     {
         return $this->boolean(self::ENABLED_KEY, true);
+    }
+
+    public function debugEnabled(): bool
+    {
+        return $this->boolean(self::DEBUG_ENABLED_KEY, false);
     }
 
     public function publicationsEnabled(): bool

@@ -14,6 +14,16 @@
 
         <form method="POST" action="{{ route('seeker.admin.settings.save') }}">
             @csrf
+            <div class="card seeker-admin-card mb-4">
+                <div class="card-header d-flex align-items-start gap-2"><i class="bi bi-bug text-warning mt-1" aria-hidden="true"></i><div><h2>@lang('seeker::admin.debug.title')</h2><p class="small text-body-secondary mb-0 mt-1">@lang('seeker::admin.debug.description')</p></div></div>
+                <div class="card-body p-0">
+                    <div class="seeker-admin-switch-row">
+                        <label for="debugEnabled" class="mb-0"><span class="d-block fw-semibold">@lang('seeker::admin.debug.enabled')</span><small class="text-body-secondary">@lang('seeker::admin.debug.help')</small></label>
+                        <div class="form-check form-switch"><input type="hidden" name="debug_enabled" value="0"><input class="form-check-input" type="checkbox" id="debugEnabled" name="debug_enabled" value="1" @checked(old('debug_enabled', $debugEnabled))></div>
+                    </div>
+                </div>
+                <div class="card-footer bg-body text-body-secondary small"><code>storage/logs/seeker-debug-YYYY-MM-DD.log</code></div>
+            </div>
             @php($globalEnabled = (bool) old('seeker_enabled', $seekerEnabled))
 
             <div class="card seeker-admin-card border-{{ $globalEnabled ? 'success' : 'danger' }} mb-4">

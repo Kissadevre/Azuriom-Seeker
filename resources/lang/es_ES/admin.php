@@ -3,6 +3,7 @@
 return [
     'title' => 'Seeker',
     'subtitle' => 'Modera las publicaciones del portal de talentos.',
+    'debug' => ['title' => 'Modo debug', 'enabled' => 'Activar registros de depuración', 'description' => 'Registra la actividad detallada de Seeker para diagnosticar problemas.', 'help' => 'Registra solicitudes, tiempos de ejecución, errores y contexto técnico durante 14 días. Las credenciales y webhooks se ocultan.'],
     'nav' => [
         'settings' => 'Ajustes',
         'publications' => 'Publicaciones',
